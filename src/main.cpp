@@ -646,9 +646,21 @@ void usercontrol(void) {
     }
 
     if(intakePhase == 3){
-      mIntakeLeft.setVelocity((-10 - mIntakeLeft.position(deg)) * .1, pct);
-      mIntakeRight.setVelocity((-10 - mIntakeRight.position(deg)) * .1, pct);
+      mIntakeLeft.setVelocity(-10, pct);
+      mIntakeRight.setVelocity(-10, pct);
+      if(mIntakeLeft.position(deg) < -1){
+      mIntakeLeft.setVelocity(0, pct);
+      mIntakeRight.setVelocity(0, pct);
+      mIntakeLeft.setStopping(hold);
+      mIntakeRight.setStopping(hold);
+      intakePhase = 4;
+      }
     }
+
+    if(intakePhase == 4){
+      
+    }
+
 
     // Reset motor encoders and set holding to on
     // if(intakePhase == 1){
@@ -681,7 +693,9 @@ void usercontrol(void) {
       intakePhase = 0;
       mIntakeLeft.setVelocity(-100, pct);
       mIntakeRight.setVelocity(-100, pct);
-    }
+      mIntakeLeft.setStopping(coast);
+      mIntakeRight.setStopping(coast);
+      }
 
     // If absolutly nothing is happening, stop
     if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
