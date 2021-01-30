@@ -127,7 +127,7 @@ void pre_auton(void) {
   sOpticalBack.setLightPower(100, pct);
 }
 
-// Exparimental reusable auton methods
+// Experimental reusable auton methods
 
 void scoreFirstCornerGoal(int dir){
   int leftVelocity;
