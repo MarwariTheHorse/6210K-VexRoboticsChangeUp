@@ -20,6 +20,8 @@
 // Final variables
 #define INTAKE_OPEN_TARGET 80
 #define OPTICAL_THRESHOLD 2000
+#define LEFT 1
+#define RIGHT -1
 
 using namespace vex;
 
@@ -114,10 +116,47 @@ void pre_auton(void) {
       mode = '^';
   }
   Controller1.Screen.clearScreen();
+
+  // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
   sOpticalBack.setLight(ledState::on);
   sOpticalFront.setLightPower(100, pct);
   sOpticalBack.setLightPower(100, pct);
+}
+
+// Exparimental reusable auton methods
+
+void scoreFirstCornerGoal(int dir){
+  int leftVelocity;
+  int rightVelocity;
+  if(dir == LEFT){
+    leftVelocity = 0;
+    rightVelocity = -40;
+  }else{
+    leftVelocity = 40;
+    rightVelocity = 0;
+  }
+
+  // Get to the goal
+  mWheelFrontLeft.setVelocity(leftVelocity, pct);
+  mWheelFrontRight.setVelocity(rightVelocity, pct);
+  mWheelBackLeft.setVelocity(leftVelocity, pct);
+  mWheelBackRight.setVelocity(rightVelocity, pct);
+  vexDelay(300);
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+
+  // Ensure we are in the goal
+  driveForward(100, 1000);
+
+  // Outtake the preload
+  output(100, 400);
+
+  // Make sure we are out of the goal
+  driveForward(-20, 500);
+
 }
 
 void autonomous(void) {
@@ -142,11 +181,13 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
+    // Ensure we are at the goal
     driveForward(100, 1000);
 
     // Outtake the preload
     output(100, 400); //500 > 300 timems
-    // Drive in reverse
+
+    // Drive in reverse to make sure we aren't touching anything in the goal
     driveForward(-20, 500);
   }
 
@@ -163,10 +204,12 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
+    // Ensure we are in the goal
     driveForward(100, 1000);
 
     // Outtake the preload
     output(100, 400); //500 > 300 timems
+
     // Drive in reverse
     driveForward(-20, 500);
   }
@@ -617,7 +660,7 @@ void usercontrol(void) {
 
     // Intake ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Update what stage the intakes are in
+    // If intake out pressed, begin the intake stages process
     if(Controller1.ButtonR2.pressing() && intakePhase == 0){
       intakePhase = 1;
     }
@@ -625,10 +668,12 @@ void usercontrol(void) {
     //   intakePhase = 3;
     // }
 
-    if(mIntakeLeft.torque(Nm) > .9 && mIntakeRight.torque() > .9 && intakePhase == 1){
+    // If both arms have hit, move on to stage 2
+    if(mIntakeLeft.torque(Nm) > .9 && mIntakeRight.torque() > .9 && intakePhase == 1){ // TODO: turn .9 into a const variable
       intakePhase = 2;
     }
 
+    // Set each intake velocity to 100 pct        TODO: Do these if statements have a purpose?
     if(intakePhase == 1){
       if(mIntakeLeft.torque(Nm) < .9)
         mIntakeLeft.setVelocity(100, pct);
@@ -637,6 +682,7 @@ void usercontrol(void) {
         mIntakeRight.setVelocity(100, pct);
     }
 
+    // Prepare to move the arms inward to -10 deg
     if(intakePhase == 2){
       mIntakeLeft.setStopping(hold);
       mIntakeRight.setStopping(hold);
@@ -645,6 +691,7 @@ void usercontrol(void) {
       intakePhase = 3;
     }
 
+    // Move the arms inward to -10 deg
     if(intakePhase == 3){
       mIntakeLeft.setVelocity(-10, pct);
       mIntakeRight.setVelocity(-10, pct);
@@ -657,6 +704,7 @@ void usercontrol(void) {
       }
     }
 
+    // Hold at -10 deg
     if(intakePhase == 4){
       
     }
@@ -695,7 +743,7 @@ void usercontrol(void) {
       mIntakeRight.setVelocity(-100, pct);
       mIntakeLeft.setStopping(coast);
       mIntakeRight.setStopping(coast);
-      }
+    }
 
     // If absolutly nothing is happening, stop
     if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
