@@ -276,7 +276,7 @@ void autonomous(void) {
         xSpeed = 0;
       }
 
-      
+      // Random TODO: Split robot-config.h and .cpp into manual and auto configged files
 
       mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
       mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
