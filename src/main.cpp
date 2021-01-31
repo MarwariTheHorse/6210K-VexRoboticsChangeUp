@@ -7,7 +7,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+
+// Joey Curnutt
 // Caleb Baker
+//Caleb Buening
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -124,7 +127,7 @@ void pre_auton(void) {
   sOpticalBack.setLightPower(100, pct);
 }
 
-// Exparimental reusable auton methods
+// Experimental reusable auton methods
 
 void scoreFirstCornerGoal(int dir){
   int leftVelocity;
@@ -691,7 +694,7 @@ void usercontrol(void) {
       intakePhase = 3;
     }
 
-    // Move the arms inward to -10 deg
+    // Move the arms inward -1 deg
     if(intakePhase == 3){
       mIntakeLeft.setVelocity(-10, pct);
       mIntakeRight.setVelocity(-10, pct);
@@ -704,7 +707,7 @@ void usercontrol(void) {
       }
     }
 
-    // Hold at -10 deg
+    // Hold at -1 deg
     if(intakePhase == 4){
       
     }
