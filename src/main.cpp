@@ -1,3 +1,8 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVision              vision        21              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -10,7 +15,7 @@
 
 // Joey Curnutt
 // Caleb Baker
-//Caleb Buening
+// Caleb Buening
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -60,14 +65,31 @@ void intake(int speed, int timems){
 void intakeIn(){
   mIntakeLeft.setVelocity(-100, pct);
   mIntakeRight.setVelocity(-100, pct);
+  mIntakeLeft.setStopping(coast);
+  mIntakeRight.setStopping(coast);
 }
 void intakeOff(){
   mIntakeLeft.setVelocity(0, pct);
   mIntakeRight.setVelocity(0, pct);
 }
-void intakeOut(){
-  mIntakeLeft.setVelocity(-20, pct);
-  mIntakeRight.setVelocity(-20, pct);
+void intakeOpen(){ // TODO: Make this code mirror the code in driver control somehow
+  mIntakeLeft.setVelocity(100, pct);
+  mIntakeRight.setVelocity(100, pct);
+
+  waitUntil(mIntakeLeft.torque(Nm) > .9 && mIntakeRight.torque() > .9);
+
+  mIntakeLeft.setStopping(hold);
+  mIntakeRight.setStopping(hold);
+  mIntakeLeft.setPosition(0, deg);
+  mIntakeRight.setPosition(0, deg);
+
+  mIntakeLeft.setVelocity(-10, pct);
+  mIntakeRight.setVelocity(-10, pct);
+  waitUntil(mIntakeLeft.position(deg) < -1);
+  mIntakeLeft.setVelocity(0, pct);
+  mIntakeRight.setVelocity(0, pct);
+  mIntakeLeft.setStopping(hold);
+  mIntakeRight.setStopping(hold);
 }
 void output(int speed, int timems){
   mOutputLower.setVelocity(speed, pct);
@@ -120,6 +142,25 @@ void pre_auton(void) {
   }
   Controller1.Screen.clearScreen();
 
+  // Calibrate
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Calibrate?");
+  Controller1.Screen.setCursor(2, 1);
+  Controller1.Screen.print("Press A");
+  waitUntil(Controller1.ButtonA.pressing());
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Calibrating...");
+  sInertial.calibrate();
+  waitUntil(!sInertial.isCalibrating());
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.rumble("..");
+  Controller1.Screen.print("DONE");
+  wait(500, msec);
+  Controller1.Screen.clearScreen();
+
   // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
   sOpticalBack.setLight(ledState::on);
@@ -170,6 +211,79 @@ void autonomous(void) {
   int leftX;
   int leftY;
   int rightX;
+
+  // Autonomous
+  if(mode == 'V'){
+    // Open top flap and toss ball into the goal
+    output(100, 200);
+    // Calibrate Gyro
+    sInertial.setHeading(33, deg);
+    // Open the intakes
+    intakeOpen();
+    // Run output
+    outputIn();
+    // Drive forward to align with goal. Stop running output after 800 msec
+    double startTime = Brain.timer(msec);
+    mWheelFrontLeft.setVelocity(100, pct);
+    mWheelFrontRight.setVelocity(-100, pct);
+    mWheelBackLeft.setVelocity(100, pct);
+    mWheelBackRight.setVelocity(-100, pct);
+    while(Brain.timer(msec) - startTime < 1500){
+      if(Brain.timer(msec) - startTime > 800){
+        outputOff();
+      }
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Rotate towards the goal, slowing down as we get closer
+    while(sInertial.heading() < 87){
+      mWheelFrontLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+      mWheelFrontRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+      mWheelBackLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+      mWheelBackRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Beginning camera drive");
+
+    // Drive towards the largest blue object we can see
+    startTime = Brain.timer(msec);
+    while(Brain.timer(msec) - startTime < 2000){ // TODO: Add a minimum area for the object to be counted
+      int ySpeed;
+      int xSpeed;
+      ySpeed = 50;
+
+      sVision.takeSnapshot(sVision__SIG_BLUE);
+
+      if(sVision.objectCount > 0){
+        int area = sVision.objects[0].height * sVision.objects[0].width;
+        int index = 0;
+        for(int i = 1; i < sVision.objectCount; i++){
+          if(sVision.objects[i].height * sVision.objects[i].width > area){
+            index = i;
+          }
+        }
+        xSpeed = (sVision.objects[index].centerY - 158) / 2;
+      }else{
+        xSpeed = 0;
+      }
+
+      
+
+      mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
+      mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
+      mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
+      mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+    }
+  }
 
   // Right 1
   if(mode == 'Y'){
@@ -280,7 +394,7 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
-    intakeOut();
+    intakeOpen();
     vexDelay(500);
 
     // Thrust into the goal
@@ -370,7 +484,7 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
-    intakeOut();
+    intakeOpen();
     vexDelay(500);
 
     // Thrust into the goal
@@ -499,7 +613,7 @@ void autonomous(void) {
 
     output(100, 1000);
 
-    intakeOut();
+    intakeOpen();
 
     driveForward(-100, 500);
 
@@ -609,7 +723,7 @@ void autonomous(void) {
 
     output(100, 1000);
 
-    intakeOut();
+    intakeOpen();
 
     driveForward(-100, 500);
 
@@ -781,6 +895,8 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
+
+  Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
