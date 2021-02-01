@@ -4,9 +4,9 @@ Vex Robotics team 6210K's code repository for the 2020-2021 season. This project
 and autonomous code, all in one.
 
 Team members include:
-*Caleb Buening*
-*Joey Curnutt*
-*Caleb Baker*
+*Caleb Buening,*
+*Joey Curnutt,*
+*Caleb Baker,*
 
 ### Project Breakdown:
 - Autonomous
