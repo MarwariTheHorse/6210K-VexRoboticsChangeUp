@@ -17,10 +17,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
-// Joey Curnutt
 // Caleb Baker
 // Caleb Buening
+// Joey Curnutt
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -787,13 +786,13 @@ void usercontrol(void) {
       intakePhase = 2;
     }
 
-    // Set each intake velocity to 100 pct        TODO: Do these if statements have a purpose?
+    // Set each intake velocity to 100 pct
     if(intakePhase == 1){
       mIntakeLeft.setVelocity(100, pct);
       mIntakeRight.setVelocity(100, pct);
     }
 
-    // Prepare to move the arms inward to -10 deg
+    // Prepare to move the arms inward to -1 deg
     if(intakePhase == 2){
       mIntakeLeft.setStopping(hold);
       mIntakeRight.setStopping(hold);
