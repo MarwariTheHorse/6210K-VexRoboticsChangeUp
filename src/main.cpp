@@ -3,6 +3,11 @@
 // [Name]               [Type]        [Port(s)]
 // sVision              vision        21              
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVision              vision        21              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -792,11 +797,8 @@ void usercontrol(void) {
 
     // Set each intake velocity to 100 pct        TODO: Do these if statements have a purpose?
     if(intakePhase == 1){
-      if(mIntakeLeft.torque(Nm) < .9)
-        mIntakeLeft.setVelocity(100, pct);
-      
-      if(mIntakeRight.torque(Nm) < .9)
-        mIntakeRight.setVelocity(100, pct);
+      mIntakeLeft.setVelocity(100, pct);
+      mIntakeRight.setVelocity(100, pct);
     }
 
     // Prepare to move the arms inward to -10 deg
@@ -810,14 +812,14 @@ void usercontrol(void) {
 
     // Move the arms inward -1 deg
     if(intakePhase == 3){
-      mIntakeLeft.setVelocity(-10, pct);
-      mIntakeRight.setVelocity(-10, pct);
-      if(mIntakeLeft.position(deg) < -1){
-      mIntakeLeft.setVelocity(0, pct);
-      mIntakeRight.setVelocity(0, pct);
-      mIntakeLeft.setStopping(hold);
-      mIntakeRight.setStopping(hold);
-      intakePhase = 4;
+        mIntakeLeft.setVelocity(-10, pct);
+        mIntakeRight.setVelocity(-10, pct);
+        if(mIntakeLeft.position(deg) < -1){
+        mIntakeLeft.setVelocity(0, pct);
+        mIntakeRight.setVelocity(0, pct);
+        mIntakeLeft.setStopping(hold);
+        mIntakeRight.setStopping(hold);
+        intakePhase = 4;
       }
     }
 

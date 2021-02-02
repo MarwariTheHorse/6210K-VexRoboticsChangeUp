@@ -13,20 +13,6 @@ extern signature sVision__SIG_5;
 extern signature sVision__SIG_6;
 extern signature sVision__SIG_7;
 extern vision sVision;
-extern motor mWheelFrontLeft;
-extern motor mWheelFrontRight;
-extern motor mWheelBackLeft;
-extern motor mWheelBackRight;
-extern motor mIntakeLeft;
-extern motor mIntakeRight;
-extern motor mOutputLower;
-extern controller Controller1;
-extern motor mOutputUpper;
-extern optical sOpticalFront;
-extern optical sOpticalBack;
-extern inertial sInertial;
-extern distance sDistanceLeft;
-extern distance sDistanceRight;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
