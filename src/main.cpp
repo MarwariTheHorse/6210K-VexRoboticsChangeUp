@@ -17,10 +17,9 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-
-// Joey Curnutt
 // Caleb Baker
 // Caleb Buening
+// Joey Curnutt
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
