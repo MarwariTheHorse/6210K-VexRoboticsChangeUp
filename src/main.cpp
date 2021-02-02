@@ -800,7 +800,7 @@ void usercontrol(void) {
       mIntakeRight.setVelocity(100, pct);
     }
 
-    // Prepare to move the arms inward to -10 deg
+    // Prepare to move the arms inward to -1 deg
     if(intakePhase == 2){
       mIntakeLeft.setStopping(hold);
       mIntakeRight.setStopping(hold);
