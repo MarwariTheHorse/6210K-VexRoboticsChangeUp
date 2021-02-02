@@ -18,6 +18,12 @@
 #include "robot-config.h"
 #include "manual-config.h"
 
+#define INTAKE_OPEN_TARGET 80
+#define OPTICAL_THRESHOLD 2000
+#define TORQUE_THRESHOLD 0.9
+#define LEFT 1
+#define RIGHT -1
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \
