@@ -33,6 +33,7 @@
 // Final variables
 #define INTAKE_OPEN_TARGET 80
 #define OPTICAL_THRESHOLD 2000
+#define TORQUE_THRESHOLD 0.9
 #define LEFT 1
 #define RIGHT -1
 
@@ -81,7 +82,7 @@ void intakeOpen(){ // TODO: Make this code mirror the code in driver control som
   mIntakeLeft.setVelocity(100, pct);
   mIntakeRight.setVelocity(100, pct);
 
-  waitUntil(mIntakeLeft.torque(Nm) > .9 && mIntakeRight.torque() > .9);
+  waitUntil(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD);
 
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
@@ -261,7 +262,7 @@ void autonomous(void) {
 
     // Drive towards the largest blue object we can see
     startTime = Brain.timer(msec);
-    while(Brain.timer(msec) - startTime < 2000){ // TODO: Add a minimum area for the object to be counted
+    while(Brain.timer(msec) - startTime < 2000){
       int ySpeed;
       int xSpeed;
       ySpeed = 50;
@@ -269,19 +270,10 @@ void autonomous(void) {
       sVision.takeSnapshot(sVision__SIG_BLUE);
 
       if(sVision.objectCount > 0){
-        int area = sVision.objects[0].height * sVision.objects[0].width;
-        int index = 0;
-        for(int i = 1; i < sVision.objectCount; i++){
-          if(sVision.objects[i].height * sVision.objects[i].width > area){
-            index = i;
-          }
-        }
-        xSpeed = (sVision.objects[index].centerY - 158) / 2;
+        xSpeed = (sVision.largestObject.centerX - 158) / 2;
       }else{
         xSpeed = 0;
       }
-
-      // Random TODO: Split robot-config.h and .cpp into manual and auto configged files
 
       mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
       mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
@@ -791,7 +783,7 @@ void usercontrol(void) {
     // }
 
     // If both arms have hit, move on to stage 2
-    if(mIntakeLeft.torque(Nm) > .9 && mIntakeRight.torque() > .9 && intakePhase == 1){ // TODO: turn .9 into a const variable
+    if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
       intakePhase = 2;
     }
 
