@@ -795,7 +795,7 @@ void usercontrol(void) {
       intakePhase = 2;
     }
 
-    // Set each intake velocity to 100 pct        TODO: Do these if statements have a purpose?
+    // Set each intake velocity to 100 pct
     if(intakePhase == 1){
       mIntakeLeft.setVelocity(100, pct);
       mIntakeRight.setVelocity(100, pct);
