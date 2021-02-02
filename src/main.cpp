@@ -29,7 +29,7 @@
 
 #include "vex.h"
 
-#include "helpfulmethods.h"
+#include "miscmethods.h"
 
 using namespace vex;
 
