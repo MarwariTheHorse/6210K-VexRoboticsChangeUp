@@ -81,11 +81,13 @@ void pre_auton(void) {
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("Press A");
   waitUntil(Controller1.ButtonA.pressing());
+
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrating...");
   sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
+
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.rumble("..");
