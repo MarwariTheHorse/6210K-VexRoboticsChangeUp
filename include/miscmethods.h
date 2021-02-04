@@ -1,5 +1,18 @@
 #include "vex.h"
 
+#include <cstdio>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+#include <sstream>
+
+using namespace vex;
+using namespace std;
+
+ofstream ofs;
+stringstream ss;
+
 // Functions
 /** Drives fwd a certain speed and then stops
  *  @speed The Speed of the robot
@@ -66,4 +79,32 @@ void outputIn(){
 void outputOff(){
   mOutputLower.setVelocity(0, pct);
   mOutputUpper.setVelocity(0, pct);
+}
+
+void sdLog(string label, string message){
+  if(Brain.SDcard.isInserted() ) {
+    // Variables to store our date info
+    string y;
+    string m;
+    string d;
+
+    // Put int year into the converter
+    ss<<Date.da_year;
+    // Get the string year out of the converter
+    ss>>y;
+
+    ss<<Date.da_mon;
+    ss>>m;
+    ss<<Date.da_day;
+    ss>>d;
+
+    // create a file with long filename
+    // Types of labels: 
+    // [PROGRAM-START] [15-SEC-AUTON-START] [AUTON-START] [DRIVER-START] //TODO: change these to START-_____
+    // [INFO] [WARNING] [ERROR] [FATAL]
+    // [OVERHEAT] 
+    ofs.open("LOG:"+y+"."+m+"."+d, std::ofstream::out);
+    ofs << "[" << label << "](" << Time.ti_hour << ":" << Time.ti_min << ":" << Time.ti_sec << "." << Time.ti_hund << ") " << message << "\r\n"; // ie [WARNING](11:25:34.45) Motor ___ has reached overheat temperature
+    ofs.close();
+  }
 }

@@ -4,7 +4,10 @@ using namespace vex;
 using signature = vision::signature;
 using code = vision::code;
 
-motor mWheelFrontLeft = motor(PORT1, ratio18_1, false);
+struct date Date;
+struct time Time;
+
+struct motor mWheelFrontLeft = motor(PORT1, ratio18_1, false); // this motor is a struct for testing purposes
 motor mWheelFrontRight = motor(PORT2, ratio18_1, false);
 motor mWheelBackLeft = motor(PORT3, ratio18_1, false);
 motor mWheelBackRight = motor(PORT4, ratio18_1, false);
