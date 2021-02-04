@@ -49,7 +49,7 @@ void pre_auton(void) {
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("<L1 ^L2 >L3");
   Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("YR1 XR2 AR3");
+  Controller1.Screen.print("Y-R1 X-R2 A-R3");
 
   // Get input
   while(mode == 'N'){
