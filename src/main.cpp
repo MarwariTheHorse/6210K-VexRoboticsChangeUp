@@ -45,9 +45,9 @@ void pre_auton(void) {
   // Print options
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("V:auton B:none");
+  Controller1.Screen.print("V-auton B-none");
   Controller1.Screen.setCursor(2, 1);
-  Controller1.Screen.print("<L1 ^L2 >L3");
+  Controller1.Screen.print("<-L1 ^-L2 >-L3");
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("Y-R1 X-R2 A-R3");
 
