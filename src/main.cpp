@@ -90,9 +90,9 @@ void pre_auton(void) {
   waitUntil(Controller1.ButtonA.pressing());
 
   Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrating...");
-  sInertial.calibrate();
+    Controller1.Screen.setCursor(1, 1);
+sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
 
   Controller1.Screen.clearScreen();
@@ -675,8 +675,8 @@ void autonomous(void) {
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
-    // Outtake the preload
-    output(100, 400); //500 > 300 timems
+    // Score the preload
+    output(100, 500); //500 > 300 timems
     // Drive in reverse
     driveForward(-20, 200);
     // Turn 45 deg ccw
