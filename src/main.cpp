@@ -39,6 +39,8 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 
+bool disableIntakes = false;
+
 void pre_auton(void) { 
   vexcodeInit();
 
@@ -50,6 +52,8 @@ void pre_auton(void) {
   Controller1.Screen.print("<-L1 ^-L2 >-L3");
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("Y-R1 X-R2 A-R3");
+
+  disableIntakes = true;
 
   // Get input
   while(mode == 'N'){
@@ -71,6 +75,9 @@ void pre_auton(void) {
       mode = '>';
     if(Controller1.ButtonUp.pressing())
       mode = '^';
+    if(Controller1.ButtonR1.pressing()){
+      mode = 'S';
+    }
   }
   Controller1.Screen.clearScreen();
 
@@ -94,6 +101,8 @@ void pre_auton(void) {
   Controller1.Screen.print("DONE");
   wait(500, msec);
   Controller1.Screen.clearScreen();
+
+  disableIntakes = false;
 
   // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
@@ -654,6 +663,117 @@ void autonomous(void) {
 
     intakeOff();
   }
+
+  if(mode == 'S'){
+    // Get to the goal
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(-40, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(-40, pct);
+    vexDelay(300);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+    // Outtake the preload
+    output(100, 400); //500 > 300 timems
+    // Drive in reverse
+    driveForward(-20, 200);
+    // Turn 45 deg ccw
+    sInertial.resetRotation();
+    while(sInertial.rotation(deg) > -45){
+      mWheelBackLeft.setVelocity(-40, pct);
+      mWheelFrontLeft.setVelocity(-40, pct);
+    }
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+
+    intakeIn();
+    
+    // Line track until we reach the perpendicular line
+    while(sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD){
+      // Calculate new moving average for the front optical
+      // Assign movement variables
+      leftX = -25;
+      leftY;
+      rightX = 0;
+      if(sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
+        leftY = 30;
+      else
+        leftY = -10;
+      // Assign wheel speeds
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    intakeOff();
+
+    // Drive to the left a bit
+    leftX = -25;
+    leftY = 0;
+    rightX = 0;
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    vexDelay(200); //500 > 300
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Thrust into the goal
+    driveForward(100, 1000);
+
+    // Turn intake off
+
+    // Spit out the ball we have
+    output(100, 600); //500 > 300 timems
+
+    // Reverse into the center goal
+    mWheelFrontLeft.setVelocity(-75, pct);
+    mWheelFrontRight.setVelocity(75, pct);
+    mWheelBackLeft.setVelocity(-75, pct);
+    mWheelBackRight.setVelocity(75, pct);
+
+    vexDelay(2000);
+
+    mWheelFrontLeft.setVelocity(75, pct);
+    mWheelFrontRight.setVelocity(-75, pct);
+    mWheelBackLeft.setVelocity(75, pct);
+    mWheelBackRight.setVelocity(-75, pct);
+
+    vexDelay(500);
+
+    // Gun it towards the wall
+    mWheelFrontLeft.setVelocity(-100, pct);
+    mWheelFrontRight.setVelocity(-100, pct);
+    mWheelBackLeft.setVelocity(100, pct);
+    mWheelBackRight.setVelocity(100, pct);
+
+    vexDelay(2000);
+
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    driveForward(100, 1000);
+
+    output(100, 1000);
+
+    intakeOpen();
+
+    driveForward(-100, 500);
+
+    intakeOff();
+  }
 }
 
 void usercontrol(void) {
@@ -701,93 +821,94 @@ void usercontrol(void) {
     mWheelBackRight.setVelocity((rightX * 1.5) - leftY - leftX, pct);
 
     // Intake ////////////////////////////////////////////////////////////////////////////////////////////////////
+    if(!disableIntakes){
+      // If intake out pressed, begin the intake stages process
+      if(Controller1.ButtonR2.pressing() && intakePhase == 0){
+        intakePhase = 1;
+      }
+      // if(intakePhase == 2 && mIntakeLeft.position(deg) > INTAKE_OPEN_TARGET && mIntakeRight.position(deg) > INTAKE_OPEN_TARGET){
+      //   intakePhase = 3;
+      // }
 
-    // If intake out pressed, begin the intake stages process
-    if(Controller1.ButtonR2.pressing() && intakePhase == 0){
-      intakePhase = 1;
-    }
-    // if(intakePhase == 2 && mIntakeLeft.position(deg) > INTAKE_OPEN_TARGET && mIntakeRight.position(deg) > INTAKE_OPEN_TARGET){
-    //   intakePhase = 3;
-    // }
+      // If both arms have hit, move on to stage 2
+      if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
+        intakePhase = 2;
+      }
 
-    // If both arms have hit, move on to stage 2
-    if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
-      intakePhase = 2;
-    }
+      // Set each intake velocity to 100 pct
+      if(intakePhase == 1){
+        mIntakeLeft.setVelocity(100, pct);
+        mIntakeRight.setVelocity(100, pct);
+      }
 
-    // Set each intake velocity to 100 pct
-    if(intakePhase == 1){
-      mIntakeLeft.setVelocity(100, pct);
-      mIntakeRight.setVelocity(100, pct);
-    }
-
-    // Prepare to move the arms inward to -1 deg
-    if(intakePhase == 2){
-      mIntakeLeft.setStopping(hold);
-      mIntakeRight.setStopping(hold);
-      mIntakeLeft.setPosition(0, deg);
-      mIntakeRight.setPosition(0, deg);
-      intakePhase = 3;
-    }
-
-    // Move the arms inward -1 deg
-    if(intakePhase == 3){
-        mIntakeLeft.setVelocity(-10, pct);
-        mIntakeRight.setVelocity(-10, pct);
-        if(mIntakeLeft.position(deg) < -1){
-        mIntakeLeft.setVelocity(0, pct);
-        mIntakeRight.setVelocity(0, pct);
+      // Prepare to move the arms inward to -1 deg
+      if(intakePhase == 2){
         mIntakeLeft.setStopping(hold);
         mIntakeRight.setStopping(hold);
-        intakePhase = 4;
+        mIntakeLeft.setPosition(0, deg);
+        mIntakeRight.setPosition(0, deg);
+        intakePhase = 3;
       }
-    }
 
-    // Hold at -1 deg
-    if(intakePhase == 4){
-      
-    }
+      // Move the arms inward -1 deg
+      if(intakePhase == 3){
+          mIntakeLeft.setVelocity(-10, pct);
+          mIntakeRight.setVelocity(-10, pct);
+          if(mIntakeLeft.position(deg) < -1){
+          mIntakeLeft.setVelocity(0, pct);
+          mIntakeRight.setVelocity(0, pct);
+          mIntakeLeft.setStopping(hold);
+          mIntakeRight.setStopping(hold);
+          intakePhase = 4;
+        }
+      }
 
-
-    // Reset motor encoders and set holding to on
-    // if(intakePhase == 1){
-    //   mIntakeLeft.setPosition(0, deg);
-    //   mIntakeRight.setPosition(0, deg);
-    //   mIntakeLeft.setStopping(hold);
-    //   mIntakeRight.setStopping(hold);
-    //   intakePhase = 2;
-    // }
-    // // Spin to 60 deg and stop
-    // if(intakePhase == 2){
-    //   if(mIntakeRight.position(deg) < INTAKE_OPEN_TARGET)
-    //     mIntakeRight.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
-    //   else
-    //     mIntakeRight.setVelocity(0, pct);
-    //   if(mIntakeLeft.position(deg) < INTAKE_OPEN_TARGET)
-    //     mIntakeLeft.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
-    //   else
-    //     mIntakeLeft.setVelocity(0, pct);
-    // }
-    // // The stay put phase
-    // if(intakePhase == 3){
-    //   mIntakeRight.setVelocity(0, pct);
-    //   mIntakeLeft.setVelocity(0, pct);
-    // }
+      // Hold at -1 deg
+      if(intakePhase == 4){
+        
+      }
 
 
-    // If we are pressing the inward button, set the intakes to coast, reset the intakePhase, and spin inwards
-    if(Controller1.ButtonR1.pressing()){
-      intakePhase = 0;
-      mIntakeLeft.setVelocity(-100, pct);
-      mIntakeRight.setVelocity(-100, pct);
-      mIntakeLeft.setStopping(coast);
-      mIntakeRight.setStopping(coast);
-    }
+      // Reset motor encoders and set holding to on
+      // if(intakePhase == 1){
+      //   mIntakeLeft.setPosition(0, deg);
+      //   mIntakeRight.setPosition(0, deg);
+      //   mIntakeLeft.setStopping(hold);
+      //   mIntakeRight.setStopping(hold);
+      //   intakePhase = 2;
+      // }
+      // // Spin to 60 deg and stop
+      // if(intakePhase == 2){
+      //   if(mIntakeRight.position(deg) < INTAKE_OPEN_TARGET)
+      //     mIntakeRight.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
+      //   else
+      //     mIntakeRight.setVelocity(0, pct);
+      //   if(mIntakeLeft.position(deg) < INTAKE_OPEN_TARGET)
+      //     mIntakeLeft.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
+      //   else
+      //     mIntakeLeft.setVelocity(0, pct);
+      // }
+      // // The stay put phase
+      // if(intakePhase == 3){
+      //   mIntakeRight.setVelocity(0, pct);
+      //   mIntakeLeft.setVelocity(0, pct);
+      // }
 
-    // If absolutly nothing is happening, stop
-    if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
-      mIntakeLeft.setVelocity(0, pct);
-      mIntakeRight.setVelocity(0, pct);
+
+      // If we are pressing the inward button, set the intakes to coast, reset the intakePhase, and spin inwards
+      if(Controller1.ButtonR1.pressing()){
+        intakePhase = 0;
+        mIntakeLeft.setVelocity(-100, pct);
+        mIntakeRight.setVelocity(-100, pct);
+        mIntakeLeft.setStopping(coast);
+        mIntakeRight.setStopping(coast);
+      }
+
+      // If absolutly nothing is happening, stop
+      if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
+        mIntakeLeft.setVelocity(0, pct);
+        mIntakeRight.setVelocity(0, pct);
+      }
     }
 
     // Output ///////////////////////////////////////////////////////////////////////////////////////////////////////////
