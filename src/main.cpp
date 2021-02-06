@@ -39,8 +39,6 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 
-bool disableIntakes = false;
-
 void pre_auton(void) { 
   vexcodeInit();
 
@@ -52,8 +50,6 @@ void pre_auton(void) {
   Controller1.Screen.print("<-L1 ^-L2 >-L3");
   Controller1.Screen.setCursor(3, 1);
   Controller1.Screen.print("Y-R1 X-R2 A-R3");
-
-  disableIntakes = true;
 
   // Get input
   while(mode == 'N'){
@@ -75,9 +71,6 @@ void pre_auton(void) {
       mode = '>';
     if(Controller1.ButtonUp.pressing())
       mode = '^';
-    if(Controller1.ButtonR1.pressing()){
-      mode = 'S';
-    }
   }
   Controller1.Screen.clearScreen();
 
@@ -101,8 +94,6 @@ void pre_auton(void) {
   Controller1.Screen.print("DONE");
   wait(500, msec);
   Controller1.Screen.clearScreen();
-
-  disableIntakes = false;
 
   // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
@@ -663,6 +654,7 @@ void autonomous(void) {
 
     intakeOff();
   }
+<<<<<<< HEAD
 
   // Online tournament 15 seconds
   if(mode == 'S'){
@@ -786,6 +778,8 @@ void autonomous(void) {
 
     intakeOff();
   }
+=======
+>>>>>>> parent of 2eaf9d1... No time for description - 2/5/21
 }
 
 void usercontrol(void) {
@@ -833,94 +827,93 @@ void usercontrol(void) {
     mWheelBackRight.setVelocity((rightX * 1.5) - leftY - leftX, pct);
 
     // Intake ////////////////////////////////////////////////////////////////////////////////////////////////////
-    if(!disableIntakes){
-      // If intake out pressed, begin the intake stages process
-      if(Controller1.ButtonR2.pressing() && intakePhase == 0){
-        intakePhase = 1;
-      }
-      // if(intakePhase == 2 && mIntakeLeft.position(deg) > INTAKE_OPEN_TARGET && mIntakeRight.position(deg) > INTAKE_OPEN_TARGET){
-      //   intakePhase = 3;
-      // }
 
-      // If both arms have hit, move on to stage 2
-      if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
-        intakePhase = 2;
-      }
+    // If intake out pressed, begin the intake stages process
+    if(Controller1.ButtonR2.pressing() && intakePhase == 0){
+      intakePhase = 1;
+    }
+    // if(intakePhase == 2 && mIntakeLeft.position(deg) > INTAKE_OPEN_TARGET && mIntakeRight.position(deg) > INTAKE_OPEN_TARGET){
+    //   intakePhase = 3;
+    // }
 
-      // Set each intake velocity to 100 pct
-      if(intakePhase == 1){
-        mIntakeLeft.setVelocity(100, pct);
-        mIntakeRight.setVelocity(100, pct);
-      }
+    // If both arms have hit, move on to stage 2
+    if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
+      intakePhase = 2;
+    }
 
-      // Prepare to move the arms inward to -1 deg
-      if(intakePhase == 2){
-        mIntakeLeft.setStopping(hold);
-        mIntakeRight.setStopping(hold);
-        mIntakeLeft.setPosition(0, deg);
-        mIntakeRight.setPosition(0, deg);
-        intakePhase = 3;
-      }
+    // Set each intake velocity to 100 pct
+    if(intakePhase == 1){
+      mIntakeLeft.setVelocity(100, pct);
+      mIntakeRight.setVelocity(100, pct);
+    }
 
-      // Move the arms inward -1 deg
-      if(intakePhase == 3){
-          mIntakeLeft.setVelocity(-10, pct);
-          mIntakeRight.setVelocity(-10, pct);
-          if(mIntakeLeft.position(deg) < -1){
-          mIntakeLeft.setVelocity(0, pct);
-          mIntakeRight.setVelocity(0, pct);
-          mIntakeLeft.setStopping(hold);
-          mIntakeRight.setStopping(hold);
-          intakePhase = 4;
-        }
-      }
+    // Prepare to move the arms inward to -1 deg
+    if(intakePhase == 2){
+      mIntakeLeft.setStopping(hold);
+      mIntakeRight.setStopping(hold);
+      mIntakeLeft.setPosition(0, deg);
+      mIntakeRight.setPosition(0, deg);
+      intakePhase = 3;
+    }
 
-      // Hold at -1 deg
-      if(intakePhase == 4){
-        
-      }
-
-
-      // Reset motor encoders and set holding to on
-      // if(intakePhase == 1){
-      //   mIntakeLeft.setPosition(0, deg);
-      //   mIntakeRight.setPosition(0, deg);
-      //   mIntakeLeft.setStopping(hold);
-      //   mIntakeRight.setStopping(hold);
-      //   intakePhase = 2;
-      // }
-      // // Spin to 60 deg and stop
-      // if(intakePhase == 2){
-      //   if(mIntakeRight.position(deg) < INTAKE_OPEN_TARGET)
-      //     mIntakeRight.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
-      //   else
-      //     mIntakeRight.setVelocity(0, pct);
-      //   if(mIntakeLeft.position(deg) < INTAKE_OPEN_TARGET)
-      //     mIntakeLeft.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
-      //   else
-      //     mIntakeLeft.setVelocity(0, pct);
-      // }
-      // // The stay put phase
-      // if(intakePhase == 3){
-      //   mIntakeRight.setVelocity(0, pct);
-      //   mIntakeLeft.setVelocity(0, pct);
-      // }
-
-
-      // If we are pressing the inward button, set the intakes to coast, reset the intakePhase, and spin inwards
-      if(Controller1.ButtonR1.pressing()){
-        intakePhase = 0;
-        mIntakeLeft.setVelocity(-100, pct);
-        mIntakeRight.setVelocity(-100, pct);
-        mIntakeLeft.setStopping(coast);
-        mIntakeRight.setStopping(coast);
-      }
-
-      // If absolutly nothing is happening, stop
-      if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
+    // Move the arms inward -1 deg
+    if(intakePhase == 3){
+        mIntakeLeft.setVelocity(-10, pct);
+        mIntakeRight.setVelocity(-10, pct);
+        if(mIntakeLeft.position(deg) < -1){
         mIntakeLeft.setVelocity(0, pct);
         mIntakeRight.setVelocity(0, pct);
+        mIntakeLeft.setStopping(hold);
+        mIntakeRight.setStopping(hold);
+        intakePhase = 4;
       }
+    }
+
+    // Hold at -1 deg
+    if(intakePhase == 4){
+      
+    }
+
+
+    // Reset motor encoders and set holding to on
+    // if(intakePhase == 1){
+    //   mIntakeLeft.setPosition(0, deg);
+    //   mIntakeRight.setPosition(0, deg);
+    //   mIntakeLeft.setStopping(hold);
+    //   mIntakeRight.setStopping(hold);
+    //   intakePhase = 2;
+    // }
+    // // Spin to 60 deg and stop
+    // if(intakePhase == 2){
+    //   if(mIntakeRight.position(deg) < INTAKE_OPEN_TARGET)
+    //     mIntakeRight.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
+    //   else
+    //     mIntakeRight.setVelocity(0, pct);
+    //   if(mIntakeLeft.position(deg) < INTAKE_OPEN_TARGET)
+    //     mIntakeLeft.setVelocity((INTAKE_OPEN_TARGET - mIntakeLeft.position(deg)) * 4, pct);
+    //   else
+    //     mIntakeLeft.setVelocity(0, pct);
+    // }
+    // // The stay put phase
+    // if(intakePhase == 3){
+    //   mIntakeRight.setVelocity(0, pct);
+    //   mIntakeLeft.setVelocity(0, pct);
+    // }
+
+
+    // If we are pressing the inward button, set the intakes to coast, reset the intakePhase, and spin inwards
+    if(Controller1.ButtonR1.pressing()){
+      intakePhase = 0;
+      mIntakeLeft.setVelocity(-100, pct);
+      mIntakeRight.setVelocity(-100, pct);
+      mIntakeLeft.setStopping(coast);
+      mIntakeRight.setStopping(coast);
+    }
+
+    // If absolutly nothing is happening, stop
+    if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing() && intakePhase == 0){
+      mIntakeLeft.setVelocity(0, pct);
+      mIntakeRight.setVelocity(0, pct);
     }
 
     // Output ///////////////////////////////////////////////////////////////////////////////////////////////////////////
