@@ -90,9 +90,9 @@ void pre_auton(void) {
   waitUntil(Controller1.ButtonA.pressing());
 
   Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrating...");
-    Controller1.Screen.setCursor(1, 1);
-sInertial.calibrate();
+  sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
 
   Controller1.Screen.clearScreen();
@@ -664,6 +664,7 @@ void autonomous(void) {
     intakeOff();
   }
 
+  // Online tournament 15 seconds
   if(mode == 'S'){
     // Get to the goal
     sInertial.setHeading(-107, deg);
@@ -732,8 +733,6 @@ void autonomous(void) {
     // Thrust into the goal
     driveForward(100, 1000);
 
-    // Turn intake off
-
     // Spit out the ball we have
     output(100, 600); //500 > 300 timems
 
@@ -744,12 +743,16 @@ void autonomous(void) {
     mWheelBackRight.setVelocity(75, pct);
     vexDelay(2000);
     //sInertial
-    mWheelFrontLeft.setVelocity(75, pct);
-    mWheelFrontRight.setVelocity(-75, pct);
-    mWheelBackLeft.setVelocity(75, pct);
-    mWheelBackRight.setVelocity(-75, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
 
-    vexDelay(500);
+    // Turn towards
+    mWheelFrontRight.setVelocity(-50, pct);
+    mWheelBackRight.setVelocity(-50, pct);
+    waitUntil(sInertial.heading() > -225);
+
 
     // Gun it towards the wall
     mWheelFrontLeft.setVelocity(-100, pct);
@@ -757,14 +760,14 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(100, pct);
     mWheelBackRight.setVelocity(100, pct);
 
+    intakeOpen();
+
     vexDelay(2000);
 
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
-
-    driveForward(100, 1000);
 
     output(100, 1000);
 
