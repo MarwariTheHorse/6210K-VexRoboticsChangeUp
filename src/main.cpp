@@ -667,12 +667,12 @@ void autonomous(void) {
   // Online tournament 15 seconds
   if(mode == 'S'){
     // Get to the goal
-    sInertial.setHeading(-107, deg);
+    sInertial.setRotation(-107, deg);
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(-40, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(-40, pct);
-    vexDelay(300);
+    vexDelay(500);
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
@@ -682,13 +682,14 @@ void autonomous(void) {
     // Drive in reverse
     driveForward(-20, 200);
     // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while(sInertial.rotation(deg) > -45){
-      mWheelBackLeft.setVelocity(-40, pct);
-      mWheelFrontLeft.setVelocity(-40, pct);
+    while(sInertial.rotation(deg) > -175){
+      mWheelFrontLeft.setVelocity(-20, pct);
+      mWheelBackLeft.setVelocity(-20, pct);
     }
-    mWheelBackLeft.setVelocity(0, pct);
     mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
 
     intakeIn();
     
@@ -714,7 +715,7 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
-    intakeOff();
+    intakeOpen();
 
     // Drive to the left a bit
     leftX = -25;
@@ -737,21 +738,29 @@ void autonomous(void) {
     output(100, 600); //500 > 300 timems
 
     // Reverse into the center goal
-    mWheelFrontLeft.setVelocity(-75, pct);
-    mWheelFrontRight.setVelocity(75, pct);
-    mWheelBackLeft.setVelocity(-75, pct);
-    mWheelBackRight.setVelocity(75, pct);
-    vexDelay(2000);
-    //sInertial
+
+    double startTime = Brain.timer(msec);
+    while(Brain.timer(msec) - startTime < 2000){
+      int ySpeed;
+      int rotSpeed;
+      ySpeed = -75;
+      rotSpeed = -(sInertial.rotation() + 180) * 2;
+      mWheelFrontLeft.setVelocity(rotSpeed + ySpeed, pct);
+      mWheelFrontRight.setVelocity(rotSpeed - ySpeed, pct);
+      mWheelBackLeft.setVelocity(rotSpeed + ySpeed, pct);
+      mWheelBackRight.setVelocity(rotSpeed - ySpeed, pct);
+    }
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
+    intakeOff();
+
     // Turn towards
     mWheelFrontRight.setVelocity(-50, pct);
     mWheelBackRight.setVelocity(-50, pct);
-    waitUntil(sInertial.heading() > -225);
+    waitUntil(sInertial.rotation() > -225);
 
 
     // Gun it towards the wall
