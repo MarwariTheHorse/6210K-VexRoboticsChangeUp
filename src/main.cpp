@@ -47,7 +47,7 @@ void pre_auton(void) {
   // Print options
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("V-auton B-none");
+  Controller1.Screen.print("V-auton B-none R1 for 15sec");
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("<-L1 ^-L2 >-L3");
   Controller1.Screen.setCursor(3, 1);
@@ -666,6 +666,7 @@ void autonomous(void) {
 
   if(mode == 'S'){
     // Get to the goal
+    sInertial.setHeading(-107, deg);
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(-40, pct);
     mWheelBackLeft.setVelocity(0, pct);
@@ -741,9 +742,8 @@ void autonomous(void) {
     mWheelFrontRight.setVelocity(75, pct);
     mWheelBackLeft.setVelocity(-75, pct);
     mWheelBackRight.setVelocity(75, pct);
-
     vexDelay(2000);
-
+    //sInertial
     mWheelFrontLeft.setVelocity(75, pct);
     mWheelFrontRight.setVelocity(-75, pct);
     mWheelBackLeft.setVelocity(75, pct);
