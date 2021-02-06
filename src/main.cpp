@@ -655,6 +655,7 @@ void autonomous(void) {
     intakeOff();
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
   // Online tournament 15 seconds
   if(mode == 'S'){
@@ -780,6 +781,8 @@ void autonomous(void) {
   }
 =======
 >>>>>>> parent of 2eaf9d1... No time for description - 2/5/21
+=======
+>>>>>>> parent of 2eaf9d1... No time for description - 2/5/21
 }
 
 void usercontrol(void) {
@@ -840,6 +843,7 @@ void usercontrol(void) {
     if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
       intakePhase = 2;
     }
+<<<<<<< HEAD
 
     // Set each intake velocity to 100 pct
     if(intakePhase == 1){
@@ -856,6 +860,24 @@ void usercontrol(void) {
       intakePhase = 3;
     }
 
+=======
+
+    // Set each intake velocity to 100 pct
+    if(intakePhase == 1){
+      mIntakeLeft.setVelocity(100, pct);
+      mIntakeRight.setVelocity(100, pct);
+    }
+
+    // Prepare to move the arms inward to -1 deg
+    if(intakePhase == 2){
+      mIntakeLeft.setStopping(hold);
+      mIntakeRight.setStopping(hold);
+      mIntakeLeft.setPosition(0, deg);
+      mIntakeRight.setPosition(0, deg);
+      intakePhase = 3;
+    }
+
+>>>>>>> parent of 2eaf9d1... No time for description - 2/5/21
     // Move the arms inward -1 deg
     if(intakePhase == 3){
         mIntakeLeft.setVelocity(-10, pct);
