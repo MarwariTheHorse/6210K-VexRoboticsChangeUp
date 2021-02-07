@@ -52,6 +52,21 @@ void intakeOpen(){
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
 }
+void intakeOpenAuton(){
+
+  mIntakeLeft.setPosition(0, deg);
+  mIntakeRight.setPosition(0, deg);
+
+  mIntakeLeft.setVelocity(100, pct);
+  mIntakeRight.setVelocity(100, pct);
+
+  waitUntil(mIntakeLeft.position(deg) > 50 && mIntakeRight.position(deg) > 50);
+
+  mIntakeLeft.setVelocity(0, pct);
+  mIntakeRight.setVelocity(0, pct);
+  mIntakeLeft.setStopping(hold);
+  mIntakeRight.setStopping(hold);
+}
 void output(int speed, int timems){
   mOutputLower.setVelocity(speed, pct);
   mOutputUpper.setVelocity(speed, pct);

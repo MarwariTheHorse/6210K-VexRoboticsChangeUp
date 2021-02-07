@@ -159,51 +159,71 @@ void autonomous(void) {
     // Open top flap and toss ball into the goal
     output(100, 200);
     // Calibrate Gyro
-    sInertial.setHeading(33, deg);
-    // Open the intakes
-    intakeOpen();
+    sInertial.setRotation(33, deg);
     // Run output
     outputIn();
-    // Drive forward to align with goal. Stop running output after 800 msec
+    // Drive forward and grab the first ball.
     double startTime = Brain.timer(msec);
     mWheelFrontLeft.setVelocity(100, pct);
     mWheelFrontRight.setVelocity(-100, pct);
     mWheelBackLeft.setVelocity(100, pct);
     mWheelBackRight.setVelocity(-100, pct);
-    while(Brain.timer(msec) - startTime < 1500){
-      if(Brain.timer(msec) - startTime > 800){
-        outputOff();
-      }
+    while(Brain.timer(msec) - startTime < 800){
+      vexDelay(5);
     }
+    outputOff();
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
-    // Rotate towards the goal, slowing down as we get closer
-    while(sInertial.heading() < 87){
-      mWheelFrontLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-      mWheelFrontRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-      mWheelBackLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-      mWheelBackRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-    }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    // Deploy the intakes
+    intakeIn();
+    vexDelay(1000);
+    intakeOff();
 
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("Beginning camera drive");
-
-    // Drive towards the largest blue object we can see
+    // Drive forward and grab the first ball.
     startTime = Brain.timer(msec);
+    mWheelFrontLeft.setVelocity(100, pct);
+    mWheelFrontRight.setVelocity(-100, pct);
+    mWheelBackLeft.setVelocity(100, pct);
+    mWheelBackRight.setVelocity(-100, pct);
+    while(Brain.timer(msec) - startTime < 750){
+      mWheelFrontLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
+      mWheelFrontRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
+      mWheelBackLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
+      mWheelBackRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
+      vexDelay(5);
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Rotate towards the middle goal
+    while(sInertial.rotation() < 89){
+      mWheelFrontLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+      mWheelFrontRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+      mWheelBackLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+      mWheelBackRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    intakeOpenAuton();
+
     while(Brain.timer(msec) - startTime < 2000){
       int ySpeed;
       int xSpeed;
-      ySpeed = 50;
+      ySpeed = 100;
 
       sVision.takeSnapshot(sVision__SIG_BLUE);
+
+      Controller1.Screen.clearScreen();
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print(sVision.objectCount);
 
       if(sVision.objectCount > 0){
         xSpeed = (sVision.largestObject.centerX - 158) / 2;
@@ -216,29 +236,70 @@ void autonomous(void) {
       mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
       mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
     }
-  }
 
-  // Right 1
-  if(mode == 'Y'){
-    // Get to the goal
-    mWheelFrontLeft.setVelocity(40, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(40, pct);
-    mWheelBackRight.setVelocity(0, pct);
-    vexDelay(300);
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
+    // Rotate towards the goal, slowing down as we get closer
+  //   while(sInertial.heading() < 87){
+  //     mWheelFrontLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+  //     mWheelFrontRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+  //     mWheelBackLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+  //     mWheelBackRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
+  //   }
+  //   mWheelFrontLeft.setVelocity(0, pct);
+  //   mWheelFrontRight.setVelocity(0, pct);
+  //   mWheelBackLeft.setVelocity(0, pct);
+  //   mWheelBackRight.setVelocity(0, pct);
 
-    // Ensure we are at the goal
-    driveForward(100, 1000);
+  //   // Drive towards the largest blue object we can see
+  //   startTime = Brain.timer(msec);
+  //   while(Brain.timer(msec) - startTime < 2000){
+  //     int ySpeed;
+  //     int xSpeed;
+  //     ySpeed = 50;
 
-    // Outtake the preload
-    output(100, 400); //500 > 300 timems
+  //     sVision.takeSnapshot(sVision__SIG_BLUE);
 
-    // Drive in reverse to make sure we aren't touching anything in the goal
-    driveForward(-20, 500);
+  //     Controller1.Screen.clearScreen();
+  //     Controller1.Screen.setCursor(1, 1);
+  //     Controller1.Screen.print(sVision.objectCount);
+
+  //     if(sVision.objectCount > 0){
+  //       xSpeed = (sVision.largestObject.centerX - 158) / 2;
+  //     }else{
+  //       xSpeed = 0;
+  //     }
+
+  //     mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
+  //     mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
+  //     mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
+  //     mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+  //   }
+  // }
+
+  // // Right 1
+  // if(mode == 'Y'){
+  //   // Get to the goal
+  //   mWheelFrontLeft.setVelocity(40, pct);
+  //   mWheelFrontRight.setVelocity(0, pct);
+  //   mWheelBackLeft.setVelocity(40, pct);
+  //   mWheelBackRight.setVelocity(0, pct);
+  //   vexDelay(300);
+  //   mWheelFrontLeft.setVelocity(0, pct);
+  //   mWheelFrontRight.setVelocity(0, pct);
+  //   mWheelBackLeft.setVelocity(0, pct);
+  //   mWheelBackRight.setVelocity(0, pct);
+
+  //   // Ensure we are at the goal
+  //   driveForward(100, 1000);
+
+  //   // Outtake the preload
+  //   output(100, 400); //500 > 300 timems
+
+  //   // Drive in reverse to make sure we aren't touching anything in the goal
+  //   driveForward(-20, 500);
   }
 
   // Left 1
@@ -1048,6 +1109,8 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
+
+  Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
