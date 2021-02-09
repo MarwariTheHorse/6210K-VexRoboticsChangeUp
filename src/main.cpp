@@ -188,7 +188,8 @@ void autonomous(void) {
     mWheelFrontRight.setVelocity(-100, pct);
     mWheelBackLeft.setVelocity(100, pct);
     mWheelBackRight.setVelocity(-100, pct);
-    while(Brain.timer(msec) - startTime < 750){
+
+    while(Brain.timer(msec) - startTime < 800){
       mWheelFrontLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
       mWheelFrontRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
       mWheelBackLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
@@ -214,7 +215,8 @@ void autonomous(void) {
 
     intakeOpenAuton();
 
-    while(Brain.timer(msec) - startTime < 2000){
+    startTime = Brain.timer(msec);
+    while(Brain.timer(msec) - startTime < 1500){
       int ySpeed;
       int xSpeed;
       ySpeed = 100;
@@ -226,7 +228,7 @@ void autonomous(void) {
       Controller1.Screen.print(sVision.objectCount);
 
       if(sVision.objectCount > 0){
-        xSpeed = (sVision.largestObject.centerX - 158) / 2;
+        xSpeed = (sVision.largestObject.centerX - 158) * 1;
       }else{
         xSpeed = 0;
       }
@@ -235,12 +237,20 @@ void autonomous(void) {
       mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
       mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
       mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+      vexDelay(5);
     }
 
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
+
+    intakeIn();
+    vexDelay(1000);
+    intakeOff();
+    output(100, 1000);
+
+    driveForward(-100, 2000);
     // Rotate towards the goal, slowing down as we get closer
   //   while(sInertial.heading() < 87){
   //     mWheelFrontLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
