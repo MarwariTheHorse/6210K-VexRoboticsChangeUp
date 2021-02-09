@@ -189,6 +189,7 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(100, pct);
     mWheelBackRight.setVelocity(-100, pct);
 
+    // Drive for 800 ms at 0 degrees
     while(Brain.timer(msec) - startTime < 800){
       mWheelFrontLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
       mWheelFrontRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
@@ -213,8 +214,10 @@ void autonomous(void) {
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
+    // Open the intakes so that they go around the goal
     intakeOpenAuton();
 
+    // Drive at the goal using the camera to stay aligned
     startTime = Brain.timer(msec);
     while(Brain.timer(msec) - startTime < 1500){
       int ySpeed;
@@ -239,17 +242,20 @@ void autonomous(void) {
       mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
       vexDelay(5);
     }
-
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
+    // Descore the bottom blue ball
     intakeIn();
     vexDelay(1000);
     intakeOff();
+
+    // Score the red ball we picked up earlier
     output(100, 1000);
 
+    // Back our of the goal at 100 pct for 2 seconds
     driveForward(-100, 2000);
     // Rotate towards the goal, slowing down as we get closer
   //   while(sInertial.heading() < 87){
