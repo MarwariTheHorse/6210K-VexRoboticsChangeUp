@@ -157,6 +157,24 @@ void autonomous(void) {
   //   * Camera
   //   * Gyro
 
+  mWheelFrontLeft.spin(fwd);
+  mWheelFrontRight.spin(fwd);
+  mWheelBackLeft.spin(fwd);
+  mWheelBackRight.spin(fwd);
+  mIntakeLeft.spin(fwd);
+  mIntakeRight.spin(fwd);
+  mOutputLower.spin(fwd);
+  mOutputUpper.spin(fwd);
+
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+  mIntakeLeft.setVelocity(0, pct);
+  mIntakeRight.setVelocity(0, pct);
+  mOutputLower.setVelocity(0, pct);
+  mOutputUpper.setVelocity(0, pct);
+
   int leftX;
   int leftY;
   int rightX;
@@ -204,26 +222,81 @@ void autonomous(void) {
   // Autonomous
   if(mode == 'V'){
 
+    // SCORE FIRST GOAL AND DUMP THE BLUES
+
     // run intakes
     intakeIn();
 
-    // Scoot back to that the intakes can deploy
-    driveForward(-100, 250);
+    // Drive forward to align with goals and get the intakes out
+    driveForward(100, 1000);
 
-    // Deploy hood and top camera
+    // Scoot back to that the intakes can deploy
+    driveForward(-100, 750);
+
+    // Deploy hood and top camera TODO: The camera gets bent back after deploying so that needs to be fixed.
     output(100, 200);
 
+    wait(3000, msec); // For debugging purposes, though we will probably need to wait here so that the intakes have time to deploy
+
+
     // Drive forward to intake blue from goal
-    driveForward(100, 500);
+    driveForward(100, 1000);
 
     // Score the red ball
-    outputIn();
+    mOutputUpper.setVelocity(100, pct);
+    mOutputLower.setVelocity(50, pct);
+
+    // Wait for red ball to be scored
+    wait(1000, msec);
+
+    // Don't let the other blue balls out yet
+    mOutputUpper.setVelocity(0, pct);
 
     // Scoot back
-    driveForward(-100, 1000);
+    driveForward(-100, 750);
 
-    // Wait for the blue ball to be fully cycled
+    // Let the blues out
+    mOutputUpper.setVelocity(100, pct);
+    mOutputUpper.setVelocity(100, pct);
 
+    wait(3, sec);
+
+
+    // GRAB BALL, SCORE IT IN THE MIDDLE, AND CYCLE OUT THE THREE BLUES IN THE MIDDLE
+
+    // Rotate so that we are facing the ball
+
+
+    // Open intakes and run output in
+    intakeOpenAuton();
+    outputIn();
+
+    // Drive to get the ball
+    driveForward(100, 500);
+
+    // Rotate to perpendicular to the goal
+
+    // Strafe to goal
+
+    // Drive into goal guided by gyro and camera
+
+
+    // Score top ball
+    outputIn();
+
+    // Intake the three blue balls untill we have all 3
+
+    // Open intakes and stop output
+    intakeOpenAuton();
+    outputOff();
+
+    // Back up
+    driveForward(-100, 500);
+
+
+    // SCORE OUTER GOAL 2
+
+    // Rotate 180 for the next goal
 
 
 
