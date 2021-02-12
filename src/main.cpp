@@ -150,195 +150,234 @@ void autonomous(void) {
   // intake(-75, 1000); // Flick the intakes outward
   // driveForward(-50, 1000); // Back out and away from the goal
 
+  // Auton Methods
+  // * Gyro
+  // * Drive
+  //   * Distance
+  //   * Camera
+  //   * Gyro
+
   int leftX;
   int leftY;
   int rightX;
 
-  // Autonomous
-  if(mode == 'V'){
-    // Open top flap and toss ball into the goal
-    output(100, 200);
-    // Calibrate Gyro
-    sInertial.setRotation(33, deg);
-    // Run output
-    outputIn();
-    // Drive forward and grab the first ball.
-    double startTime = Brain.timer(msec);
-    mWheelFrontLeft.setVelocity(100, pct);
-    mWheelFrontRight.setVelocity(-100, pct);
-    mWheelBackLeft.setVelocity(100, pct);
-    mWheelBackRight.setVelocity(-100, pct);
-    while(Brain.timer(msec) - startTime < 800){
-      vexDelay(5);
-    }
-    outputOff();
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
 
-    // Deploy the intakes
-    intakeIn();
-    vexDelay(1000);
-    intakeOff();
-
-    // Drive forward and grab the first ball.
-    startTime = Brain.timer(msec);
-    mWheelFrontLeft.setVelocity(100, pct);
-    mWheelFrontRight.setVelocity(-100, pct);
-    mWheelBackLeft.setVelocity(100, pct);
-    mWheelBackRight.setVelocity(-100, pct);
-
-    // Drive for 800 ms at 0 degrees
-    while(Brain.timer(msec) - startTime < 800){
-      mWheelFrontLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
-      mWheelFrontRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
-      mWheelBackLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
-      mWheelBackRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
-      vexDelay(5);
-    }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Rotate towards the middle goal
-    while(sInertial.rotation() < 89){
-      mWheelFrontLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
-      mWheelFrontRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
-      mWheelBackLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
-      mWheelBackRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
-    }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Open the intakes so that they go around the goal
-    intakeOpenAuton();
-
-    // Drive at the goal using the camera to stay aligned
-    startTime = Brain.timer(msec);
-    while(Brain.timer(msec) - startTime < 1500){
-      int ySpeed;
-      int xSpeed;
-      ySpeed = 100;
-
-      sVision.takeSnapshot(sVision__SIG_BLUE);
-
-      Controller1.Screen.clearScreen();
-      Controller1.Screen.setCursor(1, 1);
-      Controller1.Screen.print(sVision.objectCount);
-
-      if(sVision.objectCount > 0){
-        xSpeed = (sVision.largestObject.centerX - 158) * 1;
-      }else{
-        xSpeed = 0;
-      }
-
-      mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
-      mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
-      mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
-      mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
-      vexDelay(5);
-    }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Descore the bottom blue ball
-    intakeIn();
-    vexDelay(1000);
-    intakeOff();
-
-    // Score the red ball we picked up earlier
-    output(100, 1000);
-
-    // Back our of the goal at 100 pct for 2 seconds
-    driveForward(-100, 2000);
-    // Rotate towards the goal, slowing down as we get closer
-  //   while(sInertial.heading() < 87){
-  //     mWheelFrontLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-  //     mWheelFrontRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-  //     mWheelBackLeft.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-  //     mWheelBackRight.setVelocity((90 - sInertial.heading()) * 1.5, pct);
-  //   }
-  //   mWheelFrontLeft.setVelocity(0, pct);
-  //   mWheelFrontRight.setVelocity(0, pct);
-  //   mWheelBackLeft.setVelocity(0, pct);
-  //   mWheelBackRight.setVelocity(0, pct);
-
-  //   // Drive towards the largest blue object we can see
-  //   startTime = Brain.timer(msec);
-  //   while(Brain.timer(msec) - startTime < 2000){
-  //     int ySpeed;
-  //     int xSpeed;
-  //     ySpeed = 50;
-
-  //     sVision.takeSnapshot(sVision__SIG_BLUE);
-
-  //     Controller1.Screen.clearScreen();
-  //     Controller1.Screen.setCursor(1, 1);
-  //     Controller1.Screen.print(sVision.objectCount);
-
-  //     if(sVision.objectCount > 0){
-  //       xSpeed = (sVision.largestObject.centerX - 158) / 2;
-  //     }else{
-  //       xSpeed = 0;
-  //     }
-
-  //     mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
-  //     mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
-  //     mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
-  //     mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
-  //   }
+  // // Gyro Turn
+  // while(sInertial.rotation() < 90){ // the number and sign will change along with all the other numbers 
+  //   mWheelFrontLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+  //   mWheelFrontRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+  //   mWheelBackLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+  //   mWheelBackRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+  //   vexDelay(5);
   // }
 
-  // // Right 1
-  // if(mode == 'Y'){
-  //   // Get to the goal
-  //   mWheelFrontLeft.setVelocity(40, pct);
-  //   mWheelFrontRight.setVelocity(0, pct);
-  //   mWheelBackLeft.setVelocity(40, pct);
-  //   mWheelBackRight.setVelocity(0, pct);
-  //   vexDelay(300);
-  //   mWheelFrontLeft.setVelocity(0, pct);
-  //   mWheelFrontRight.setVelocity(0, pct);
-  //   mWheelBackLeft.setVelocity(0, pct);
-  //   mWheelBackRight.setVelocity(0, pct);
+  // // Drive at the goal using the camera with time limit
+  // double startTime = Brain.timer(msec);
+  // while(Brain.timer(msec) - startTime < 1500){
+  //   int ySpeed;
+  //   int xSpeed;
+  //   ySpeed = 100;
 
-  //   // Ensure we are at the goal
-  //   driveForward(100, 1000);
+  //   sVision.takeSnapshot(sVision__SIG_BLUE);
 
-  //   // Outtake the preload
-  //   output(100, 400); //500 > 300 timems
+  //   Controller1.Screen.clearScreen();
+  //   Controller1.Screen.setCursor(1, 1);
+  //   Controller1.Screen.print(sVision.objectCount);
 
-  //   // Drive in reverse to make sure we aren't touching anything in the goal
-  //   driveForward(-20, 500);
+  //   if(sVision.objectCount > 0){
+  //     xSpeed = (sVision.largestObject.centerX - 158) * 1;
+  //   }else{
+  //     xSpeed = 0;
+  //   }
+
+  //   mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
+  //   mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
+  //   mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
+  //   mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+  //   vexDelay(5);
+  // }
+  // mWheelFrontLeft.setVelocity(0, pct);
+  // mWheelFrontRight.setVelocity(0, pct);
+  // mWheelBackLeft.setVelocity(0, pct);
+  // mWheelBackRight.setVelocity(0, pct);
+
+  // Autonomous
+  if(mode == 'V'){
+
+    // run intakes
+    intakeIn();
+
+    // Scoot back to that the intakes can deploy
+    driveForward(-100, 250);
+
+    // Deploy hood and top camera
+    output(100, 200);
+
+    // Drive forward to intake blue from goal
+    driveForward(100, 500);
+
+    // Score the red ball
+    outputIn();
+
+    // Scoot back
+    driveForward(-100, 1000);
+
+    // Wait for the blue ball to be fully cycled
+
+
+
+
+    // Old auton VVVVVV
+
+    // // Open top flap and toss ball into the goal
+    // output(100, 200);
+    // // Calibrate Gyro
+    // sInertial.setRotation(33, deg);
+    // // Run output
+    // outputIn();
+    // // Drive forward and grab the first ball.
+    // double startTime = Brain.timer(msec);
+    // mWheelFrontLeft.setVelocity(100, pct);
+    // mWheelFrontRight.setVelocity(-100, pct);
+    // mWheelBackLeft.setVelocity(100, pct);
+    // mWheelBackRight.setVelocity(-100, pct);
+    // while(Brain.timer(msec) - startTime < 800){
+    //   vexDelay(5);
+    // }
+    // outputOff();
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(0, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(0, pct);
+
+    // // Deploy the intakes
+    // intakeIn();
+    // vexDelay(1000);
+    // intakeOff();
+
+    // // Drive forward and grab the first ball.
+    // startTime = Brain.timer(msec);
+    // mWheelFrontLeft.setVelocity(100, pct);
+    // mWheelFrontRight.setVelocity(-100, pct);
+    // mWheelBackLeft.setVelocity(100, pct);
+    // mWheelBackRight.setVelocity(-100, pct);
+
+    // // Drive for 800 ms at 0 degrees
+    // while(Brain.timer(msec) - startTime < 800){
+    //   mWheelFrontLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
+    //   mWheelFrontRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
+    //   mWheelBackLeft.setVelocity(100 - (sInertial.rotation() * 3), pct);
+    //   mWheelBackRight.setVelocity(-100 - (sInertial.rotation() * 3), pct);
+    //   vexDelay(5);
+    // }
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(0, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(0, pct);
+
+    // // Rotate towards the middle goal
+    // while(sInertial.rotation() < 89){
+    //   mWheelFrontLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+    //   mWheelFrontRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+    //   mWheelBackLeft.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+    //   mWheelBackRight.setVelocity((90 - sInertial.rotation()) * 1.5, pct);
+    // }
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(0, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(0, pct);
+
+    // // Open the intakes so that they go around the goal
+    // intakeOpenAuton();
+
+    // // Drive at the goal using the camera to stay aligned
+    // startTime = Brain.timer(msec);
+    // while(Brain.timer(msec) - startTime < 1500){
+    //   int ySpeed;
+    //   int xSpeed;
+    //   ySpeed = 100;
+
+    //   sVision.takeSnapshot(sVision__SIG_BLUE);
+
+    //   Controller1.Screen.clearScreen();
+    //   Controller1.Screen.setCursor(1, 1);
+    //   Controller1.Screen.print(sVision.objectCount);
+
+    //   if(sVision.objectCount > 0){
+    //     xSpeed = (sVision.largestObject.centerX - 158) * 1;
+    //   }else{
+    //     xSpeed = 0;
+    //   }
+
+    //   mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
+    //   mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
+    //   mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
+    //   mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+    //   vexDelay(5);
+    // }
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(0, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(0, pct);
+
+    // // Descore the bottom blue ball
+    // intakeIn();
+    // vexDelay(1000);
+    // intakeOff();
+
+    // // Score the red ball we picked up earlier
+    // output(100, 1000);
+
+    // // Back our of the goal at 100 pct for 2 seconds
+    // driveForward(-100, 2000);
   }
 
-  // Left 1
-  if(mode == '<'){
+  // Right 1
+  if(mode == 'Y'){
     // Get to the goal
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(-40, pct);
+    mWheelFrontLeft.setVelocity(40, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(40, pct);
+    mWheelBackRight.setVelocity(0, pct);
     vexDelay(300);
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
     mWheelBackLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
 
-    // Ensure we are in the goal
+    // Ensure we are at the goal
     driveForward(100, 1000);
 
     // Outtake the preload
     output(100, 400); //500 > 300 timems
 
-    // Drive in reverse
+    // Drive in reverse to make sure we aren't touching anything in the goal
     driveForward(-20, 500);
+  }
+
+  // Left 1
+  if(mode == '<'){
+    // Get to the goal
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(-40, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(-40, pct);
+    // vexDelay(300);
+    // mWheelFrontLeft.setVelocity(0, pct);
+    // mWheelFrontRight.setVelocity(0, pct);
+    // mWheelBackLeft.setVelocity(0, pct);
+    // mWheelBackRight.setVelocity(0, pct);
+
+    // // Ensure we are in the goal
+    // driveForward(100, 1000);
+
+    // // Outtake the preload
+    // output(100, 400); //500 > 300 > 400timems
+
+    // // Drive in reverse
+    // driveForward(-20, 500);
+
+    output(100, 10000);
   }
 
   // Right 2
@@ -921,6 +960,9 @@ void usercontrol(void) {
 
     // Intake ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    // Spin out untill it hits
+    // Spin out at low torque
+
     if(!disableIntakes){
       // If intake out pressed, begin the intake stages process
       if(Controller1.ButtonR2.pressing() && intakePhase == 0){
@@ -932,7 +974,7 @@ void usercontrol(void) {
 
       // If both arms have hit, move on to stage 2
       if(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD && intakePhase == 1){
-        intakePhase = 2;
+        intakePhase = 2; //2
       }
 
       // Set each intake velocity to 100 pct
@@ -943,39 +985,24 @@ void usercontrol(void) {
 
       // Prepare to move the arms inward to -1 deg
       if(intakePhase == 2){
-        mIntakeLeft.setStopping(hold);
-        mIntakeRight.setStopping(hold);
-        mIntakeLeft.setPosition(0, deg);
-        mIntakeRight.setPosition(0, deg);
-        intakePhase = 3;
-      }
-
-      // Set each intake velocity to 100 pct
-      if(intakePhase == 1){
         mIntakeLeft.setVelocity(100, pct);
         mIntakeRight.setVelocity(100, pct);
-      }
-
-      // Prepare to move the arms inward to -1 deg
-      if(intakePhase == 2){
-        mIntakeLeft.setStopping(hold);
-        mIntakeRight.setStopping(hold);
-        mIntakeLeft.setPosition(0, deg);
-        mIntakeRight.setPosition(0, deg);
-        intakePhase = 3;
+        mIntakeLeft.setMaxTorque(40, pct);
+        mIntakeRight.setMaxTorque(40, pct);
+        // intakePhase = 3;
       }
 
       // Move the arms inward -1 deg
       if(intakePhase == 3){
-          mIntakeLeft.setVelocity(-10, pct);
-          mIntakeRight.setVelocity(-10, pct);
-          if(mIntakeLeft.position(deg) < -1){
+          // mIntakeLeft.setVelocity(-10, pct);
+          // mIntakeRight.setVelocity(-10, pct);
+          // if(mIntakeLeft.position(deg) < -1){
           mIntakeLeft.setVelocity(0, pct);
           mIntakeRight.setVelocity(0, pct);
           mIntakeLeft.setStopping(hold);
           mIntakeRight.setStopping(hold);
           intakePhase = 4;
-        }
+        // }
       }
 
       // Hold at -1 deg
@@ -983,33 +1010,18 @@ void usercontrol(void) {
         
       }
 
-      // Set each intake velocity to 100 pct
-      if(intakePhase == 1){
-        mIntakeLeft.setVelocity(100, pct);
-        mIntakeRight.setVelocity(100, pct);
-      }
-
-      // Prepare to move the arms inward to -1 deg
-      if(intakePhase == 2){
-        mIntakeLeft.setStopping(hold);
-        mIntakeRight.setStopping(hold);
-        mIntakeLeft.setPosition(0, deg);
-        mIntakeRight.setPosition(0, deg);
-        intakePhase = 3;
-      }
-
-      // Move the arms inward -1 deg
-      if(intakePhase == 3){
-          mIntakeLeft.setVelocity(-10, pct);
-          mIntakeRight.setVelocity(-10, pct);
-          if(mIntakeLeft.position(deg) < -1){
-          mIntakeLeft.setVelocity(0, pct);
-          mIntakeRight.setVelocity(0, pct);
-          mIntakeLeft.setStopping(hold);
-          mIntakeRight.setStopping(hold);
-          intakePhase = 4;
-        }
-      }
+      // // Move the arms inward -1 deg
+      // if(intakePhase == 3){
+      //     mIntakeLeft.setVelocity(-10, pct);
+      //     mIntakeRight.setVelocity(-10, pct);
+      //     if(mIntakeLeft.position(deg) < -1){
+      //     mIntakeLeft.setVelocity(0, pct);
+      //     mIntakeRight.setVelocity(0, pct);
+      //     mIntakeLeft.setStopping(hold);
+      //     mIntakeRight.setStopping(hold);
+      //     intakePhase = 4;
+      //   }
+      // }
       // Reset motor encoders and set holding to on
       // if(intakePhase == 1){
       //   mIntakeLeft.setPosition(0, deg);
@@ -1041,6 +1053,8 @@ void usercontrol(void) {
         intakePhase = 0;
         mIntakeLeft.setVelocity(-100, pct);
         mIntakeRight.setVelocity(-100, pct);
+        mIntakeLeft.setMaxTorque(100, pct);
+        mIntakeRight.setMaxTorque(100, pct);
         mIntakeLeft.setStopping(coast);
         mIntakeRight.setStopping(coast);
       }

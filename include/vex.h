@@ -20,7 +20,7 @@
 
 #define INTAKE_OPEN_TARGET 80
 #define OPTICAL_THRESHOLD 2000
-#define TORQUE_THRESHOLD 0.9
+#define TORQUE_THRESHOLD 1.1
 #define LEFT 1
 #define RIGHT -1
 
