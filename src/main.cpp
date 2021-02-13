@@ -321,8 +321,14 @@ void autonomous(void) {
     // Score the red ball we picked up earlier
     output(100, 1000);
 
-    // Back our of the goal at 100 pct for 2 seconds
-    driveForward(-100, 2000);
+    // Back our of the goal at 100 pct
+    driveForward(-100, 500);
+
+    // Turn around to face the goal behind
+
+    // Drive via camera and gyro into the goal
+
+    // Score the other red we grabbed
   }
 
   // Right 1
@@ -1132,8 +1138,6 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
-
-  Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
