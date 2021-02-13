@@ -82,3 +82,37 @@ void outputOff(){
   mOutputLower.setVelocity(0, pct);
   mOutputUpper.setVelocity(0, pct);
 }
+/*void strafeRight(int speed, int timems){
+  mWheelFrontRight.setVelocity(-speed, pct);
+  mWheelFrontLeft.setVelocity(speed, pct);
+  mWheelBackRight.setVelocity(speed, pct);
+  mWheelBackLeft.setVelocity(-speed, pct);
+  vexDelay(timems);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+}
+void strafeLeft(int speed, int timems){
+  mWheelFrontRight.setVelocity(speed, pct);
+  mWheelFrontLeft.setVelocity(-speed, pct);
+  mWheelBackRight.setVelocity(-speed, pct);
+  mWheelBackLeft.setVelocity(speed, pct);
+  vexDelay(timems);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+}
+void halt(){
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+}
+void prepOutput(int speed, int timems){
+  mOutputLower.setVelocity(speed, pct);
+  vexDelay(timems);
+  mOutputLower.setVelocity(speed, pct);
+}
+*/
