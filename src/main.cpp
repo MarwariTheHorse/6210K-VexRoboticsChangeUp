@@ -336,6 +336,273 @@ void autonomous(void) {
     // Score the other red we grabbed
 
   }*/
+
+  if(mode == 'V'){
+    mOutputUpper.setVelocity(100, pct);
+
+    intakeIn();
+
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(-40, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(-40, pct);
+    vexDelay(300);
+    mOutputUpper.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Outtake the preload
+    output(100, 400); //500 > 300 timems
+
+    // Drive in reverse
+    driveForward(-20, 200);
+    output(-100, 300);
+
+    // Turn 45 deg ccw
+    sInertial.resetRotation();
+    while(sInertial.rotation(deg) > -40){
+      mWheelBackLeft.setVelocity(30, pct);
+      mWheelFrontLeft.setVelocity(30, pct);
+      mWheelBackRight.setVelocity(50, pct);
+      mWheelFrontRight.setVelocity(50, pct);
+    }
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    // Get a ball
+    driveForward(-30, 1000);
+    strafeLeft(20, 300);
+    intakeOpenAuton();
+    driveForward(100, 500);
+    intakeIn();
+    prepOutput(100, 500);
+    driveForward(-30, 200);
+    strafeLeft(20, 2000);
+    intakeOpenAuton();
+  
+    // Thrust into the goal
+    driveForward(100, 1000);
+    vexDelay(100);
+    
+    // Spit out the ball we have
+    output(100, 400); //500 > 300 timems
+
+    // Descore Blue
+    intakeIn();
+    vexDelay(400);
+
+  
+    // Back up and spit out blue
+    output(100, 200);
+    mWheelFrontLeft.setVelocity(-50, pct);
+    mWheelFrontRight.setVelocity(50, pct);
+    mWheelBackLeft.setVelocity(-50, pct);
+    mWheelBackRight.setVelocity(50, pct);
+    intakeOff();
+    intakeOpenAuton();
+    mOutputUpper.setVelocity(-100, pct);
+    mOutputLower.setVelocity(-100, pct);
+
+    vexDelay(1000);
+
+    halt();
+    outputOff();
+
+    // Get the ball
+    driveForward(-30, 500);
+    strafeLeft(20, 1000);
+    intakeOpenAuton();
+    driveForward(100, 500);
+    prepOutput(100, 500);
+    driveForward(-30, 400);
+    strafeLeft(70, 2000);
+
+    // Gun it into the goal
+    driveForward(100, 1000);
+    intakeOpenAuton();
+
+    // Spit the ball out
+    output(100, 600);
+
+    // Descore Blues
+    intakeIn();
+    prepOutput(100, 500);
+    intakeOff();
+    intakeOpenAuton();
+    vexDelay(100);
+    intakeIn();
+    prepOutput(100, 200);
+
+    // Drive in reverse and yeet them blues outta here
+    driveForward(-20, 200);
+    output(-100, 600);
+
+    // Turn 45 deg ccw
+    sInertial.resetRotation();
+    while(sInertial.rotation(deg) > -40){
+      mWheelBackLeft.setVelocity(-40, pct);
+      mWheelFrontLeft.setVelocity(-40, pct);
+    }
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+
+    // Open the intakes
+    intakeOpenAuton();
+    
+    // Strafe to ball
+    strafeLeft(30, 600);
+
+    //Get ball
+    driveForward(100, 500);
+    intakeIn();
+    prepOutput(100, 500);
+    intakeOff();
+    driveForward(-30, 500);
+
+    //Strafe to Goal
+    strafeLeft(30, 2000);
+    // Thrust into the goal
+    intakeOpenAuton();
+    driveForward(100, 500);
+    vexDelay(200);
+    // Spit out the ball we have
+    output(100, 600); //500 > 300 timems
+    // Descore Blue
+    intakeIn();
+    
+    // Back up
+    mWheelFrontLeft.setVelocity(-50, pct);
+    mWheelFrontRight.setVelocity(50, pct);
+    mWheelBackLeft.setVelocity(-50, pct);
+    mWheelBackRight.setVelocity(50, pct);
+
+    vexDelay(500);
+    prepOutput(100, 200);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Strafe to ball
+    intakeOpenAuton();
+    output(-100, 300);
+    vexDelay(200);
+    strafeLeft(20, 2000);
+
+    // Get Ball
+    driveForward(100, 500);
+    intakeIn();
+    prepOutput(100, 500);
+    intakeOff();
+    driveForward(-30, 400);
+
+    // Gun it to the goal
+    mWheelFrontLeft.setVelocity(-70, pct);
+    mWheelFrontRight.setVelocity(70, pct);
+    mWheelBackLeft.setVelocity(70, pct);
+    mWheelBackRight.setVelocity(-70, pct);
+
+    waitUntil(sDistanceLeft.objectDistance(distanceUnits::in) < 4);
+
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    //Score
+    driveForward(100, 1000);
+    vexDelay(100);
+    output(100, 600);
+    
+    // Descore Blues
+    intakeIn();
+    prepOutput(100, 500);
+    intakeOff();
+    intakeOpenAuton();
+    vexDelay(100);
+    intakeIn();
+    prepOutput(100, 200);
+
+    // Drive in reverse and yeet them blues outta here
+    driveForward(-20, 200);
+    intakeOpenAuton();
+    output(-100, 600);
+    // Get away from the goal
+    driveForward(-30, 300);
+
+    // Relax the intakes
+    intakeOff();
+
+    sInertial.resetRotation();
+    while(sInertial.rotation(deg) < 132){
+      mWheelBackLeft.setVelocity(40, pct);
+      mWheelFrontLeft.setVelocity(40, pct);
+    }
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+
+    // Line up with center goal
+    strafeLeft(40, 2000);
+
+    int xSpeed;
+    int ySpeed;
+
+    // Drive at the goal using the camera to stay aligned
+    double startTime = Brain.timer(msec);
+    while(Brain.timer(msec) - startTime < 1500){
+      ySpeed = 100;
+      // Score Center
+      sVision.takeSnapshot(sVision__SIG_BLUE);
+
+      Controller1.Screen.clearScreen();
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print(sVision.objectCount);
+
+      if(sVision.objectCount > 0){
+        xSpeed = (sVision.largestObject.centerX - 158) * 1;
+      }
+      else{
+        xSpeed = 0;
+      }
+
+      mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
+      mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
+      mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
+      mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
+      vexDelay(5);
+    }
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Descore the bottom blue ball
+    intakeIn();
+    vexDelay(1000);
+    intakeOff();
+
+    // Score the red ball we picked up earlier
+    output(100, 1000);
+
+    //Descore the other two
+    intakeOpenAuton();
+    intakeIn();
+    prepOutput(100, 500);
+    intakeOff();
+    intakeOpenAuton();
+    intakeIn();
+    prepOutput(100, 200);
+    intakeOff();
+    intakeOpenAuton();
+
+    // Back out of the goal and yeet blues
+    driveForward(-100, 1000);
+    output(-100, 1000);
+  }
+
   // Right 1
   if(mode == 'Y'){
     // Get to the goal
@@ -381,7 +648,42 @@ void autonomous(void) {
     // // Drive in reverse
     // driveForward(-20, 500);
 
-    output(100, 10000);
+
+    // Deploy
+    mOutputUpper.setVelocity(100, pct);
+    wait(300, msec);
+    mOutputUpper.setVelocity(0, pct);
+
+    intakeIn();
+
+    // Wait to fully deplay
+    wait(750, msec);
+
+    // Get into the goal
+    mWheelFrontLeft.setVelocity(20, pct);
+    mWheelFrontRight.setVelocity(-40, pct);
+    mWheelBackLeft.setVelocity(20, pct);
+    mWheelBackRight.setVelocity(-40, pct);
+    vexDelay(500);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Score preload, score the red ball off the ground, and descore the blues
+    output(100, 2000);
+
+    intakeOpen();
+
+    // Get out
+    driveForward(-75, 500);
+
+    intakeIn();
+
+    driveForward(100, 1000);
+
+    driveForward(-100, 500);
+
   }
 
   // Right 2
@@ -1144,6 +1446,8 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
+  Competition.test_auton();
+
   // Prevent main from exiting with an infinite loop.
   while (true) {
     wait(100, msec);
@@ -1151,260 +1455,3 @@ int main() {
 }
 
 
-
-/* Joey's Proposed Auton
-
-
-    if(mode == 'V'){
-      mOutputUpper.setVelocity(100, pct);
-      intakeIn();
-      mWheelFrontLeft.setVelocity(0, pct);
-      mWheelFrontRight.setVelocity(-40, pct);
-      mWheelBackLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(-40, pct);
-      vexDelay(300);
-      mOutputUpper.setVelocity(0, pct);
-      mWheelFrontLeft.setVelocity(0, pct);
-      mWheelFrontRight.setVelocity(0, pct);
-      mWheelBackLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(0, pct);
-
-    // Outtake the preload
-      output(100, 400); //500 > 300 timems
-
-      // Drive in reverse
-      driveForward(-20, 200);
-      output(-100, 300);
-
-      // Turn 45 deg ccw
-      sInertial.resetRotation();
-      while(sInertial.rotation(deg) > -40){
-      mWheelBackLeft.setVelocity(-40, pct);
-      mWheelFrontLeft.setVelocity(-40, pct);
-      }
-      mWheelBackLeft.setVelocity(0, pct);
-      mWheelFrontLeft.setVelocity(0, pct);
-      // Get a ball
-      driveForward(-30, 1000);
-      strafeLeft(20, 300);
-      intakeOpenAuton();
-      driveForward(100, 500);
-      intakeIn();
-      prepOutput(100, 500);
-      driveForward(-30, 200);
-      strafeLeft(20, 2000);
-      intakeOpenAuton();
-    
-      // Thrust into the goal
-      driveForward(100, 1000);
-      vexDelay(100);
-      
-      // Spit out the ball we have
-      output(100, 400); //500 > 300 timems
-
-      // Descore Blue
-      intakeIn();
-      vexDelay(400);
-
-    
-      // Back up and spit out blue
-      output(100, 200);
-      mWheelFrontLeft.setVelocity(-50, pct);
-      mWheelFrontRight.setVelocity(50, pct);
-      mWheelBackLeft.setVelocity(-50, pct);
-      mWheelBackRight.setVelocity(50, pct);
-      intakeOff();
-      intakeOpenAuton();
-      mOutputUpper.setVelocity(-100, pct);
-      mOutputLower.setVelocity(-100, pct);
-
-      vexDelay(1000);
-
-      halt();
-      outputOff();
-
-      // Get the ball
-      driveForward(-30, 500);
-      strafeLeft(20, 1000);
-      intakeOpenAuton();
-      driveForward(100, 500);
-      prepOutput(100, 500);
-      driveForward(-30, 400);
-      strafeLeft(70, 2000);
-
-    // Gun it into the goal
-    driveForward(100, 1000);
-    intakeOpenAuton();
-
-    // Spit the ball out
-    output(100, 600);
-
-    // Descore Blues
-    intakeIn();
-    prepOutput(100, 500);
-    intakeOff();
-    intakeOpenAuton();
-    vexDelay(100);
-    intakeIn();
-    prepOutput(100, 200);
-
-    // Drive in reverse and yeet them blues outta here
-    driveForward(-20, 200);
-    output(-100, 600);
-
-    // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while(sInertial.rotation(deg) > -40){
-      mWheelBackLeft.setVelocity(-40, pct);
-      mWheelFrontLeft.setVelocity(-40, pct);
-    }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
-
-    // Open the intakes
-    intakeOpenAuton();
-    
-    // Strafe to ball
-    strafeLeft(30, 600);
-
-    //Get ball
-    driveForward(100, 500);
-    intakeIn();
-    prepOutput(100, 500);
-    intakeOff();
-    driveForward(-30, 500);
-
-    //Strafe to Goal
-    strafeLeft(30, 2000);
-    // Thrust into the goal
-    intakeOpenAuton();
-    driveForward(100, 500);
-    vexDelay(200);
-    // Spit out the ball we have
-    output(100, 600); //500 > 300 timems
-    // Descore Blue
-    intakeIn();
-    
-    // Back up
-    mWheelFrontLeft.setVelocity(-50, pct);
-    mWheelFrontRight.setVelocity(50, pct);
-    mWheelBackLeft.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(50, pct);
-
-    vexDelay(500);
-    prepOutput(100, 200);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Strafe to ball
-    intakeOpenAuton();
-    output(-100, 300);
-    vexDelay(200);
-    strafeLeft(20, 2000);
-
-    // Get Ball
-    driveForward(100, 500);
-    intakeIn();
-    prepOutput(100, 500);
-    intakeOff();
-    driveForward(-30, 400);
-
-    // Gun it to the goal
-    mWheelFrontLeft.setVelocity(-70, pct);
-    mWheelFrontRight.setVelocity(70, pct);
-    mWheelBackLeft.setVelocity(70, pct);
-    mWheelBackRight.setVelocity(-70, pct);
-
-    waitUntil(sDistanceLeft.objectDistance(distanceUnits::in) < 4);
-
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    //Score
-    driveForward(100, 1000);
-    vexDelay(100);
-    output(100, 600);
-    
-    // Descore Blues
-    intakeIn();
-    prepOutput(100, 500);
-    intakeOff();
-    intakeOpenAuton();
-    vexDelay(100);
-    intakeIn();
-    prepOutput(100, 200);
-
-    // Drive in reverse and yeet them blues outta here
-    driveForward(-20, 200);
-    intakeOpenAuton();
-    output(-100, 600);
-    // Get away from the goal
-    driveForward(-30, 300);
-
-    // Relax the intakes
-    intakeOff();
-
-    sInertial.resetRotation();
-    while(sInertial.rotation(deg) < 132){
-      mWheelBackLeft.setVelocity(40, pct);
-      mWheelFrontLeft.setVelocity(40, pct);
-    }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
-
-    // Line up with center goal
-    strafeLeft(40, 2000);
-
-    // Score Center
-    sVision.takeSnapshot(sVision__SIG_BLUE);
-
-      Controller1.Screen.clearScreen();
-      Controller1.Screen.setCursor(1, 1);
-      Controller1.Screen.print(sVision.objectCount);
-
-      if(sVision.objectCount > 0){
-        xSpeed = (sVision.largestObject.centerX - 158) * 1;
-      }
-      else{
-        xSpeed = 0;
-      }
-
-      mWheelFrontLeft.setVelocity(ySpeed + xSpeed, pct);
-      mWheelFrontRight.setVelocity(-ySpeed + xSpeed, pct);
-      mWheelBackLeft.setVelocity(ySpeed - xSpeed, pct);
-      mWheelBackRight.setVelocity(-ySpeed - xSpeed, pct);
-      vexDelay(5);
-    }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Descore the bottom blue ball
-    intakeIn();
-    vexDelay(1000);
-    intakeOff();
-
-    // Score the red ball we picked up earlier
-    output(100, 1000);
-
-    //Descore the other two
-    intakeOpenAuton();
-    intakeIn();
-    prepOutput(100, 500);
-    intakeOff();
-    intakeOpenAuton();
-    intakeIn();
-    prepOutput(100, 200);
-    intakeOff();
-    intakeOpenAuton();
-
-    // Back out of the goal and yeet blues
-    driveForward(-100, 1000);
-    output(-100, 1000);
-  }
-*/

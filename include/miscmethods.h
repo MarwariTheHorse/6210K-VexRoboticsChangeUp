@@ -82,7 +82,7 @@ void outputOff(){
   mOutputLower.setVelocity(0, pct);
   mOutputUpper.setVelocity(0, pct);
 }
-/*void strafeRight(int speed, int timems){
+void strafeRight(int speed, int timems){
   mWheelFrontRight.setVelocity(-speed, pct);
   mWheelFrontLeft.setVelocity(speed, pct);
   mWheelBackRight.setVelocity(speed, pct);
@@ -115,4 +115,3 @@ void prepOutput(int speed, int timems){
   vexDelay(timems);
   mOutputLower.setVelocity(speed, pct);
 }
-*/
