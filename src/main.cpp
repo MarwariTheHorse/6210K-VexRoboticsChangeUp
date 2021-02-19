@@ -673,12 +673,11 @@ void autonomous(void) {
     // Score preload, score the red ball off the ground, and descore the blues
     output(100, 2000);
 
-    intakeOpen();
-
     // Get out
     driveForward(-75, 500);
 
     intakeIn();
+    wait(500, msec);
 
     driveForward(100, 1000);
 
