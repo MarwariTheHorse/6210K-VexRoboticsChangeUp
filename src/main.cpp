@@ -673,7 +673,7 @@ void autonomous(void) {
     // Score preload, score the red ball off the ground, and descore the blues
     output(100, 2000);
 
-    // Get out
+    // Fully deploy
     driveForward(-75, 500);
 
     intakeIn();
@@ -681,7 +681,14 @@ void autonomous(void) {
 
     driveForward(100, 1000);
 
+    output(100, 2000);
+    intakeOff();
+    intakeOpen();
+    wait(100, msec);
+    intakeIn();
+    prepOutput(100, 400);
     driveForward(-100, 500);
+    intakeOff();
 
   }
 
