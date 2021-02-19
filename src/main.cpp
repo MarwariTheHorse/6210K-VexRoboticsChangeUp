@@ -220,7 +220,7 @@ void autonomous(void) {
   // mWheelBackRight.setVelocity(0, pct);
 
   // Autonomous
-  if(mode == 'V'){
+  /*if(mode == 'V'){
 
     // Open top flap and toss ball into the goal
     output(100, 200);
@@ -335,7 +335,7 @@ void autonomous(void) {
 
     // Score the other red we grabbed
 
-  }
+  }*/
   // Right 1
   if(mode == 'Y'){
     // Get to the goal
@@ -1156,12 +1156,14 @@ int main() {
 
 
     if(mode == 'V'){
+      mOutputUpper.setVelocity(100, pct);
       intakeIn();
       mWheelFrontLeft.setVelocity(0, pct);
       mWheelFrontRight.setVelocity(-40, pct);
       mWheelBackLeft.setVelocity(0, pct);
       mWheelBackRight.setVelocity(-40, pct);
       vexDelay(300);
+      mOutputUpper.setVelocity(0, pct);
       mWheelFrontLeft.setVelocity(0, pct);
       mWheelFrontRight.setVelocity(0, pct);
       mWheelBackLeft.setVelocity(0, pct);
