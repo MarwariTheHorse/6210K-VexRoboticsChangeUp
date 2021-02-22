@@ -40,6 +40,7 @@ competition Competition;
 char mode = 'N';
 bool disableIntakes = false;
 
+
 void pre_auton(void) { 
   vexcodeInit();
 
@@ -338,6 +339,64 @@ void autonomous(void) {
   }*/
 
   if(mode == 'V'){
+    sInertial.setRotation(57, deg);
+
+    // Deploy Camera and Hood
+    mOutputUpper.setVelocity(100, pct);
+    wait(300, msec);
+    mOutputUpper.setVelocity(0, pct);
+
+    outputIn();
+
+    // Drive forward and try to alight with the next goal, picking up both balls along the way
+    driveForward(100, 500); // STARTHERE
+    outputOff();
+
+    // Drive towards ball 2
+    double startTime = Brain.timer(msec);
+    while(Brain.timer(msec) - startTime < 1000);
+    {
+      if(Brain.timer(msec) - startTime > 500)
+        outputIn();
+      leftX = 0;
+      leftY = 100;
+      rightX = -(50 - sInertial.rotation(deg)) * 5;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+    }
+    driveForward(0, 0);
+    outputOff();
+
+
+    // Aim at goal
+    while(sInertial.rotation(deg) < 0){
+      mWheelBackLeft.setVelocity(40, pct);
+      mWheelFrontLeft.setVelocity(40, pct);
+      mWheelBackRight.setVelocity(0, pct);
+      mWheelFrontRight.setVelocity(0, pct);
+    }
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+
+    // Turn towards the goal
+
+
+
+    // Get into the goal using camera
+
+    // Score
+
+
+
+
+
+
+    /* Joey's new auton
     mOutputUpper.setVelocity(100, pct);
 
     intakeIn();
@@ -601,6 +660,7 @@ void autonomous(void) {
     // Back out of the goal and yeet blues
     driveForward(-100, 1000);
     output(-100, 1000);
+    */
   }
 
   // Right 1
@@ -1224,6 +1284,10 @@ void autonomous(void) {
 
     intakeOff();
   }
+}
+
+void buttonDown(){
+  autonomous();
 }
 
 void usercontrol(void) {
