@@ -94,6 +94,9 @@ void pre_auton(void) {
   Controller1.Screen.print("Calibrating...");
   sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
+  sInertial.setRotation(57, deg);
+
+
 
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
@@ -101,7 +104,6 @@ void pre_auton(void) {
   Controller1.Screen.print("DONE");
   wait(500, msec);
   Controller1.Screen.clearScreen();
-
   disableIntakes = false;
 
   // Activiate the opticals
@@ -339,28 +341,36 @@ void autonomous(void) {
   }*/
 
   if(mode == 'V'){
-    sInertial.setRotation(57, deg);
+    sInertial.setRotation(-57, deg);
+    double startTime;
 
     // Step 1 - Deploy Camera and Hood and flcik ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
     mOutputUpper.setVelocity(0, pct);
 
-    outputIn();
-
     // Step 2 - Get ball 1 (Drive forward and try to alight with the next goal, picking up both balls along the way
-    driveForward(100, 500); // STARTHERE
-    outputOff();
+    mOutputLower.setVelocity(100, pct);
+    driveForward(100, 600);
+    mOutputLower.setVelocity(0, pct);
 
-    // Step 3 - Drive towards ball 2 using Gyro
-    double startTime = Brain.timer(msec);
-    while(Brain.timer(msec) - startTime < 1000);
-    {
-      if(Brain.timer(msec) - startTime > 500)
-        outputIn();
+
+// Step 2A - Deploy Arms
+
+intakeIn();
+wait(1000, msec);
+
+// Step 2B - Open arms to funnel position
+
+intakeOpenAuton();
+// WE NEED TO TURN SO THAT WE ARE AT -90 DEG BEFORE WE PURSUE THE BALL.
+      if((Brain.timer(msec) - startTime) > 250)
+      { 
+        mOutputLower.setVelocity(100, pct);
+      }
       leftX = 0;
       leftY = 100;
-      rightX = -(50 - sInertial.rotation(deg)) * 5;
+      rightX = (-52 - sInertial.rotation(deg)) * 5;
       mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
       mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
       mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
@@ -369,10 +379,11 @@ void autonomous(void) {
     }
     driveForward(0, 0);
     outputOff();
+    intakeIn();
 
 
     // Step 4 - Gyro turn to face center goal
-    while(sInertial.rotation(deg) < 0){
+    while(sInertial.rotation(deg) < -2){
       mWheelBackLeft.setVelocity(40, pct);
       mWheelFrontLeft.setVelocity(40, pct);
       mWheelBackRight.setVelocity(0, pct);
@@ -382,9 +393,28 @@ void autonomous(void) {
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelBackRight.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
+    intakeOff();
 
-    // Turn towards the goal
+    // Step 5 - Drive into center goal using camera and gyro
+    intakeOpenAuton();
+     Controller1.Screen.clearScreen();
+    startTime = Brain.timer(msec);
+    while((Brain.timer(msec) - startTime) < 750)
+    {
 
+      leftX = 0;
+      leftY = 100;
+      rightX = (0 - sInertial.rotation(deg)) * 5;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print(sInertial.rotation(deg));
+    }
+    driveForward(0, 0);
+    outputOff();
 
 
     // Get into the goal using camera
