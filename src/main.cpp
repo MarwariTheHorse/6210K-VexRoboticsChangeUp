@@ -341,18 +341,18 @@ void autonomous(void) {
   if(mode == 'V'){
     sInertial.setRotation(57, deg);
 
-    // Deploy Camera and Hood
+    // Step 1 - Deploy Camera and Hood and flcik ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
     mOutputUpper.setVelocity(0, pct);
 
     outputIn();
 
-    // Drive forward and try to alight with the next goal, picking up both balls along the way
+    // Step 2 - Get ball 1 (Drive forward and try to alight with the next goal, picking up both balls along the way
     driveForward(100, 500); // STARTHERE
     outputOff();
 
-    // Drive towards ball 2
+    // Step 3 - Drive towards ball 2 using Gyro
     double startTime = Brain.timer(msec);
     while(Brain.timer(msec) - startTime < 1000);
     {
@@ -371,7 +371,7 @@ void autonomous(void) {
     outputOff();
 
 
-    // Aim at goal
+    // Step 4 - Gyro turn to face center goal
     while(sInertial.rotation(deg) < 0){
       mWheelBackLeft.setVelocity(40, pct);
       mWheelFrontLeft.setVelocity(40, pct);
