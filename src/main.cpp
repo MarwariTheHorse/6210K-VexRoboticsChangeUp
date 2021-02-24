@@ -379,7 +379,7 @@ while(startTime - Brain.timer(msec) < 750){
       wait(5, msec);
     }
   driveForward(0, 0);
-  OutputOff();
+  outputOff();
   intakeIn();
 
   // Drive to be perpendicular to the goal
@@ -402,9 +402,9 @@ while(startTime - Brain.timer(msec) < 750){
     intakeOpenAuton();
     while((Brain.timer(msec) - startTime) < 750)
     {
-      sVision.takeSnapshot(sVision__SIG_BLUE);
-      if(sVision.objectCount > 0){
-        leftX = (sVision.largestObject.centerX - 158) * 1;
+      sVisionUpper.takeSnapshot(sVisionUpper__SIG_BLUE);
+      if(sVisionUpper.objectCount > 0){
+        leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
         }else{
         leftX = 0;
         }
@@ -439,9 +439,9 @@ while(startTime - Brain.timer(msec) < 750){
     intakeOpenAuton();
     while((Brain.timer(msec) - startTime) < 750)
     {
-      sVision.takeSnapshot(sVision__SIG_GREEN);
-      if(sVision.objectCount > 0){
-        leftX = (sVision.largestObject.centerX - 158) * 1;
+      sVisionUpper.takeSnapshot(sVisionUpper__SIG_GREEN);
+      if(sVisionUpper.objectCount > 0){
+        leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
         }else{
         leftX = 0;
         }
@@ -477,9 +477,9 @@ while(startTime - Brain.timer(msec) < 750){
     // Get ball using gyro and bottom camera
     while((Brain.timer(msec) - startTime) < 500)
     {
-      sVision.takeSnapshot(sVision__SIG_RED);// This needs to be edited so it uses the bottom camera
-      if(sVision.objectCount > 0){
-        leftX = (sVision.largestObject.centerX - 158) * 1;
+      sVisionLower.takeSnapshot(sVisionLower__SIG_RED);// This needs to be edited so it uses the bottom camera
+      if(sVisionLower.objectCount > 0){
+        leftX = (sVisionLower.largestObject.centerX - 158) * 1;
         }else{
         leftX = 0;
         }
@@ -1375,7 +1375,7 @@ void usercontrol(void) {
   }
 }
 
-int main() {
+int main(){
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
