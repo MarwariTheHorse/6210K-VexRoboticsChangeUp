@@ -336,9 +336,7 @@ void autonomous(void) {
 
   }*/
 
-
-
-  // AUTONOMOUS
+  // STATE AUTONOMOUS
   if (mode == 'V') {
     sInertial.setRotation(-57, deg); // BACK TO -57
     mOutputLower.setBrake(hold);
