@@ -39,6 +39,13 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 bool disableIntakes = false;
+// these are global variables
+// float ForwardDistance;
+// float TurnDistance;
+// float StrafeDistance;
+float ForwardVelocity;
+float TurnVelocity;
+float StrafeVelocity;
 
 void pre_auton(void) {
   vexcodeInit();
@@ -223,6 +230,22 @@ void alignToGoal(double a){
   mWheelFrontRight.setVelocity(0, pct);
 }
 
+void strafeUntilGreen(int speed){
+  mWheelBackLeft.setVelocity(-speed, pct);
+  mWheelFrontLeft.setVelocity(speed, pct);
+  mWheelBackRight.setVelocity(-speed, pct);
+  mWheelFrontRight.setVelocity(speed, pct);
+  sVisionUpper.takeSnapshot(sigGreen);
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 5){
+    wait(10, msec);
+    sVisionUpper.takeSnapshot(sigGreen);
+  }
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelFrontLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(0, pct);
+  mWheelFrontRight.setVelocity(0, pct);
+}
+
 void autonomous(void) {
   // output(100, 5000); // Spit the ball into the goal
   // intake(-75, 1000); // Flick the intakes outward
@@ -278,30 +301,40 @@ void autonomous(void) {
     intakeOff();
 
     // WE NEED TO TURN SO THAT WE ARE AT -90 DEG BEFORE WE PURSUE THE BALL.
-    turnTo(-90);
+    turnTo(-180);
     intakeOff();
     intakeIn();
 
-    // Drive at -90 to align with goal
-    driveViaDistanceGyro(3500, -90);
+    // Strafe until we see the goal
+    strafeUntilGreen(80);
 
-    // Turn to face the center goal
-    turnTo(0);
-    intakeOpenAuton();
 
-    // Drive into the goal
-    driveViaTimeGyroCamera(3000, 0, sigBlue);
 
-    // Make sure we are perpendicular to goal
-    alignToGoal(0);
 
-    // Score our red Ball
-    intakeIn();
-    wait(750, msec);
-    mOutputUpper.setVelocity(100, pct);
-    wait(250, msec);
-    mOutputUpper.setVelocity(0, pct);
-    intakeOff();
+
+
+
+
+    // // Drive at -90 to align with goal
+    // driveViaDistanceGyro(3500, -90);
+
+    // // Turn to face the center goal
+    // turnTo(0);
+    // intakeOpenAuton();
+
+    // // Drive into the goal
+    // driveViaTimeGyroCamera(3000, 0, sigBlue);
+
+    // // Make sure we are perpendicular to goal
+    // alignToGoal(0);
+
+    // // Score our red Ball
+    // intakeIn();
+    // wait(750, msec);
+    // mOutputUpper.setVelocity(100, pct);
+    // wait(250, msec);
+    // mOutputUpper.setVelocity(0, pct);
+    // intakeOff();
     
 
     // // Step 5 - Drive into center goal using camera and gyro
@@ -1282,15 +1315,90 @@ void usercontrol(void) {
   }
 }
 
-int printCameraObjects(){
-  while(true){
-    wait(100, msec);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1, 1);
-    sVisionUpper.takeSnapshot(sigBlue);
-    Controller1.Screen.print("Objects: %d", sVisionUpper.largestObject.centerX);
+int printCameraObjects() {
+
+  wait(100, msec);
+  // Local variables
+  // float FrontLeftDistance;
+  // float FrontRightDistance;
+  // float BackLeftDistance;
+  // float BackRightDistance;
+  float FrontLeftVelocity;
+  float FrontRightVelocity;
+  float BackLeftVelocity;
+  float BackRightVelocity;
+  float gyroangle;
+  int loopcount = 0;
+
+  while (1 > 0) {
+
+    // Compute distance each wheel has traveled
+    // May not need this code in the multitask (instead put the code in the
+    // method that uses it)
+    // FrontLeftDistance = mWheelFrontLeft.rotation(rotationUnits::raw);
+    // FrontRightDistance = mWheelFrontRight.rotation(rotationUnits::raw);
+    // BackLeftDistance = mWheelBackLeft.rotation(rotationUnits::raw);
+    // BackRightDistance = mWheelBackRight.rotation(rotationUnits::raw);
+    // ForwardDistance = FrontLeftDistance - FrontRightDistance + BackLeftDistance - BackRightDistance;
+    // TurnDistance =    FrontLeftDistance + FrontRightDistance + BackLeftDistance + BackRightDistance;
+    // StrafeDistance =  FrontLeftDistance - FrontRightDistance - BackLeftDistance - BackRightDistance;
+
+    // Compute velocity of each wheel
+    // This code is useful for determining if Robot has hit the goal and stopped
+    // moving Also useful to calculate the turn velocity to detect the end of a
+    // gyro turn
+    FrontLeftVelocity = mWheelFrontLeft.velocity(pct);
+    FrontRightVelocity = mWheelFrontRight.velocity(pct);
+    BackLeftVelocity = mWheelBackLeft.velocity(pct);
+    BackRightVelocity = mWheelBackRight.velocity(pct);
+    ForwardVelocity = FrontLeftVelocity - FrontRightVelocity + BackLeftVelocity - BackRightVelocity;
+    TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
+    StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
+
+    // display every 10 iterations (500ms update rate)
+    // display doesn't need to be updated faster
+    loopcount = loopcount + 1;
+    if (loopcount > 49) {
+      gyroangle = sInertial.rotation(deg);
+      Controller1.Screen.clearScreen();
+
+      Controller1.Screen.setCursor(1, 1);
+      Controller1.Screen.print("GY"); // print Gyro Angle
+      Controller1.Screen.setCursor(1, 5);
+      Controller1.Screen.print(sInertial.rotation(deg));
+
+      Controller1.Screen.setCursor(1, 11);
+      Controller1.Screen.print("FV"); // Print Forward Velocity
+      Controller1.Screen.setCursor(1, 15);
+      Controller1.Screen.print(ForwardVelocity);
+
+      Controller1.Screen.setCursor(2, 1);
+      Controller1.Screen.print(" "); // Empty
+      Controller1.Screen.setCursor(2, 5);
+      Controller1.Screen.print(" ");
+
+      Controller1.Screen.setCursor(2, 11);
+      Controller1.Screen.print("TV"); // Print Turn Velocity
+      Controller1.Screen.setCursor(2, 15);
+      Controller1.Screen.print(TurnVelocity);
+
+      Controller1.Screen.setCursor(3, 1);
+      Controller1.Screen.print("VUX"); // Print x-axis for Vision Camera 1
+      Controller1.Screen.setCursor(3, 5);
+      sVisionUpper.takeSnapshot(sigBlue);
+      Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
+
+      Controller1.Screen.setCursor(3, 11);
+      Controller1.Screen.print("VLX"); // Print x-axis for Vision Camera 2
+      Controller1.Screen.setCursor(3, 15);
+      sVisionLower.takeSnapshot(sigRed);
+      Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
+
+      loopcount = 0; // reset loop counter
+    }
+    wait(10, msec);
   }
-}
+} // end of printCameraObjects
 
 int main() {
   // Set up callbacks for autonomous and driver control periods.
