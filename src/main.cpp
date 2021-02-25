@@ -372,8 +372,8 @@ void autonomous(void) {
     intakeIn();
 
     // Drive to be perpendicular to the goal
-    driveForward(100, 800); // TODO: Find wat time is needed to be perfectly
-                            // alligned for the cantering turn
+    driveForward(100, 800); // TODO: Find what time is needed to be perfectly
+                            // alligned for the centering turn
 
     // Step 4 - Gyro turn to face center goal
     while (sInertial.rotation(deg) < -2) {
@@ -390,6 +390,7 @@ void autonomous(void) {
 
     // Step 5 - Drive into center goal using camera and gyro
     intakeOpenAuton();
+    double startTime = Brain.timer(msec);
     while ((Brain.timer(msec) - startTime) < 750) {
       sVisionUpper.takeSnapshot(sVisionUpper__SIG_BLUE);
       if (sVisionUpper.objectCount > 0) {
@@ -514,7 +515,65 @@ void autonomous(void) {
 
     output(100, 400);
     intakeOpenAuton();
-    driveForward(-100, 400);
+
+    // Get red balls by middle left goal
+
+    driveForward(-100, 1000);
+
+    while (sInertial.rotation(deg) < -2) {
+      mWheelBackRight.setVelocity(0, pct);
+      mWheelFrontRight.setVelocity(0, pct);
+      mWheelBackLeft.setVelocity(40, pct);
+      mWheelFrontLeft.setVelocity(40, pct);
+    }
+    mOutputLower.setVelocity(100, pct);
+    while ((Brain.timer(msec) - startTime) < 600) {
+      sVisionLower.takeSnapshot(sVisionUpper__SIG_RED);
+      if (sVisionLower.objectCount > 0) {
+        leftX = (sVisionLower.largestObject.centerX - 158) * 1;
+      } else {
+        leftX = 0;
+      }
+      leftY = 100;
+      rightX = (0 - sInertial.rotation(deg)) * 5; // Look  into this code
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+    }
+    mOutputLower.setVelocity(0, pct);
+    intakeIn();
+
+    while (sInertial.rotation(deg) < -87) {
+      mWheelBackRight.setVelocity(0, pct);
+      mWheelFrontRight.setVelocity(0, pct);
+      mWheelBackLeft.setVelocity(40, pct);
+      mWheelFrontLeft.setVelocity(40, pct);
+    }
+
+    // Go to goal
+    intakeOpenAuton();
+    while ((Brain.timer(msec) - startTime) < 600) {
+      sVisionUpper.takeSnapshot(sVisionUpper__SIG_RED);
+      if (sVisionUpper.objectCount > 0) {
+        leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
+      } else {
+        leftX = 0;
+      }
+      leftY = 100;
+      rightX = (-90 - sInertial.rotation(deg)) * 5; // Look  into this code
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+    }
+
+    //Score
+
+    output(100, 500);
+
     // TODO: Keep adding goals!
   }
 
