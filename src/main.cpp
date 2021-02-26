@@ -300,7 +300,7 @@ void autonomous(void) {
     wait(1000, msec);
     intakeOff();
 
-    // WE NEED TO TURN SO THAT WE ARE AT -90 DEG BEFORE WE PURSUE THE BALL.
+    // Prepare for strafe
     turnTo(-180);
     intakeOff();
     intakeIn();
