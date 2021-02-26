@@ -152,10 +152,12 @@ void scoreFirstCornerGoal(int dir) {
 }
 
 void turnTo(double angle){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(mWheelFrontLeft.velocity(pct)) > 2)
+  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
   {
     // Calculate error
     double error = angle - sInertial.rotation(deg);
+    if(error > 90) error = 90;   // cap positive motor power at +90
+    if(error < -90) error = -90; // cap negative motor power at -90
     mWheelFrontLeft.setVelocity(error, pct);
     mWheelFrontRight.setVelocity(error, pct);
     mWheelBackLeft.setVelocity(error, pct);
@@ -166,13 +168,14 @@ void turnTo(double angle){
 }
 
 void driveViaDistanceGyro(double dist, double a){
+  // reset all motor encoders to zero
+  // 10000 units is equal to 56" of travel
   mWheelFrontLeft.resetRotation();
   mWheelBackLeft.resetRotation();
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
   int d = 0;
   while (d < dist){
-    d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     int leftY = 80;
     int rightX = (a - sInertial.rotation(deg)) * 3;
     int leftX = 0;
@@ -181,16 +184,20 @@ void driveViaDistanceGyro(double dist, double a){
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
+    d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
   }
   driveForward(0, 0);
 }
 
 void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
+  // This method drives according to time and corrects with camera (strafe) and gyro (angle)
+  // The loop breaks if the robot runs into an obstacle
   double startTime = Brain.timer(msec);
   int leftX;
   int leftY;
   int rightX;
-  while (Brain.timer(msec) - startTime < timeInMS) {
+  int speed = 100; // dummy value
+  while (Brain.timer(msec) - startTime < timeInMS && speed > 40){
     sVisionUpper.takeSnapshot(sig);
     if (sVisionUpper.objectCount > 0) {
       leftX = (sVisionUpper.largestObject.centerX - 180) * .8;
@@ -203,13 +210,16 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    if (Brain.timer(msec) > 200) speed = ForwardVelocity; // this line gives the robot 200ms to speed up (assuming it started at rest)
+    // ForwardVelocity is the sum of the 4 wheels, so leftY would make ForwardVelocity = 320
+    // ForwardVelocity will go towards zero when the robot runs into something and stops
     wait(5, msec);
   }
   driveForward(0, 0);
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(mWheelFrontLeft.velocity(pct)) > 2)
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 2)
   {
     if(sInertial.rotation() > a){
       mWheelBackLeft.setVelocity(0, pct);
