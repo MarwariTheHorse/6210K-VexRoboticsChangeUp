@@ -3,3 +3,4 @@ build/XDrive6210K.bin
 build/XDrive6210K.elf
 build/XDrive6210K.map
 build/
+compile_commands.json
