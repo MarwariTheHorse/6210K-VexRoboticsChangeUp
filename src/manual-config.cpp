@@ -26,5 +26,5 @@ signature sig4 = signature (4, 0, 0, 0, 0, 0, 0, 3, 0);
 signature sig5 = signature (5, 0, 0, 0, 0, 0, 0, 3, 0);
 signature sig6 = signature (6, 0, 0, 0, 0, 0, 0, 3, 0);
 signature sVision__SIG_7 = signature (7, 0, 0, 0, 0, 0, 0, 3, 0);
-vision sVisionUpper = vision (PORT21, 50, sigBlue, sigRed, sigGreen, sig4, sig5, sig6, sVision__SIG_7);
+vision sVisionUpper = vision (PORT17, 50, sigBlue, sigRed, sigGreen, sig4, sig5, sig6, sVision__SIG_7);
 vision sVisionLower = vision (PORT20, 50, sigBlue, sigRed, sigGreen, sig4, sig5, sig6, sVision__SIG_7);
