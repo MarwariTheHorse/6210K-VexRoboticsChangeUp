@@ -249,7 +249,8 @@ void strafeUntilGreen(int speed){
   mWheelBackRight.setVelocity(-speed, pct);
   mWheelFrontRight.setVelocity(speed, pct);
   sVisionUpper.takeSnapshot(sigGreen);
-  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 70){
+  // looks 80 pixels in advance to accomidate for overshoot
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
     wait(10, msec);
     sVisionUpper.takeSnapshot(sigGreen);
   }
@@ -328,7 +329,18 @@ void autonomous(void) {
 
     // drive into goal
     driveViaTimeGyroCamera(1000, -180, sigGreen);
+    alignToGoal(-180);
 
+    //Score and descore
+    output(100, 600);
+    mOutputLower.setVelocity(100, pct);
+    intakeIn();
+    
+    // Back up and eject blue
+
+    driveViaDistanceGyro(-2000, -180);
+    turnTo(90);
+    output(-100, 600);
 
 
 
@@ -1430,7 +1442,7 @@ int main() {
 
   task taskPrintCameraObjects(printCameraObjects);
 
-  //Competition.test_auton();
+  Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
