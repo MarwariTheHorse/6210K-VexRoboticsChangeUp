@@ -174,17 +174,37 @@ void driveViaDistanceGyro(double dist, double a){
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
   int d = 0;
-  while (d < dist){
-    int leftY = 80;
-    int rightX = (a - sInertial.rotation(deg)) * 3;
-    int leftX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    wait(5, msec);
-    d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+
+  d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+
+
+  if(d < dist){
+    while (d < dist){
+      int leftY = 80;
+      int rightX = (a - sInertial.rotation(deg)) * 3;
+      int leftX = 0;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
+  }else{
+    while (d > dist){
+      int leftY = -80;
+      int rightX = (a - sInertial.rotation(deg)) * 3;
+      int leftX = 0;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
   }
+
+
   driveForward(0, 0);
 }
 
@@ -263,13 +283,6 @@ void autonomous(void) {
   // output(100, 5000); // Spit the ball into the goal
   // intake(-75, 1000); // Flick the intakes outward
   // driveForward(-50, 1000); // Back out and away from the goal
-
-  // Auton Methods
-  // * Gyro
-  // * Drive
-  //   * Distance
-  //   * Camera
-  //   * Gyro
 
   mWheelFrontLeft.spin(fwd);
   mWheelFrontRight.spin(fwd);
