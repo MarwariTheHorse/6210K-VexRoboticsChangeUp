@@ -100,7 +100,6 @@ void pre_auton(void) {
   Controller1.Screen.print("Calibrating...");
   sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
-  sInertial.setRotation(57, deg);
 
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
@@ -196,21 +195,25 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   int leftX;
   int leftY;
   int rightX;
-  int speed = 100; // dummy value
-  while (Brain.timer(msec) - startTime < timeInMS && speed > 40){
+  while (Brain.timer(msec) - startTime < timeInMS){
     sVisionUpper.takeSnapshot(sig);
     if (sVisionUpper.objectCount > 0) {
       leftX = (sVisionUpper.largestObject.centerX - 180) * .8;
     } else {
       leftX = 0;
     }
-    leftY = 80;
+    leftY = 50;
     rightX = (a - sInertial.rotation(deg)) * 3;
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) > 200) speed = ForwardVelocity; // this line gives the robot 200ms to speed up (assuming it started at rest)
+    if (Brain.timer(msec) - startTime > 400) {
+      if (ForwardVelocity < 20) {
+        break;
+      }
+    }
+    // this line gives the robot 200ms to speed up (assuming it started at rest)
     // ForwardVelocity is the sum of the 4 wheels, so leftY would make ForwardVelocity = 320
     // ForwardVelocity will go towards zero when the robot runs into something and stops
     wait(5, msec);
@@ -222,14 +225,14 @@ void alignToGoal(double a){
   while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 2)
   {
     if(sInertial.rotation() > a){
-      mWheelBackLeft.setVelocity(0, pct);
+      mWheelBackLeft.setVelocity(-20, pct);
       mWheelFrontLeft.setVelocity(0, pct);
       mWheelBackRight.setVelocity(-20, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }else{
       mWheelBackLeft.setVelocity(20, pct);
       mWheelFrontLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(0, pct);
+      mWheelBackRight.setVelocity(20, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }
     wait(5, msec);
@@ -246,7 +249,7 @@ void strafeUntilGreen(int speed){
   mWheelBackRight.setVelocity(-speed, pct);
   mWheelFrontRight.setVelocity(speed, pct);
   sVisionUpper.takeSnapshot(sigGreen);
-  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 5){
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 70){
     wait(10, msec);
     sVisionUpper.takeSnapshot(sigGreen);
   }
@@ -294,6 +297,7 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
+    
     sInertial.setRotation(-57, deg); // BACK TO -57
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
@@ -316,8 +320,14 @@ void autonomous(void) {
     intakeIn();
 
     // Strafe until we see the goal
-    strafeUntilGreen(80);
+    strafeUntilGreen(50);
 
+    // open arms
+    intakeOpenAuton();
+    wait(100, msec);
+
+    // drive into goal
+    driveViaTimeGyroCamera(1000, -180, sigGreen);
 
 
 
@@ -1361,7 +1371,7 @@ int printCameraObjects() {
     FrontRightVelocity = mWheelFrontRight.velocity(pct);
     BackLeftVelocity = mWheelBackLeft.velocity(pct);
     BackRightVelocity = mWheelBackRight.velocity(pct);
-    ForwardVelocity = FrontLeftVelocity - FrontRightVelocity + BackLeftVelocity - BackRightVelocity;
+    ForwardVelocity = BackLeftVelocity - BackRightVelocity;
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
 
@@ -1395,7 +1405,7 @@ int printCameraObjects() {
       Controller1.Screen.setCursor(3, 1);
       Controller1.Screen.print("VUX"); // Print x-axis for Vision Camera 1
       Controller1.Screen.setCursor(3, 5);
-      sVisionUpper.takeSnapshot(sigBlue);
+      sVisionUpper.takeSnapshot(sigGreen);
       Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
 
       Controller1.Screen.setCursor(3, 11);
@@ -1420,7 +1430,7 @@ int main() {
 
   task taskPrintCameraObjects(printCameraObjects);
 
-  Competition.test_auton();
+  //Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
