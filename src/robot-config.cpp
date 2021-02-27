@@ -9,6 +9,12 @@ brain  Brain;
 
 // VEXcode device constructors
 /*vex-vision-config:begin*/
+<<<<<<< HEAD
+=======
+
+/*vex-vision-config:end*/
+/*vex-vision-config:begin*/
+>>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 /*vex-vision-config:end*/
 
 // VEXcode generated functions

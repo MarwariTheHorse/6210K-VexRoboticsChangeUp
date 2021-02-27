@@ -1,6 +1,7 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+<<<<<<< HEAD
 // sVisionUpper         vision        21              
 // sVisionLower         vision        20              
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -13,6 +14,8 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+=======
+>>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 // sVision              vision        21
 // ---- END VEXCODE CONFIGURED DEVICES ----
 // ---- START VEXCODE CONFIGURED DEVICES ----
@@ -195,6 +198,7 @@ void driveViaDistanceGyro(double dist, double a){
 
   d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
 
+
   if(d < dist){
     while (d < dist){
       int leftY = 80;
@@ -220,45 +224,8 @@ void driveViaDistanceGyro(double dist, double a){
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
   }
-  driveForward(0, 0);
-}
 
-void strafeViaDistanceGyro(double dist, double a){
-  // reset all motor encoders to zero
-  // 10000 units is equal to 56" of travel
-  mWheelFrontLeft.resetRotation();
-  mWheelBackLeft.resetRotation();
-  mWheelFrontRight.resetRotation();
-  mWheelBackRight.resetRotation();
-  int d = 0;
 
-  d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-
-  if(d < dist){
-    while (d < dist){
-      int leftY = 0;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 50;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-      wait(5, msec);
-      d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-    }
-  }else{
-    while (d > dist){
-      int leftY = -80;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 0;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-      wait(5, msec);
-      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-    }
-  }
   driveForward(0, 0);
 }
 
@@ -296,7 +263,7 @@ void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 3 || fabs(TurnVelocity) > 3)
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 2)
   {
     if(sInertial.rotation() > a){
       mWheelBackLeft.setVelocity(0, pct);
@@ -333,7 +300,6 @@ void strafeUntilGreen(int speed){
   mWheelFrontLeft.setVelocity(0, pct);
   mWheelBackRight.setVelocity(0, pct);
   mWheelFrontRight.setVelocity(0, pct);
-  //setStopping(brake);
 }
 
 void autonomous(void) {
@@ -367,8 +333,13 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
+<<<<<<< HEAD
     // Set the starting angle to where we start
     sInertial.setRotation(-57, deg);
+=======
+    
+    sInertial.setRotation(-57, deg); // BACK TO -57
+>>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
@@ -399,17 +370,23 @@ void autonomous(void) {
     // Step 7: drive into goal
     driveViaTimeGyroCamera(2000, -180, sVisionUpper, sigGreen);
     alignToGoal(-180);
-    intakeOff();
 
     // Step 8: Score and descore
     output(100, 600);
     mOutputLower.setVelocity(100, pct);
     intakeIn();
-    wait(700, msec);
+    
     // Back up and eject blue
 
-    driveViaDistanceGyro(-1700, -180);
+    driveViaDistanceGyro(-2000, -180);
+    turnTo(90);
+    output(-100, 600);
 
+
+
+
+
+<<<<<<< HEAD
     intakeOff();
     intakeOpenAuton();
     turnTo(-270);
@@ -444,6 +421,8 @@ void autonomous(void) {
     driveViaDistanceGyro(-1000, -360);
     turnTo(-135);
     driveViaTimeGyroCamera(3000, -135, sVisionLower, sigRed);
+=======
+>>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 
     // // Drive at -90 to align with goal
     // driveViaDistanceGyro(3500, -90);
