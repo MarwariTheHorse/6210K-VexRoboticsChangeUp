@@ -58,6 +58,11 @@ bool disableIntakes = false;
 float ForwardVelocity;
 float TurnVelocity;
 float StrafeVelocity;
+float VisionUpperX;
+float VisionUpperObject;
+float VisionLowerX;
+float VisionLowerObject;
+
 
 void pre_auton(void) {
   vexcodeInit();
@@ -257,7 +262,7 @@ void strafeViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
-void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
+void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
   // The loop breaks if the robot runs into an obstacle
   double startTime = Brain.timer(msec);
@@ -265,9 +270,9 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   int leftY;
   int rightX;
   while (Brain.timer(msec) - startTime < timeInMS){
-    sVisionUpper.takeSnapshot(sig);
-    if (sVisionUpper.objectCount > 0) {
-      leftX = (sVisionUpper.largestObject.centerX - 180) * .8;
+    //v.takeSnapshot(sig);
+    if(v.objectCount > 0) {
+      leftX = v.largestObject.centerX * .8;
     } else {
       leftX = 0;
     }
@@ -277,9 +282,9 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) - startTime > 400) {
-      if (ForwardVelocity < 20) {
-        break;
+    if (Brain.timer(msec) - startTime > 500) {
+      if (fabs(ForwardVelocity) < 40) {
+        //break;
       }
     }
     // this line gives the robot 200ms to speed up (assuming it started at rest)
@@ -317,11 +322,12 @@ void strafeUntilGreen(int speed){
   mWheelFrontLeft.setVelocity(speed, pct);
   mWheelBackRight.setVelocity(-speed, pct);
   mWheelFrontRight.setVelocity(speed, pct);
-  sVisionUpper.takeSnapshot(sigGreen);
+  //sVisionUpper.takeSnapshot(sigGreen);
   // looks 80 pixels in advance to accomidate for overshoot
-  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
-    wait(10, msec);
-    sVisionUpper.takeSnapshot(sigGreen);
+  //while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
+  while(VisionUpperObject == 0 || fabs(VisionUpperX) > 60){ // angle was 80
+    wait(2, msec);
+    // sVisionUpper.takeSnapshot(sigGreen);
   }
   mWheelBackLeft.setVelocity(0, pct);
   mWheelFrontLeft.setVelocity(0, pct);
@@ -361,41 +367,41 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-  
-    sInertial.setRotation(-57, deg); // BACK TO -57
+    // Set the starting angle to where we start
+    sInertial.setRotation(-57, deg);
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
     mOutputUpper.setVelocity(0, pct);
 
-    // Step 2 - Get ball 1,
+    // Step 2 - Get ball 1
     mOutputLower.setVelocity(100, pct);
-    driveViaDistanceGyro(6000, -57);
+    driveViaDistanceGyro(5000, -57);
 
-    // Step 2A - Deploy Arms
+    // Step 3 - Deploy Arms
     intakeIn();
     wait(1000, msec);
     intakeOff();
 
-    // Prepare for strafe
+    // Step 4: Turn and Prepare for strafe
     turnTo(-180);
     intakeOff();
     intakeIn();
 
-    // Strafe until we see the goal
+    // Step 5: Strafe until we see the goal
     strafeUntilGreen(50);
 
-    // open arms
+    // Step 6: open arms
     intakeOpenAuton();
     wait(100, msec);
 
-    // drive into goal
-    driveViaTimeGyroCamera(1000, -180, sigGreen);
+    // Step 7: drive into goal
+    driveViaTimeGyroCamera(2000, -180, sVisionUpper, sigGreen);
     alignToGoal(-180);
     intakeOff();
 
-    //Score and descore
+    // Step 8: Score and descore
     output(100, 600);
     mOutputLower.setVelocity(100, pct);
     intakeIn();
@@ -416,7 +422,7 @@ void autonomous(void) {
     // pick up red and score center
 
     mOutputLower.setVelocity(80, pct);
-    driveViaTimeGyroCamera(2000, -360, sigBlue);
+    driveViaTimeGyroCamera(2000, -360, sVisionUpper, sigBlue);
     alignToGoal(-360);
     // Intake blue from goal
     intakeIn();
@@ -430,13 +436,14 @@ void autonomous(void) {
       sVisionUpper.takeSnapshot(sigRed);
     }
     outputOff();
+    wait(500, msec);
     intakeOpenAuton();
     mOutputLower.setVelocity(-50, pct);
     mOutputUpper.setVelocity(-50, pct);
 
-    driveViaDistanceGyro(1000, -360);
-    turnTo(-540);
-    
+    driveViaDistanceGyro(-1000, -360);
+    turnTo(-135);
+    driveViaTimeGyroCamera(3000, -135, sVisionLower, sigRed);
 
     // // Drive at -90 to align with goal
     // driveViaDistanceGyro(3500, -90);
@@ -1478,6 +1485,13 @@ int printCameraObjects() {
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
 
+sVisionUpper.takeSnapshot(sigGreen);
+VisionUpperX =sVisionUpper.largestObject.centerX - 180;
+VisionUpperObject = sVisionUpper.objectCount;
+sVisionLower.takeSnapshot(sigRed);
+VisionLowerX = sVisionLower.largestObject.centerX - 180;
+VisionLowerObject = sVisionLower.objectCount;
+
     // display every 10 iterations (500ms update rate)
     // display doesn't need to be updated faster
     loopcount = loopcount + 1;
@@ -1508,16 +1522,16 @@ int printCameraObjects() {
       Controller1.Screen.setCursor(3, 1);
       Controller1.Screen.print("VUX"); // Print x-axis for Vision Camera 1
       Controller1.Screen.setCursor(3, 5);
-      Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
+      Controller1.Screen.print(VisionUpperX);
 
       Controller1.Screen.setCursor(3, 11);
       Controller1.Screen.print("VLX"); // Print x-axis for Vision Camera 2
       Controller1.Screen.setCursor(3, 15);
-      Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
+      Controller1.Screen.print(VisionLowerX);
 
       loopcount = 0; // reset loop counter
     }
-    wait(10, msec);
+    wait(5, msec);
   }
 } // end of printCameraObjects
 
