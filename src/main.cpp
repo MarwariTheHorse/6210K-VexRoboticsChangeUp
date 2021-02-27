@@ -1,6 +1,12 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// sVisionUpper         vision        21              
+// sVisionLower         vision        20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // sVisionUpper         vision        17              
 // sVisionLower         vision        20              
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -157,7 +163,8 @@ void scoreFirstCornerGoal(int dir) {
 }
 
 void turnTo(double angle){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
+  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 5 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
+  // was accuracy = 2 and velocity = 10
   {
     // Calculate error
     double error = angle - sInertial.rotation(deg);
@@ -287,14 +294,14 @@ void alignToGoal(double a){
   while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 3 || fabs(TurnVelocity) > 3)
   {
     if(sInertial.rotation() > a){
-      mWheelBackLeft.setVelocity(-20, pct);
+      mWheelBackLeft.setVelocity(0, pct);
       mWheelFrontLeft.setVelocity(0, pct);
       mWheelBackRight.setVelocity(-20, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }else{
       mWheelBackLeft.setVelocity(20, pct);
       mWheelFrontLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(20, pct);
+      mWheelBackRight.setVelocity(0, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }
     wait(5, msec);
