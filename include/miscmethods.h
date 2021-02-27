@@ -69,6 +69,8 @@ void intakeOpenAuton(){
   mIntakeRight.startRotateTo(80, rotationUnits::deg, 50, velocityUnits::pct);
 }
 void output(int speed, int timems){
+  mOutputLower.spin(fwd);
+  mOutputUpper.spin(fwd);
   mOutputLower.setVelocity(speed, pct);
   mOutputUpper.setVelocity(speed, pct);
   vexDelay(timems);
@@ -76,10 +78,14 @@ void output(int speed, int timems){
   mOutputLower.setVelocity(0, pct);
 }
 void outputIn(){
+  mOutputLower.spin(fwd);
+  mOutputUpper.spin(fwd);
   mOutputLower.setVelocity(100, pct);
   mOutputUpper.setVelocity(100, pct);
 }
 void outputOff(){
+  mOutputLower.spin(fwd);
+  mOutputUpper.spin(fwd);
   mOutputLower.setVelocity(0, pct);
   mOutputUpper.setVelocity(0, pct);
 }
