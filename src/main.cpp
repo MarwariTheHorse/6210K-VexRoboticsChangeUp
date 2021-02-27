@@ -211,6 +211,59 @@ void driveViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
+void driveViaDistanceGyroCamera(double dist, double a, vision v, signature sig){
+  // reset all motor encoders to zero
+  // 10000 units is equal to 56" of travel
+  mWheelFrontLeft.resetRotation();
+  mWheelBackLeft.resetRotation();
+  mWheelFrontRight.resetRotation();
+  mWheelBackRight.resetRotation();
+  int d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+
+  double leftY;
+  double leftX;
+  double rightX;
+
+  if(d < dist){
+    leftY = 80;
+    while (d < dist){
+      rightX = (a - sInertial.rotation(deg)) * 3;
+      
+      v.takeSnapshot(sig);
+      if (v.objectCount > 0) {
+        leftX = (v.largestObject.centerX - 180) * .8;
+      } else {
+        leftX = 0;
+      }
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
+  }else{
+    leftY = -80;
+    while (d > dist){
+      rightX = (a - sInertial.rotation(deg)) * 3;
+
+      v.takeSnapshot(sig);
+      if (v.objectCount > 0) {
+        leftX = (v.largestObject.centerX - 180) * .8;
+      } else {
+        leftX = 0;
+      }
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
+  }
+  driveForward(0, 0);
+}
+
 void strafeViaDistanceGyro(double dist, double a){
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
@@ -249,6 +302,8 @@ void strafeViaDistanceGyro(double dist, double a){
   }
   driveForward(0, 0);
 }
+
+
 
 void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
@@ -348,7 +403,6 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-  
     sInertial.setRotation(-57, deg); // BACK TO -57
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
@@ -401,7 +455,6 @@ void autonomous(void) {
     turnTo(-360);
 
     // pick up red and score center
-
     mOutputLower.setVelocity(80, pct);
     driveViaTimeGyroCamera(2000, -360, sigBlue);
     alignToGoal(-360);
@@ -413,53 +466,36 @@ void autonomous(void) {
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
+
+    // Spit blue ball out
     mOutputLower.setVelocity(-100, pct);
     mOutputUpper.setVelocity(-100, pct);
     intakeOpenAuton();
+
+    // Back up
     driveViaDistanceGyro(-1000, -360);
+
+    // Turn towards the next goal
     turnTo(-135);
 
-    // // Drive at -90 to align with goal
-    // driveViaDistanceGyro(3500, -90);
+    // Run the intakes and stuff for the red ball
+    mOutputLower.setVelocity(80, pct);
+    intakeOpenAuton();
 
-    // // Turn to face the center goal
-    // turnTo(0);
-    // intakeOpenAuton();
+    // Drive to red ball and intake it
+    driveViaTimeGyroCamera(1000, -135, sigGreen); // This needs to target the red
+    intakeIn(); // So that we can get into the goal properly and get the blue ball
+    driveViaTimeGyroCamera(3000, -135, sigGreen);
 
-    // // Drive into the goal
-    // driveViaTimeGyroCamera(3000, 0, sigBlue);
-
-    // // Make sure we are perpendicular to goal
-    // alignToGoal(0);
-
-    // // Score our red Ball
-    // intakeIn();
-    // wait(750, msec);
-    // mOutputUpper.setVelocity(100, pct);
-    // wait(250, msec);
-    // mOutputUpper.setVelocity(0, pct);
-    // intakeOff();
-    
-
-    // // Step 5 - Drive into center goal using camera and gyro
-    // intakeOpenAuton();
-    // startTime = Brain.timer(msec);
-    // while ((Brain.timer(msec) - startTime) < 750) {
-    //   sVisionUpper.takeSnapshot(sigBlue);
-    //   if (sVisionUpper.objectCount > 0) {
-    //     leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
-    //   } else {
-    //     leftX = 0;
-    //   }
-    //   leftY = 100;
-    //   rightX = (0 - sInertial.rotation(deg)) * 5;
-    //   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    //   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    //   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    //   mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    //   wait(5, msec);
-    // }
-    // driveForward(0, 0);
+    // Align with the goal and score the read
+    alignToGoal(-135);
+    mOutputUpper.setVelocity(100, pct);
+    sVisionUpper.takeSnapshot(sigRed);
+    double startTime = Brain.timer(msec);
+    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+      wait(10, msec);
+      sVisionUpper.takeSnapshot(sigRed);
+    }
 
     // // Score
     // intakeIn();
