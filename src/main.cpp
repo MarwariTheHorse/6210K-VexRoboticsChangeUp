@@ -354,6 +354,34 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   driveForward(0, 0);
 }
 
+void driveViaTimeGyro(double timeInMS, double a){
+  // This method drives according to time and corrects with camera (strafe) and gyro (angle)
+  // The loop breaks if the robot runs into an obstacle
+  double startTime = Brain.timer(msec);
+  int leftX;
+  int leftY;
+  int rightX;
+  while (Brain.timer(msec) - startTime < timeInMS){
+    leftX = 0;
+    leftY = 50;
+    rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    if (Brain.timer(msec) - startTime > 400) {
+      if (ForwardVelocity < 20) {
+        break;
+      }
+    }
+    // this line gives the robot 200ms to speed up (assuming it started at rest)
+    // ForwardVelocity is the sum of the 4 wheels, so leftY would make ForwardVelocity = 320
+    // ForwardVelocity will go towards zero when the robot runs into something and stops
+    wait(5, msec);
+  }
+  driveForward(0, 0);
+}
+
 void alignToGoal(double a){
   while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
   {
@@ -556,8 +584,72 @@ void autonomous(void) {
     }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+//     // Part 5 - Back out of the goal
+//     driveViaDistanceGyro(-2000, -135);
+
+//     // Turn to face the wall
+//     turnTo(-90);
+
+//     // Get the red ball
+//     driveViaTimeGyro(1000, -90);
+//     intakeIn();
+
+//     // Scoot back
+//     driveViaDistanceGyro(-2000, -90);
+
+//     // Strafe to goal
+//     strafeUntilGreen(50);
+
+//     // Score the goal
+//     intakeOpenAuton(); // open arms
+//     wait(100, msec);
+
+//     // drive into goal
+//     driveViaTimeGyroCamera(1000, -180, sigGreen);
+//     alignToGoal(-180);
+//     intakeOff();
+
+//     //Score and descore
+//     output(100, 600);
+//     mOutputLower.setVelocity(100, pct);
+//     intakeIn();
+//     wait(700, msec);
+
+
+// ////////////////////////////////////////////////////////////////////////
+
+
+//     // PART 6 - Back up and eject blue
+//     driveViaDistanceGyro(-1700, -90);
+
+//     intakeOff();
+//     intakeOpenAuton();
+
+//     // Turn and ditch the blue ball
+//     turnFast(-135);
+//     mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+//     mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+
+//     // Turn back to face the wall
+//     turnTo(-90);
+
+//     // Strafe to the next red ball
+//     strafeViaDistanceGyro(5000, -90);
+    
+//     // Get the red ball
+//     driveViaTimeGyro(1000, -90);
+//     intakeIn();
+
+//     // Scoot back
+//     driveViaDistanceGyro(-2000, -90);
+
+//     // Rotate toward goal 6
+//     turnTo(-45);
+
+//     // Score the corner goal using the code that Joey has hopefully fixed
 
   }
 
