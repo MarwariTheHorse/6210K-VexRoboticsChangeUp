@@ -418,9 +418,25 @@ void autonomous(void) {
     mOutputLower.setVelocity(80, pct);
     driveViaTimeGyroCamera(2000, -360, sigBlue);
     alignToGoal(-360);
+    // Intake blue from goal
     intakeIn();
-    output(100, 600);
+    // Spin red out
+    mOutputUpper.setVelocity(100, pct);
+
+    // Wait untill red has left the robot
+    sVisionUpper.takeSnapshot(sigRed);
+    while(sVisionUpper.largestObject.width < 100){
+      wait(10, msec);
+      sVisionUpper.takeSnapshot(sigRed);
+    }
+    outputOff();
     intakeOpenAuton();
+    mOutputLower.setVelocity(-50, pct);
+    mOutputUpper.setVelocity(-50, pct);
+
+    driveViaDistanceGyro(1000, -360);
+    turnTo(-540);
+    
 
     // // Drive at -90 to align with goal
     // driveViaDistanceGyro(3500, -90);
@@ -1492,13 +1508,11 @@ int printCameraObjects() {
       Controller1.Screen.setCursor(3, 1);
       Controller1.Screen.print("VUX"); // Print x-axis for Vision Camera 1
       Controller1.Screen.setCursor(3, 5);
-      sVisionUpper.takeSnapshot(sigGreen);
       Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
 
       Controller1.Screen.setCursor(3, 11);
       Controller1.Screen.print("VLX"); // Print x-axis for Vision Camera 2
       Controller1.Screen.setCursor(3, 15);
-      sVisionLower.takeSnapshot(sigRed);
       Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
 
       loopcount = 0; // reset loop counter
