@@ -270,7 +270,7 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) - startTime > 400) {
+    if (Brain.timer(msec) - startTime > 500) {
       if (ForwardVelocity < 20) {
         break;
       }
@@ -284,25 +284,19 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 3 || fabs(TurnVelocity) > 3)
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
   {
-    if(sInertial.rotation() > a){
-      mWheelBackLeft.setVelocity(-20, pct);
-      mWheelFrontLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(-20, pct);
-      mWheelFrontRight.setVelocity(0, pct);
-    }else{
-      mWheelBackLeft.setVelocity(20, pct);
-      mWheelFrontLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(20, pct);
-      mWheelFrontRight.setVelocity(0, pct);
-    }
+    // Calculate error
+    double error = a - sInertial.rotation(deg);
+    if(error > 90) error = 90;   // cap positive motor power at +90
+    if(error < -90) error = -90; // cap negative motor power at -90
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(error, pct);
+    mWheelBackRight.setVelocity(error, pct);
     wait(5, msec);
   }
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
+  driveForward(0, 0);
 }
 
 void strafeUntilGreen(int speed){
