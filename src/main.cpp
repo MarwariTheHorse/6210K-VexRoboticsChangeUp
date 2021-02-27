@@ -218,7 +218,7 @@ void driveViaDistanceGyroCamera(double dist, double a, vision v, signature sig){
   mWheelBackLeft.resetRotation();
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
-  int d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+  int d = 0;
 
   double leftY;
   double leftX;
@@ -485,13 +485,13 @@ void autonomous(void) {
     // Drive to red ball and intake it
     driveViaTimeGyroCamera(1000, -135, sigGreen); // This needs to target the red
     intakeIn(); // So that we can get into the goal properly and get the blue ball
-    driveViaTimeGyroCamera(3000, -135, sigGreen);
+    driveViaDistanceGyroCamera(3000, -135, sVisionLower, sigRed);
 
-    // Align with the goal and score the read
+    // Goal 4 align and score red
     alignToGoal(-135);
     mOutputUpper.setVelocity(100, pct);
     sVisionUpper.takeSnapshot(sigRed);
-    double startTime = Brain.timer(msec);
+    startTime = Brain.timer(msec);
     while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
