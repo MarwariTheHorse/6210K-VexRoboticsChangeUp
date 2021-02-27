@@ -156,6 +156,22 @@ void scoreFirstCornerGoal(int dir) {
   driveForward(-20, 500);
 }
 
+void turnFast(double angle){
+  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2) // uses global variable TurnVelocity
+  {
+    // Calculate error
+    double error = angle - sInertial.rotation(deg);
+    if(error > 90) error = 90;   // cap positive motor power at +90
+    if(error < -90) error = -90; // cap negative motor power at -90
+    mWheelFrontLeft.setVelocity(error, pct);
+    mWheelFrontRight.setVelocity(error, pct);
+    mWheelBackLeft.setVelocity(error, pct);
+    mWheelBackRight.setVelocity(error, pct);
+    wait(5, msec);
+  }
+  driveForward(0, 0);
+}
+
 void turnTo(double angle){
   while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
   {
@@ -260,17 +276,17 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   while (Brain.timer(msec) - startTime < timeInMS){
     sVisionUpper.takeSnapshot(sig);
     if (sVisionUpper.objectCount > 0) {
-      leftX = (sVisionUpper.largestObject.centerX - 180) * .8;
+      leftX = (sVisionUpper.largestObject.centerX - 180) * .6; // used to be 0.8
     } else {
       leftX = 0;
     }
     leftY = 50;
-    rightX = (a - sInertial.rotation(deg)) * 3;
+    rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) - startTime > 500) {
+    if (Brain.timer(msec) - startTime > 400) {
       if (ForwardVelocity < 20) {
         break;
       }
@@ -284,7 +300,7 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
   {
     // Calculate error
     double error = a - sInertial.rotation(deg);
@@ -350,7 +366,7 @@ void autonomous(void) {
   if (mode == 'V') {
   
     sInertial.setRotation(-57, deg); // BACK TO -57
-
+/*
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
@@ -393,29 +409,52 @@ void autonomous(void) {
 
     intakeOff();
     intakeOpenAuton();
+    turnFast(-220);
+    mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+    mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
     turnTo(-270);
-    output(-100,500);
-    //mOutputLower.startSpinFor(-5, rotationUnits::rev, 100, velocityUnits::pct);
-    //mOutputUpper.spinFor(-5, rotationUnits::rev, 100, velocityUnits::pct);
     strafeViaDistanceGyro(200,-270);
     turnTo(-360);
+*/
+// TEMPORARY CODE for starting position
+sInertial.setRotation(-360, deg); 
+intakeOpenAuton();
+wait(1000, msec);
 
     // pick up red and score center
-
+    mOutputLower.spin(fwd);
+    mOutputUpper.spin(fwd);
     mOutputLower.setVelocity(80, pct);
     driveViaTimeGyroCamera(2000, -360, sigBlue);
     alignToGoal(-360);
+    // Intake blue
     intakeIn();
+    wait(600, msec);
     mOutputUpper.setVelocity(100, pct);
+    mOutputLower.setVelocity(100, pct);
     sVisionUpper.takeSnapshot(sigRed);
+    // Watch for red ball going into goal
     while(sVisionUpper.largestObject.width < 100){
-      wait(10, msec);
+      wait(5, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
-    mOutputLower.setVelocity(-100, pct);
-    mOutputUpper.setVelocity(-100, pct);
+    // Stop upper output scoring wheel
+    //mOutputUpper.setVelocity(0, pct);
+    mOutputUpper.spin(fwd,0,pct);
     intakeOpenAuton();
+    wait(400, msec);
+    // Intake blue
+    intakeIn();
+    mOutputLower.spin(fwd,80, pct);
+    wait(400, msec);
+    intakeOff();
     driveViaDistanceGyro(-1000, -360);
+    mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+    mOutputUpper.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+    turnTo(-225);
+    mIntakeLeft.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
+    mIntakeRight.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
+    //output(100, 600);
     turnTo(-135);
 
     // // Drive at -90 to align with goal
