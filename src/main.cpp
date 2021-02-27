@@ -420,7 +420,7 @@ void autonomous(void) {
   // STATE AUTONOMOUS
   if (mode == 'V') {
     sInertial.setRotation(-57, deg); // BACK TO -57
-/*
+
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
@@ -457,8 +457,8 @@ void autonomous(void) {
     mOutputLower.setVelocity(100, pct);
     intakeIn();
     wait(700, msec);
-    // Back up and eject blue
 
+    // Back up and eject blue
     driveViaDistanceGyro(-1700, -180);
 
     intakeOff();
@@ -469,11 +469,6 @@ void autonomous(void) {
     turnTo(-270);
     strafeViaDistanceGyro(200,-270);
     turnTo(-360);
-*/
-// TEMPORARY CODE for starting position
-sInertial.setRotation(-360, deg); 
-intakeOpenAuton();
-wait(1000, msec);
 
     // pick up red and score center
     mOutputLower.spin(fwd);
@@ -497,6 +492,7 @@ wait(1000, msec);
     mOutputUpper.spin(fwd,0,pct);
     intakeOpenAuton();
     wait(400, msec);
+
     // Intake blue
     intakeIn();
     mOutputLower.spin(fwd,80, pct);
@@ -532,9 +528,9 @@ wait(1000, msec);
     intakeOpenAuton();
 
     // Drive to red ball and intake it
-    driveViaTimeGyroCamera(1000, -135, sigGreen); // This needs to target the red
-    intakeIn(); // So that we can get into the goal properly and get the blue ball
     driveViaDistanceGyroCamera(3000, -135, sVisionLower, sigRed);
+    intakeIn(); // So that we can get into the goal properly and get the blue ball
+    driveViaTimeGyroCamera(1000, -135, sigGreen);
 
     // Goal 4 align and score red
     alignToGoal(-135);
@@ -545,118 +541,6 @@ wait(1000, msec);
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
-
-    // // Score
-    // intakeIn();
-    // output(100, 500);
-    // wait(100, msec);
-    // mOutputUpper.setVelocity(-100, pct);
-    // intakeOpenAuton();
-    // wait(300, msec);
-
-    // // Drive backwards and make 180 degree turn towards middle home row goal
-    // driveForward(-100, 700);
-    // while (sInertial.rotation(deg) > -178) {
-    //   mWheelBackRight.setVelocity(40, pct);
-    //   mWheelFrontRight.setVelocity(40, pct);
-    //   mWheelBackLeft.setVelocity(0, pct);
-    //   mWheelFrontLeft.setVelocity(0, pct);
-    // }
-    // // Use camera and gyro to align
-    // // TODO: TEST THIS CODE ON THE BOT
-    // intakeOpenAuton();
-    // while ((Brain.timer(msec) - startTime) < 750) {
-    //   sVisionUpper.takeSnapshot(sVisionUpper__SIG_GREEN);
-    //   if (sVisionUpper.objectCount > 0) {
-    //     leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
-    //   } else {
-    //     leftX = 0;
-    //   }
-    //   leftY = 100;
-    //   rightX = (0 - sInertial.rotation(deg)) * 5;
-    //   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    //   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    //   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    //   mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    //   wait(5, msec);
-    // }
-    // driveForward(0, 0);
-    // // Score
-    // output(100, 500);
-
-    // // Back up, turn to eject blue, and turn towards red ball
-    // driveForward(-100, 380);
-    // wait(100, msec);
-    // while (sInertial.rotation(deg) > -200) {
-    //   mWheelBackRight.setVelocity(40, pct);
-    //   mWheelFrontRight.setVelocity(40, pct);
-    //   mWheelBackLeft.setVelocity(0, pct);
-    //   mWheelFrontLeft.setVelocity(0, pct);
-    // }
-    // output(100, 400);
-
-    // while (sInertial.rotation(deg) < -88) {
-    //   mWheelBackRight.setVelocity(40, pct);
-    //   mWheelFrontRight.setVelocity(40, pct);
-    //   mWheelBackLeft.setVelocity(0, pct);
-    //   mWheelFrontLeft.setVelocity(0, pct);
-    // }
-    // // Get ball using gyro and bottom camera
-    // while ((Brain.timer(msec) - startTime) < 500) {
-    //   sVisionLower.takeSnapshot(
-    //       sVisionUpper__SIG_RED); // This needs to be edited so it uses the
-    //                               // bottom camera
-    //   if (sVisionLower.objectCount > 0) {
-    //     leftX = (sVisionLower.largestObject.centerX - 158) * 1;
-    //   } else {
-    //     leftX = 0;
-    //   }
-    //   leftY = 100;
-    //   rightX = (-88 - sInertial.rotation(deg)) * 5; // Look  into this code
-    //   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    //   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    //   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    //   mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    //   wait(5, msec);
-    // }
-    // intakeIn();
-    // driveForward(0, 0);
-    // mOutputLower.setVelocity(100, pct);
-    // wait(300, msec);
-    // mOutputLower.setVelocity(0, pct);
-
-    // // Line up with goal
-    // while (sInertial.rotation(deg) < -145) {
-    //   mWheelBackRight.setVelocity(40, pct);
-    //   mWheelFrontRight.setVelocity(40, pct);
-    //   mWheelBackLeft.setVelocity(0, pct);
-    //   mWheelFrontLeft.setVelocity(0, pct);
-    // }
-    // // Go to goal using camera and gyro
-    // while ((Brain.timer(msec) - startTime) < 700) {
-    //   sVisionUpper.takeSnapshot(sVisionUpper__SIG_GREEN);
-    //   if (sVisionUpper.objectCount > 0) {
-    //     leftX = (sVisionUpper.largestObject.centerX - 158) * 1;
-    //   } else {
-    //     leftX = 0;
-    //   }
-    //   leftY = 100;
-    //   rightX = (-144 - sInertial.rotation(deg)) * 5; // Look  into this code
-    //   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    //   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    //   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    //   mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    //   wait(5, msec);
-    // }
-    // intakeOff();
-    // // Score
-
-    // output(100, 400);
-    // intakeOpenAuton();
-    // driveForward(-100, 400);
-    // // TODO: Keep adding goals!
-
-    // */
   }
 
   // Right 1
