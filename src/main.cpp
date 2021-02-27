@@ -1,28 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-<<<<<<< HEAD
-// sVisionUpper         vision        21              
-// sVisionLower         vision        20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVisionUpper         vision        17              
-// sVisionLower         vision        20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-=======
->>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
-// sVision              vision        21
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVision              vision        21
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -333,13 +308,8 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-<<<<<<< HEAD
     // Set the starting angle to where we start
     sInertial.setRotation(-57, deg);
-=======
-    
-    sInertial.setRotation(-57, deg); // BACK TO -57
->>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
@@ -382,11 +352,6 @@ void autonomous(void) {
     turnTo(90);
     output(-100, 600);
 
-
-
-
-
-<<<<<<< HEAD
     intakeOff();
     intakeOpenAuton();
     turnTo(-270);
@@ -421,8 +386,6 @@ void autonomous(void) {
     driveViaDistanceGyro(-1000, -360);
     turnTo(-135);
     driveViaTimeGyroCamera(3000, -135, sVisionLower, sigRed);
-=======
->>>>>>> parent of 57c2bed (End of Friday practice. Upper Carmera port seemed burned out, so changed to Port 17. Code has an error about new port assignment.)
 
     // // Drive at -90 to align with goal
     // driveViaDistanceGyro(3500, -90);
