@@ -408,7 +408,8 @@ void autonomous(void) {
     intakeIn();
     mOutputUpper.setVelocity(100, pct);
     sVisionUpper.takeSnapshot(sigRed);
-    while(sVisionUpper.largestObject.width < 100){
+    double startTime = Brain.timer(msec);
+    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
