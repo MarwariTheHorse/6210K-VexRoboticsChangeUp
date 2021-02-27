@@ -24,10 +24,12 @@ void intake(int speed, int timems){
   mIntakeRight.setVelocity(0, pct);
 }
 void intakeIn(){
-  mIntakeLeft.setVelocity(-100, pct);
-  mIntakeRight.setVelocity(-100, pct);
+  mIntakeLeft.spin(fwd);
+  mIntakeRight.spin(fwd);
   mIntakeLeft.setStopping(coast);
   mIntakeRight.setStopping(coast);
+  mIntakeLeft.setVelocity(-100, pct);
+  mIntakeRight.setVelocity(-100, pct);
 }
 void intakeOff(){
   mIntakeLeft.setVelocity(0, pct);
@@ -36,6 +38,8 @@ void intakeOff(){
 void intakeOpen(){
   mIntakeLeft.setVelocity(100, pct);
   mIntakeRight.setVelocity(100, pct);
+  mIntakeLeft.spin(fwd);
+  mIntakeRight.spin(fwd);
 
   waitUntil(mIntakeLeft.torque(Nm) > TORQUE_THRESHOLD && mIntakeRight.torque() > TORQUE_THRESHOLD);
 
@@ -55,6 +59,8 @@ void intakeOpen(){
 void intakeOpenAuton(){
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
+  mIntakeLeft.spin(fwd);
+  mIntakeRight.spin(fwd);
   wait(5, msec);
   mIntakeLeft.setPosition(0, deg);
   mIntakeRight.setPosition(0, deg);

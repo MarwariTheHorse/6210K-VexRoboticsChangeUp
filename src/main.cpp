@@ -1,3 +1,19 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVisionUpper         vision        17              
+// sVisionLower         vision        20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVision              vision        21
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVision              vision        21
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -36,11 +52,6 @@ bool disableIntakes = false;
 float ForwardVelocity;
 float TurnVelocity;
 float StrafeVelocity;
-float VisionUpperX;
-float VisionUpperObject;
-float VisionLowerX;
-float VisionLowerObject;
-
 
 void pre_auton(void) {
   vexcodeInit();
@@ -146,8 +157,7 @@ void scoreFirstCornerGoal(int dir) {
 }
 
 void turnTo(double angle){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 5 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
-  // was accuracy = 2 and velocity = 10
+  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
   {
     // Calculate error
     double error = angle - sInertial.rotation(deg);
@@ -172,7 +182,6 @@ void driveViaDistanceGyro(double dist, double a){
   int d = 0;
 
   d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-
 
   if(d < dist){
     while (d < dist){
@@ -199,12 +208,49 @@ void driveViaDistanceGyro(double dist, double a){
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
   }
-
-
   driveForward(0, 0);
 }
 
-void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
+void strafeViaDistanceGyro(double dist, double a){
+  // reset all motor encoders to zero
+  // 10000 units is equal to 56" of travel
+  mWheelFrontLeft.resetRotation();
+  mWheelBackLeft.resetRotation();
+  mWheelFrontRight.resetRotation();
+  mWheelBackRight.resetRotation();
+  int d = 0;
+
+  d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+
+  if(d < dist){
+    while (d < dist){
+      int leftY = 0;
+      int rightX = (a - sInertial.rotation(deg)) * 3;
+      int leftX = 50;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
+  }else{
+    while (d > dist){
+      int leftY = -80;
+      int rightX = (a - sInertial.rotation(deg)) * 3;
+      int leftX = 0;
+      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      wait(5, msec);
+      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+    }
+  }
+  driveForward(0, 0);
+}
+
+void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
   // The loop breaks if the robot runs into an obstacle
   double startTime = Brain.timer(msec);
@@ -212,9 +258,9 @@ void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
   int leftY;
   int rightX;
   while (Brain.timer(msec) - startTime < timeInMS){
-    //v.takeSnapshot(sig);
-    if(v.objectCount > 0) {
-      leftX = v.largestObject.centerX * .8;
+    sVisionUpper.takeSnapshot(sig);
+    if (sVisionUpper.objectCount > 0) {
+      leftX = (sVisionUpper.largestObject.centerX - 180) * .8;
     } else {
       leftX = 0;
     }
@@ -224,9 +270,9 @@ void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) - startTime > 500) {
-      if (fabs(ForwardVelocity) < 40) {
-        //break;
+    if (Brain.timer(msec) - startTime > 400) {
+      if (ForwardVelocity < 20) {
+        break;
       }
     }
     // this line gives the robot 200ms to speed up (assuming it started at rest)
@@ -238,17 +284,17 @@ void driveViaTimeGyroCamera(double timeInMS, double a, vision v, signature sig){
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 2)
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 3 || fabs(TurnVelocity) > 3)
   {
     if(sInertial.rotation() > a){
-      mWheelBackLeft.setVelocity(0, pct);
+      mWheelBackLeft.setVelocity(-20, pct);
       mWheelFrontLeft.setVelocity(0, pct);
       mWheelBackRight.setVelocity(-20, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }else{
       mWheelBackLeft.setVelocity(20, pct);
       mWheelFrontLeft.setVelocity(0, pct);
-      mWheelBackRight.setVelocity(0, pct);
+      mWheelBackRight.setVelocity(20, pct);
       mWheelFrontRight.setVelocity(0, pct);
     }
     wait(5, msec);
@@ -264,17 +310,17 @@ void strafeUntilGreen(int speed){
   mWheelFrontLeft.setVelocity(speed, pct);
   mWheelBackRight.setVelocity(-speed, pct);
   mWheelFrontRight.setVelocity(speed, pct);
-  //sVisionUpper.takeSnapshot(sigGreen);
+  sVisionUpper.takeSnapshot(sigGreen);
   // looks 80 pixels in advance to accomidate for overshoot
-  //while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
-  while(VisionUpperObject == 0 || fabs(VisionUpperX) > 60){ // angle was 80
-    wait(2, msec);
-    // sVisionUpper.takeSnapshot(sigGreen);
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
+    wait(10, msec);
+    sVisionUpper.takeSnapshot(sigGreen);
   }
   mWheelBackLeft.setVelocity(0, pct);
   mWheelFrontLeft.setVelocity(0, pct);
   mWheelBackRight.setVelocity(0, pct);
   mWheelFrontRight.setVelocity(0, pct);
+  //setStopping(brake);
 }
 
 void autonomous(void) {
@@ -308,49 +354,48 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-    // Set the starting angle to where we start
-    sInertial.setRotation(-57, deg);
+  
+    sInertial.setRotation(-57, deg); // BACK TO -57
 
     // Step 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
     wait(300, msec);
     mOutputUpper.setVelocity(0, pct);
 
-    // Step 2 - Get ball 1
+    // Step 2 - Get ball 1,
     mOutputLower.setVelocity(100, pct);
-    driveViaDistanceGyro(5000, -57);
+    driveViaDistanceGyro(6000, -57);
 
-    // Step 3 - Deploy Arms
+    // Step 2A - Deploy Arms
     intakeIn();
     wait(1000, msec);
     intakeOff();
 
-    // Step 4: Turn and Prepare for strafe
+    // Prepare for strafe
     turnTo(-180);
     intakeOff();
     intakeIn();
 
-    // Step 5: Strafe until we see the goal
+    // Strafe until we see the goal
     strafeUntilGreen(50);
 
-    // Step 6: open arms
+    // open arms
     intakeOpenAuton();
     wait(100, msec);
 
-    // Step 7: drive into goal
-    driveViaTimeGyroCamera(2000, -180, sVisionUpper, sigGreen);
+    // drive into goal
+    driveViaTimeGyroCamera(1000, -180, sigGreen);
     alignToGoal(-180);
+    intakeOff();
 
-    // Step 8: Score and descore
+    //Score and descore
     output(100, 600);
     mOutputLower.setVelocity(100, pct);
     intakeIn();
-    
+    wait(700, msec);
     // Back up and eject blue
 
-    driveViaDistanceGyro(-2000, -180);
-    turnTo(90);
-    output(-100, 600);
+    driveViaDistanceGyro(-1700, -180);
 
     intakeOff();
     intakeOpenAuton();
@@ -364,28 +409,11 @@ void autonomous(void) {
     // pick up red and score center
 
     mOutputLower.setVelocity(80, pct);
-    driveViaTimeGyroCamera(2000, -360, sVisionUpper, sigBlue);
+    driveViaTimeGyroCamera(2000, -360, sigBlue);
     alignToGoal(-360);
-    // Intake blue from goal
     intakeIn();
-    // Spin red out
-    mOutputUpper.setVelocity(100, pct);
-
-    // Wait untill red has left the robot
-    sVisionUpper.takeSnapshot(sigRed);
-    while(sVisionUpper.largestObject.width < 100){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
-    outputOff();
-    wait(500, msec);
+    output(100, 600);
     intakeOpenAuton();
-    mOutputLower.setVelocity(-50, pct);
-    mOutputUpper.setVelocity(-50, pct);
-
-    driveViaDistanceGyro(-1000, -360);
-    turnTo(-135);
-    driveViaTimeGyroCamera(3000, -135, sVisionLower, sigRed);
 
     // // Drive at -90 to align with goal
     // driveViaDistanceGyro(3500, -90);
@@ -1427,13 +1455,6 @@ int printCameraObjects() {
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
 
-sVisionUpper.takeSnapshot(sigGreen);
-VisionUpperX =sVisionUpper.largestObject.centerX - 180;
-VisionUpperObject = sVisionUpper.objectCount;
-sVisionLower.takeSnapshot(sigRed);
-VisionLowerX = sVisionLower.largestObject.centerX - 180;
-VisionLowerObject = sVisionLower.objectCount;
-
     // display every 10 iterations (500ms update rate)
     // display doesn't need to be updated faster
     loopcount = loopcount + 1;
@@ -1464,16 +1485,18 @@ VisionLowerObject = sVisionLower.objectCount;
       Controller1.Screen.setCursor(3, 1);
       Controller1.Screen.print("VUX"); // Print x-axis for Vision Camera 1
       Controller1.Screen.setCursor(3, 5);
-      Controller1.Screen.print(VisionUpperX);
+      sVisionUpper.takeSnapshot(sigGreen);
+      Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
 
       Controller1.Screen.setCursor(3, 11);
       Controller1.Screen.print("VLX"); // Print x-axis for Vision Camera 2
       Controller1.Screen.setCursor(3, 15);
-      Controller1.Screen.print(VisionLowerX);
+      sVisionLower.takeSnapshot(sigRed);
+      Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
 
       loopcount = 0; // reset loop counter
     }
-    wait(5, msec);
+    wait(10, msec);
   }
 } // end of printCameraObjects
 
