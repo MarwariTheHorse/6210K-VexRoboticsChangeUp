@@ -46,9 +46,9 @@ competition Competition;
 char mode = 'N';
 bool disableIntakes = false;
 // these are global variables
-// float ForwardDistance;
-// float TurnDistance;
-// float StrafeDistance;
+float ForwardDistance;
+float TurnDistance;
+float StrafeDistance;
 float ForwardVelocity;
 float TurnVelocity;
 float StrafeVelocity;
@@ -409,19 +409,24 @@ void driveBackwardsViaTimeGyro(double timeInMS, double a){
 }
 
 void alignToGoal(double a){
-  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
+  double startTime = Brain.timer(msec);
+  // Needs tuning:  the accuracy (2 degrees) the velocity indicator (40 units) and gyro multiplier (x 5)
+  while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
   {
     // Calculate error
-    double error = a - sInertial.rotation(deg);
+    double error = (a - sInertial.rotation(deg)) * 5;
     if(error > 90) error = 90;   // cap positive motor power at +90
     if(error < -90) error = -90; // cap negative motor power at -90
     mWheelFrontLeft.setVelocity(0, pct);
     mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(error, pct);
-    mWheelBackRight.setVelocity(error, pct);
+    mWheelBackLeft.setVelocity(error, pct);  // when left and right are same polarity
+    mWheelBackRight.setVelocity(error, pct); // the robot rotates (turns)
     wait(5, msec);
+    if(Brain.timer(msec) - startTime > 500) break;
   }
-  driveForward(0, 0);
+  // Keep robot gently pushed up against goal
+  mWheelBackLeft.setVelocity(10, pct);   // when left and right are opposite polarity
+  mWheelBackRight.setVelocity(-10, pct); // the robot travels straight
 }
 
 void strafeUntilGreen(int speed){
@@ -1648,8 +1653,7 @@ void usercontrol(void) {
   }
 }
 
-int printCameraObjects() {
-
+int computeMotorParameters() {
   wait(100, msec);
   // Local variables
   // float FrontLeftDistance;
@@ -1660,21 +1664,17 @@ int printCameraObjects() {
   float FrontRightVelocity;
   float BackLeftVelocity;
   float BackRightVelocity;
-  float gyroangle;
-  int loopcount = 0;
-
-  while (1 > 0) {
-
+while (1 > 0) {
     // Compute distance each wheel has traveled
     // May not need this code in the multitask (instead put the code in the
     // method that uses it)
-    // FrontLeftDistance = mWheelFrontLeft.rotation(rotationUnits::raw);
-    // FrontRightDistance = mWheelFrontRight.rotation(rotationUnits::raw);
-    // BackLeftDistance = mWheelBackLeft.rotation(rotationUnits::raw);
-    // BackRightDistance = mWheelBackRight.rotation(rotationUnits::raw);
-    // ForwardDistance = FrontLeftDistance - FrontRightDistance + BackLeftDistance - BackRightDistance;
-    // TurnDistance =    FrontLeftDistance + FrontRightDistance + BackLeftDistance + BackRightDistance;
-    // StrafeDistance =  FrontLeftDistance - FrontRightDistance - BackLeftDistance - BackRightDistance;
+    FrontLeftDistance = mWheelFrontLeft.rotation(rotationUnits::raw);
+    FrontRightDistance = mWheelFrontRight.rotation(rotationUnits::raw);
+    BackLeftDistance = mWheelBackLeft.rotation(rotationUnits::raw);
+    BackRightDistance = mWheelBackRight.rotation(rotationUnits::raw);
+    ForwardDistance = FrontLeftDistance - FrontRightDistance + BackLeftDistance - BackRightDistance;
+    TurnDistance =    FrontLeftDistance + FrontRightDistance + BackLeftDistance + BackRightDistance;
+    StrafeDistance =  FrontLeftDistance - FrontRightDistance - BackLeftDistance - BackRightDistance;
 
     // Compute velocity of each wheel
     // This code is useful for determining if Robot has hit the goal and stopped
@@ -1687,37 +1687,47 @@ int printCameraObjects() {
     ForwardVelocity = BackLeftVelocity - BackRightVelocity;
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
+    
+    wait(5, msec);
+  }
+} // end of computerMotorParameters
 
-    // display every 10 iterations (500ms update rate)
-    // display doesn't need to be updated faster
-    loopcount = loopcount + 1;
-    if (loopcount > 49) {
-      gyroangle = sInertial.rotation(deg);
-      Controller1.Screen.clearScreen();
+int printCameraObjects() {
+  wait(100, msec);
+  while (1 > 0) {
+    Controller1.Screen.clearScreen();
 
-      Controller1.Screen.setCursor(1, 1);
-      Controller1.Screen.print("GY"); // print Gyro Angle
-      Controller1.Screen.setCursor(1, 5);
-      Controller1.Screen.print(sInertial.rotation(deg));
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("GY"); // print Gyro Angle
+    Controller1.Screen.setCursor(1, 5);
+    Controller1.Screen.print(sInertial.rotation(deg));
 
-      Controller1.Screen.setCursor(1, 11);
-      Controller1.Screen.print("FV"); // Print Forward Velocity
-      Controller1.Screen.setCursor(1, 15);
-      Controller1.Screen.print(ForwardVelocity);
+    Controller1.Screen.setCursor(1, 11);
+    Controller1.Screen.print("FV"); // Print Forward Velocity
+    Controller1.Screen.setCursor(1, 15);
+    Controller1.Screen.print(ForwardVelocity);
 
-      Controller1.Screen.setCursor(2, 1);
-      Controller1.Screen.print(" "); // Empty
-      Controller1.Screen.setCursor(2, 5);
-      Controller1.Screen.print(" ");
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print(" "); // Empty
+    Controller1.Screen.setCursor(2, 5);
+    Controller1.Screen.print(" ");
 
-      Controller1.Screen.setCursor(2, 11);
-      Controller1.Screen.print("TV"); // Print Turn Velocity
-      Controller1.Screen.setCursor(2, 15);
-      Controller1.Screen.print(TurnVelocity);
+    Controller1.Screen.setCursor(2, 11);
+    Controller1.Screen.print("TV"); // Print Turn Velocity
+    Controller1.Screen.setCursor(2, 15);
+    Controller1.Screen.print(TurnVelocity);
 
-      loopcount = 0; // reset loop counter
-    }
-    wait(10, msec);
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("VUX "); // Vision Upper X-Axis
+    Controller1.Screen.setCursor(3, 5);
+    Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
+
+    Controller1.Screen.setCursor(3, 11);
+    Controller1.Screen.print("VLX"); // Vision Lower X-Axis
+    Controller1.Screen.setCursor(3, 15);
+    Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
+
+    wait(250, msec);
   }
 } // end of printCameraObjects
 
@@ -1730,7 +1740,8 @@ int main() {
   pre_auton();
 
   task taskPrintCameraObjects(printCameraObjects);
-
+  task taskComputeMotorParameters(computeMotorParameters);
+  
   Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
