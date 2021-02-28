@@ -1668,10 +1668,10 @@ while (1 > 0) {
     // Compute distance each wheel has traveled
     // May not need this code in the multitask (instead put the code in the
     // method that uses it)
-    FrontLeftDistance = mWheelFrontLeft.rotation(rotationUnits::raw);
-    FrontRightDistance = mWheelFrontRight.rotation(rotationUnits::raw);
-    BackLeftDistance = mWheelBackLeft.rotation(rotationUnits::raw);
-    BackRightDistance = mWheelBackRight.rotation(rotationUnits::raw);
+    float FrontLeftDistance = mWheelFrontLeft.rotation(rotationUnits::raw);
+    float FrontRightDistance = mWheelFrontRight.rotation(rotationUnits::raw);
+    float BackLeftDistance = mWheelBackLeft.rotation(rotationUnits::raw);
+    float BackRightDistance = mWheelBackRight.rotation(rotationUnits::raw);
     ForwardDistance = FrontLeftDistance - FrontRightDistance + BackLeftDistance - BackRightDistance;
     TurnDistance =    FrontLeftDistance + FrontRightDistance + BackLeftDistance + BackRightDistance;
     StrafeDistance =  FrontLeftDistance - FrontRightDistance - BackLeftDistance - BackRightDistance;
