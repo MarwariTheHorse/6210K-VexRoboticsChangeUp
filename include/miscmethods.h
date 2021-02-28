@@ -68,6 +68,18 @@ void intakeOpenAuton(){
   mIntakeLeft.startRotateTo(80, rotationUnits::deg, 50, velocityUnits::pct);
   mIntakeRight.startRotateTo(80, rotationUnits::deg, 50, velocityUnits::pct);
 }
+void intakeOpenWall(){
+  mIntakeLeft.setStopping(hold);
+  mIntakeRight.setStopping(hold);
+  mIntakeLeft.spin(fwd);
+  mIntakeRight.spin(fwd);
+  wait(5, msec);
+  mIntakeLeft.setPosition(0, deg);
+  mIntakeRight.setPosition(0, deg);
+  wait(5, msec);
+  mIntakeLeft.startRotateTo(140, rotationUnits::deg, 50, velocityUnits::pct);
+  mIntakeRight.startRotateTo(140, rotationUnits::deg, 50, velocityUnits::pct);
+}
 void output(int speed, int timems){
   mOutputLower.spin(fwd);
   mOutputUpper.spin(fwd);

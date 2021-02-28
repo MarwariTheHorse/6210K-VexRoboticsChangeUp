@@ -382,6 +382,34 @@ void driveViaTimeGyro(double timeInMS, double a){
   driveForward(0, 0);
 }
 
+void driveBackwardsViaTimeGyro(double timeInMS, double a){
+  // This method drives according to time and corrects with camera (strafe) and gyro (angle)
+  // The loop breaks if the robot runs into an obstacle
+  double startTime = Brain.timer(msec);
+  int leftX;
+  int leftY;
+  int rightX;
+  while (Brain.timer(msec) - startTime < timeInMS){
+    leftX = 0;
+    leftY = -50;
+    rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    if (Brain.timer(msec) - startTime > 400) {
+      if (ForwardVelocity < 20) {
+        break;
+      }
+    }
+    // this line gives the robot 200ms to speed up (assuming it started at rest)
+    // ForwardVelocity is the sum of the 4 wheels, so leftY would make ForwardVelocity = 320
+    // ForwardVelocity will go towards zero when the robot runs into something and stops
+    wait(5, msec);
+  }
+  driveForward(0, 0);
+}
+
 void alignToGoal(double a){
   while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 20) // uses global variable TurnVelocity
   {
@@ -495,7 +523,6 @@ void autonomous(void) {
 
 
     // PART 3 - Back up and eject blue
-    // Back up and eject blue
     driveViaDistanceGyro(-1700, -180);
 
     intakeOff();
@@ -518,10 +545,10 @@ void autonomous(void) {
     wait(600, msec);
     mOutputUpper.setVelocity(100, pct);
     mOutputLower.setVelocity(100, pct);
-    sVisionUpper.takeSnapshot(sigRed);
     // Watch for red ball going into goal
-    while(sVisionUpper.largestObject.width < 100){
-      wait(5, msec);
+    double startTime = Brain.timer(msec);
+    while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+      wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
     // Stop upper output scoring wheel
@@ -530,7 +557,7 @@ void autonomous(void) {
     intakeOpenAuton();
     wait(400, msec);
 
-    // Intake blue
+    // Intake blue and eject blues
     intakeIn();
     mOutputLower.spin(fwd,80, pct);
     wait(400, msec);
@@ -542,59 +569,52 @@ void autonomous(void) {
     mIntakeLeft.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
     mIntakeRight.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
     //output(100, 600);
-    turnTo(-135);
-    double startTime = Brain.timer(msec);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
+    
+    
 
 
 /////////////////////////////////////////////////////////////////////////
-
-
-    // PART 4 - Spit blue ball out
-    mOutputLower.setVelocity(-100, pct);
-    mOutputUpper.setVelocity(-100, pct);
+    // PART 4 - goal 4
+    // Get red ball
+    turnTo(-126.87); // did trig to find this
     intakeOpenAuton();
-
-    // Back up
-    driveViaDistanceGyro(-1000, -360);
-
-    // Turn towards the next goal
-    turnTo(-135);
-
-    // Run the intakes and stuff for the red ball
     mOutputLower.setVelocity(80, pct);
-    intakeOpenAuton();
+    driveViaDistanceGyro(11000, 36.87);
+    intakeIn();
 
-    // Drive to red ball and intake it
-    driveViaDistanceGyroCamera(3000, -135, sVisionLower, sigRed);
-    intakeIn(); // So that we can get into the goal properly and get the blue ball
-    driveViaTimeGyroCamera(1000, -135, sigGreen);
-
-    // Goal 4 align and score red
+    // Go to goal
+    turnTo(-146.31); //did trig to find this
+    driveViaTimeGyroCamera(4000, -146.31, sigGreen);
     alignToGoal(-135);
+
+    // Goal 4 score red and descore blue
     mOutputUpper.setVelocity(100, pct);
-    sVisionUpper.takeSnapshot(sigRed);
+    mOutputLower.setVelocity(100, pct);
     startTime = Brain.timer(msec);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+    while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
+    outputOff();
+    intakeOpenAuton();
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //     // Part 5 - Back out of the goal
-//     driveViaDistanceGyro(-2000, -135);
+//     mOutputLower.setVelocity(-100, pct);
+//     mOutputUpper.setVelocity(-100, pct);
+//     driveViaDistanceGyro(-9000, -135);
+//     intakeIn();
 
 //     // Turn to face the wall
 //     turnTo(-90);
 
 //     // Get the red ball
-//     driveViaTimeGyro(1000, -90);
+//     intakeOpenWall();
+//     mOutputLower.setVelocity(80, pct);
+//     driveViaTimeGyro(3000, -90);
 //     intakeIn();
 
 //     // Scoot back
@@ -603,7 +623,7 @@ void autonomous(void) {
 //     // Strafe to goal
 //     strafeUntilGreen(50);
 
-//     // Score the goal
+//     // prep for the goal
 //     intakeOpenAuton(); // open arms
 //     wait(100, msec);
 
@@ -613,10 +633,15 @@ void autonomous(void) {
 //     intakeOff();
 
 //     //Score and descore
-//     output(100, 600);
-//     mOutputLower.setVelocity(100, pct);
 //     intakeIn();
-//     wait(700, msec);
+//     mOutputUpper.setVelocity(100, pct);
+//     mOutputLower.setVelocity(100, pct);
+//     startTime = Brain.timer(msec);
+//     while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+//       wait(10, msec);
+//       sVisionUpper.takeSnapshot(sigRed);
+//     }
+//     outputOff();
 
 
 // ////////////////////////////////////////////////////////////////////////
@@ -625,8 +650,7 @@ void autonomous(void) {
 //     // PART 6 - Back up and eject blue
 //     driveViaDistanceGyro(-1700, -90);
 
-//     intakeOff();
-//     intakeOpenAuton();
+//     intakeIn();
 
 //     // Turn and ditch the blue ball
 //     turnFast(-135);
@@ -637,19 +661,136 @@ void autonomous(void) {
 //     turnTo(-90);
 
 //     // Strafe to the next red ball
-//     strafeViaDistanceGyro(5000, -90);
+//     strafeViaDistanceGyro(4000, -90);
     
 //     // Get the red ball
-//     driveViaTimeGyro(1000, -90);
+//     intakeOpenWall();
+//     mOutputLower.setVelocity(80, pct);
+//     driveViaTimeGyro(3000, -90);
 //     intakeIn();
 
 //     // Scoot back
 //     driveViaDistanceGyro(-2000, -90);
 
 //     // Rotate toward goal 6
-//     turnTo(-45);
+//     turnTo(-40);
 
-//     // Score the corner goal using the code that Joey has hopefully fixed
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Part 7 - Goals 6 and 7
+//     // Score goal 6
+//     intakeIn();
+//     driveViaTimeGyroCamera(5000, -40, sigGreen);
+//     alignToGoal(-45);
+//     mOutputUpper.setVelocity(100, pct);
+//     mOutputLower.setVelocity(100, pct);
+//     startTime = Brain.timer(msec);
+//     while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+//       wait(10, msec);
+//       sVisionUpper.takeSnapshot(sigRed);
+//     }
+//     outputOff();
+//     intakeOff();
+//     // Back up, turn and eject blue
+//     driveViaDistanceGyro(-1000, -45);
+//     turnTo(-180);
+//     mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+//     mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+//     strafeViaDistanceGyro(500, -180);
+//     turnTo(90);
+//     intakeOpenAuton();
+//     mOutputLower.setVelocity(80, pct);
+//     driveViaDistanceGyro(4000, 90);
+//     intakeIn();
+//     turnTo(180);
+
+//     strafeUntilGreen(50);
+
+//     intakeOpenAuton();
+//     wait(100, msec);
+
+//     // drive into goal
+//     driveViaTimeGyroCamera(1000, 180, sigGreen);
+//     alignToGoal(180);
+//     intakeOff();
+//     intakeIn();
+//     mOutputUpper.setVelocity(100, pct);
+//     mOutputLower.setVelocity(100, pct);
+//     startTime = Brain.timer(msec);
+//     while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+//       wait(10, msec);
+//       sVisionUpper.takeSnapshot(sigRed);
+//     }
+//     outputOff();
+//     intakeOff();
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//     //Goal 8 and Experimental: knock blue ball into center, score corner
+
+//     driveBackwardsViaTimeGyro(5000, 180);
+//     driveViaDistanceGyro(1000, 180);
+//     turnTo(36.87); // did trig to find this
+//     intakeOpenAuton();
+//     mOutputLower.setVelocity(80, pct);
+//     driveViaDistanceGyro(11000, 36.87);
+//     intakeIn();
+//     turnTo(56.31); //did trig to find this
+//     driveViaTimeGyroCamera(4000, 56.31, sigGreen);
+//     alignToGoal(45);
+
+//     // Score goal 8
+//     mOutputUpper.setVelocity(100, pct);
+//     mOutputLower.setVelocity(100, pct);
+//     startTime = Brain.timer(msec);
+//     while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+//       wait(10, msec);
+//       sVisionUpper.takeSnapshot(sigRed);
+//     }
+//     outputOff();
+//     intakeOff();
+//     // Back out
+//     driveViaDistanceGyro(-9000, 45);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 8 - Goal nine followed by CELEBRATION!
+//     //turnTo(90);
+
+//     // Get the red ball
+//     intakeOpenWall();
+//     mOutputLower.setVelocity(80, pct);
+//     driveViaTimeGyro(3000, 90);
+//     intakeIn();
+
+
+//     // Scoot back
+//     driveViaDistanceGyro(-2000, 90);
+
+//     // Strafe to goal
+//     strafeUntilGreen(50);
+
+//     // prep for the goal
+//     intakeOpenAuton(); // open arms
+//     wait(100, msec);
+
+//     // drive into goal
+//     driveViaTimeGyroCamera(1000, 90, sigGreen);
+//     alignToGoal(90);
+//     intakeOff();
+
+//     //Score and descore
+//     intakeIn();
+//     mOutputUpper.setVelocity(100, pct);
+//     mOutputLower.setVelocity(100, pct);
+//     startTime = Brain.timer(msec);
+//     while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+//       wait(10, msec);
+//       sVisionUpper.takeSnapshot(sigRed);
+//     }
+//     outputOff(); 
+//     intakeOff();
+//     intakeOpenWall();
+//     driveViaDistanceGyro(-1700, 90);
+
+// DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
   }
 
