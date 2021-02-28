@@ -160,7 +160,7 @@ void turnFast(double angle){
   while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2) // uses global variable TurnVelocity
   {
     // Calculate error
-    double error = angle - sInertial.rotation(deg);
+    double error = (angle - sInertial.rotation(deg));
     if(error > 90) error = 90;   // cap positive motor power at +90
     if(error < -90) error = -90; // cap negative motor power at -90
     mWheelFrontLeft.setVelocity(error, pct);
@@ -196,9 +196,6 @@ void driveViaDistanceGyro(double dist, double a){
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
   int d = 0;
-
-  d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-
   if(d < dist){
     while (d < dist){
       int leftY = 80;
@@ -402,13 +399,7 @@ void alignToGoal(double a){
     wait(5, msec);
     if(Brain.timer(msec) - startTime > 500) break;
   }
-  // Keep robot gently pushed up against goal
-  mWheelBackLeft.setVelocity(5, pct);   // when left and right are opposite polarity
-  mWheelBackRight.setVelocity(-5, pct); // the robot travels straight
-  wait(200, msec);
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelBackLeft.setVelocity(0, pct);
-
+  driveForward(0, 0);
 }
 
 void strafeUntilGreen(int speed, double a){
@@ -507,7 +498,7 @@ void autonomous(void) {
     intakeIn();
 
     // Strafe until we see the goal
-    strafeUntilGreen(50);
+    strafeUntilGreen(50, -180);
 
     // open arms
     intakeOpenAuton();
@@ -537,19 +528,12 @@ void autonomous(void) {
     driveViaDistanceGyro(-1900, -180);
     wait(100, msec);
 
-    /*
+    
     turnFast(-225); // turn quickly to eject blue
-    mOutputUpper.setVelocity(100, pct);
-    sVisionUpper.takeSnapshot(sigBlue);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigBlue);
-    }
-    outputOff();
-    // mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
-    // mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct); // blocking command to allow time to eject
+    mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+    mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct); // blocking command to allow time to eject
     turnTo(-270);
-    strafeViaDistanceGyro(700,-270);
+    strafeViaDistanceGyro(400,-270);
     turnTo(-360); // face center goal
 
     // Drive towards center goal and scoop red ball along the way
@@ -560,8 +544,8 @@ void autonomous(void) {
     // Descore first blue from center goal
     intakeIn();
     // Eject red and score into center goal
-    mOutputUpper.setVelocity(100, pct);
-    mOutputLower.setVelocity(100, pct);
+    mOutputUpper.spin(fwd,100, pct);
+    mOutputLower.spin(fwd,70, pct);
     // Watch for red ball going into goal
     startTime = Brain.timer(msec);
     sVisionUpper.takeSnapshot(sigRed);
@@ -570,7 +554,7 @@ void autonomous(void) {
       sVisionUpper.takeSnapshot(sigRed);
     }
     // Stop upper output scoring wheel
-    mOutputUpper.setVelocity(0, pct);
+    mOutputUpper.spin(fwd,0, pct);
     intakeOpenAuton();
     wait(400, msec);
     // Intake second blue
@@ -578,6 +562,7 @@ void autonomous(void) {
     mOutputLower.spin(fwd,80, pct);
     wait(600, msec);
     intakeOpenAuton();
+    /*
     // Back away from center goal
     driveViaDistanceGyro(-2000, -360);
     // Turn towards goal 1 to eject balls
@@ -636,7 +621,7 @@ void autonomous(void) {
     driveViaDistanceGyro(-2000, -90);
 
     // Strafe to goal
-    strafeUntilGreen(50);
+    strafeUntilGreen(50, -90);
 
     // prep for the goal
     intakeOpenAuton(); // open arms
@@ -718,7 +703,7 @@ void autonomous(void) {
     intakeIn();
     turnTo(180);
 
-    strafeUntilGreen(50);
+    strafeUntilGreen(50, 180);
 
     intakeOpenAuton();
     wait(100, msec);
@@ -779,7 +764,7 @@ void autonomous(void) {
     driveViaDistanceGyro(-2000, 90);
 
     // Strafe to goal
-    strafeUntilGreen(50);
+    strafeUntilGreen(50, 90);
 
      // prep for the goal
      intakeOpenAuton(); // open arms
@@ -805,9 +790,9 @@ void autonomous(void) {
      driveViaDistanceGyro(-1700, 90);
 
  // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-*/
 
-   }
+*/
+}
 
    // Right 1
    if (mode == 'Y') {
