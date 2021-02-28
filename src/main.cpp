@@ -319,8 +319,6 @@ void strafeViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
-
-
 void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
   // The loop breaks if the robot runs into an obstacle
@@ -473,6 +471,21 @@ void autonomous(void) {
   int leftY;
   int rightX;
 
+//        XXXXXXXXXXXXXX
+//      XXXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX    
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+
   // STATE AUTONOMOUS
   if (mode == 'V') {
     sInertial.setRotation(-57, deg); // BACK TO -57
@@ -520,58 +533,54 @@ void autonomous(void) {
 
 
 ///////////////////////////////////////////////////////////
-
-
     // PART 3 - Back up and eject blue
     driveViaDistanceGyro(-1700, -180);
 
     intakeOff();
     intakeOpenAuton();
-    turnFast(-220);
+    turnFast(-220); // turn quickly to eject blue
     mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
-    mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
+    mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct); // blocking command to allow time to eject
     turnTo(-270);
     strafeViaDistanceGyro(200,-270);
-    turnTo(-360);
+    turnTo(-360); // face center goal
 
-    // pick up red and score center
-    mOutputLower.spin(fwd);
-    mOutputUpper.spin(fwd);
-    mOutputLower.setVelocity(80, pct);
+    // Drive towards center goal and scoop red ball along the way
+    mOutputLower.spin(fwd,80,pct);
     driveViaTimeGyroCamera(2000, -360, sigBlue);
+    // Strike center goal and align
     alignToGoal(-360);
-    // Intake blue
+    // Descore first blue from center goal
     intakeIn();
     wait(600, msec);
+    // Eject red and score into center goal
     mOutputUpper.setVelocity(100, pct);
     mOutputLower.setVelocity(100, pct);
+    sVisionUpper.takeSnapshot(sigRed);
     // Watch for red ball going into goal
     double startTime = Brain.timer(msec);
-    while(sVisionUpper.largestObject.width < 100 || Brain.timer(msec) - startTime < 1000){
+    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
     // Stop upper output scoring wheel
-    //mOutputUpper.setVelocity(0, pct);
     mOutputUpper.spin(fwd,0,pct);
     intakeOpenAuton();
     wait(400, msec);
-
-    // Intake blue and eject blues
+    // Intake second blue
     intakeIn();
     mOutputLower.spin(fwd,80, pct);
-    wait(400, msec);
+    wait(600, msec);
     intakeOff();
-    driveViaDistanceGyro(-1000, -360);
-    mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
-    mOutputUpper.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
-    turnTo(-225);
-    mIntakeLeft.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
-    mIntakeRight.startSpinFor(-10, rotationUnits::rev, 90, velocityUnits::pct);
-    //output(100, 600);
-    
-    
-
+    // Back away from center goal
+    driveViaDistanceGyro(-2000, -360);
+    // Turn towards goal 1 to eject balls
+    turnFast(-205);
+    mOutputLower.startSpinFor(4, rotationUnits::rev, 60, velocityUnits::pct);
+    mOutputUpper.spinFor(8, rotationUnits::rev, 60, velocityUnits::pct);
+    // Close intake arms
+    mIntakeLeft.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
+    mIntakeRight.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
 
 /////////////////////////////////////////////////////////////////////////
     // PART 4 - goal 4
