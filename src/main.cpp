@@ -227,7 +227,7 @@ void driveViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
-void driveViaDistanceGyroCamera(double dist, double a, vision v, signature sig){
+void driveViaDistanceGyroCamera(double dist, double a){
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
   mWheelFrontLeft.resetRotation();
@@ -240,43 +240,21 @@ void driveViaDistanceGyroCamera(double dist, double a, vision v, signature sig){
   double leftX;
   double rightX;
 
-  if(d < dist){
     leftY = 80;
     while (d < dist){
       rightX = (a - sInertial.rotation(deg)) * 3;
-      
-      v.takeSnapshot(sig);
-      if (v.objectCount > 0) {
-        leftX = (v.largestObject.centerX - 180) * .8;
-      } else {
-        leftX = 0;
+      leftX = 0;
+      sVisionLower.takeSnapshot(sigRed);
+      if (sVisionLower.largestObject.width > 40 && sVisionLower.largestObject.centerX > 120 && sVisionLower.largestObject.centerX < 240) {
+        leftX = (sVisionLower.largestObject.centerX - 180) * .8;
       }
       mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
       mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
       mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
       mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-      wait(5, msec);
+      wait(10, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
-  }else{
-    leftY = -80;
-    while (d > dist){
-      rightX = (a - sInertial.rotation(deg)) * 3;
-
-      v.takeSnapshot(sig);
-      if (v.objectCount > 0) {
-        leftX = (v.largestObject.centerX - 180) * .8;
-      } else {
-        leftX = 0;
-      }
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
-      wait(5, msec);
-      d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-    }
-  }
   driveForward(0, 0);
 }
 
@@ -427,20 +405,29 @@ void alignToGoal(double a){
   // Keep robot gently pushed up against goal
   mWheelBackLeft.setVelocity(5, pct);   // when left and right are opposite polarity
   mWheelBackRight.setVelocity(-5, pct); // the robot travels straight
+  wait(200, msec);
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+
 }
 
-void strafeUntilGreen(int speed){
-  mWheelBackLeft.setVelocity(-speed, pct);
-  mWheelFrontLeft.setVelocity(speed, pct);
-  mWheelBackRight.setVelocity(-speed, pct);
-  mWheelFrontRight.setVelocity(speed, pct);
+void strafeUntilGreen(int speed, double a){
+  int leftX;
+  int leftY;
+  int rightX;
+  leftX = speed;
+  leftY = 0;
   sVisionUpper.takeSnapshot(sigGreen);
   // looks 80 pixels in advance to accomidate for overshoot
-  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 80){
-    if(sVisionUpper.largestObject.width < 70){
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 60 || sVisionUpper.largestObject.width < 30){
     wait(10, msec);
     sVisionUpper.takeSnapshot(sigGreen);
-    }
+    rightX = (a - sInertial.rotation(deg)) * 2;
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+
   }
   mWheelBackLeft.setVelocity(0, pct);
   mWheelFrontLeft.setVelocity(0, pct);
@@ -533,6 +520,7 @@ void autonomous(void) {
 
     //Score and descore
     intakeIn();
+    wait(400, msec);
     mOutputUpper.setVelocity(100, pct);
     mOutputLower.setVelocity(100, pct);
     double startTime = Brain.timer(msec);
