@@ -473,7 +473,7 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-    sInertial.setRotation(-57, deg);
+    /*sInertial.setRotation(-57, deg);
 
     // PART 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
@@ -537,7 +537,7 @@ void autonomous(void) {
     turnTo(-360); // face center goal
 
     // Drive towards center goal and scoop red ball along the way
-    mOutputLower.setVelocity(100, pct);
+    mOutputLower.spin(fwd,100, pct);
     driveViaTimeGyroCamera(2000, -360, sigBlue);
     // Strike center goal and align
     alignToGoal(-360);
@@ -560,15 +560,17 @@ void autonomous(void) {
     // Intake second blue
     intakeIn();
     mOutputLower.spin(fwd,80, pct);
-    wait(600, msec);
+    wait(800, msec);
+    */
     intakeOpenAuton();
-    /*
+    
+    sInertial.setRotation(-360, deg); // Temporary
     // Back away from center goal
-    driveViaDistanceGyro(-2000, -360);
+    driveViaDistanceGyro(-1700, -360);
     // Turn towards goal 1 to eject balls
     turnFast(-205);
-    mOutputLower.startSpinFor(4, rotationUnits::rev, 60, velocityUnits::pct);
-    mOutputUpper.spinFor(8, rotationUnits::rev, 60, velocityUnits::pct);
+    mOutputLower.startSpinFor(4, rotationUnits::rev, 100, velocityUnits::pct);
+    mOutputUpper.spinFor(8, rotationUnits::rev, 100, velocityUnits::pct);
     // Close intake arms
     mIntakeLeft.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
     mIntakeRight.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
@@ -578,48 +580,53 @@ void autonomous(void) {
     // Get red ball
     turnTo(-126.87); // did trig to find this
     intakeOpenAuton();
-    mOutputLower.setVelocity(80, pct);
-    driveViaDistanceGyro(11000, 36.87);
+    mOutputLower.spin(fwd,80, pct);
+    driveViaDistanceGyroCamera(10300, -126.87);
     intakeIn();
 
     // Go to goal
     turnTo(-146.31); //did trig to find this
     driveViaTimeGyroCamera(4000, -146.31, sigGreen);
-    alignToGoal(-135);
+    alignToGoal(-146.31);
 
     // Goal 4 score red and descore blue
-    mOutputUpper.setVelocity(100, pct);
-    mOutputLower.setVelocity(100, pct);
-    startTime = Brain.timer(msec);
+    mOutputUpper.spin(fwd,100, pct);
+    mOutputLower.spin(fwd,80, pct);
+    double startTime = Brain.timer(msec); // Temporary double
     while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
       wait(10, msec);
       sVisionUpper.takeSnapshot(sigRed);
     }
-    outputOff();
-    intakeOpenAuton();
+    mOutputUpper.spin(fwd,0, pct);
+    
 
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // Part 5 - Back out of the goal
-    mOutputLower.setVelocity(-100, pct);
-    mOutputUpper.setVelocity(-100, pct);
-    driveViaDistanceGyro(-9000, -135);
+
+    driveViaDistanceGyro(-4500, -146.31);
     intakeIn();
 
     // Turn to face the wall
+    turnFast(-270);
+    // Eject Blue
+    mOutputLower.startSpinFor(4, rotationUnits::rev, 100, velocityUnits::pct);
+    mOutputUpper.spinFor(8, rotationUnits::rev, 100, velocityUnits::pct);
+    wait(800, msec);
+    // Turn to red
     turnTo(-90);
-
     // Get the red ball
     intakeOpenWall();
-    mOutputLower.setVelocity(80, pct);
+    mOutputLower.spin(fwd,80, pct);
     driveViaTimeGyro(3000, -90);
     intakeIn();
 
     // Scoot back
     driveViaDistanceGyro(-2000, -90);
-
+    
+/*
     // Strafe to goal
     strafeUntilGreen(50, -90);
 
@@ -628,8 +635,8 @@ void autonomous(void) {
     wait(100, msec);
 
     // drive into goal
-    driveViaTimeGyroCamera(1000, -180, sigGreen);
-    alignToGoal(-180);
+    driveViaTimeGyroCamera(1000, -90, sigGreen);
+    alignToGoal(-90);
     intakeOff();
 
     //Score and descore
