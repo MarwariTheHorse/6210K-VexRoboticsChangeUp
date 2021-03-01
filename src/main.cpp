@@ -822,6 +822,29 @@ void autonomous(void) {
      intakeOff();
      intakeOpenWall();
      driveViaDistanceGyro(-1700, -540);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
+     strafeUntilRed(50, -540);
+     mOutputLower.spin(fwd, 100, pct);
+     driveViaTimeGyro(3000, -540);
+     intakeIn();
+     wait(200);// This may not be needed
+     driveViaDistanceGyro(-4500, -540);
+     turnTo(-585);
+     driveViaTimeGyroCamera(5000, -585, sigGreen);
+     mOutputUpper.spin(fwd, 100, pct);
+     startTime = Brain.timer(msec);
+     while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+       wait(10, msec);
+       sVisionUpper.takeSnapshot(sigRed);
+     }
+     mOutputLower.spin(fwd, 0, pct);
+     mOutputUpper.spin(fwd, 0, pct);
+     intakeOpenAuton();
+     wait(400, msec);
+     intakeIn();
+     driveViaDistanceGyro(-4000, -585);
+
 
  // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
