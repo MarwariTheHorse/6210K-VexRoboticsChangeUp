@@ -157,17 +157,18 @@ void scoreFirstCornerGoal(int dir) {
 }
 
 void turnFast(double angle){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2) // uses global variable TurnVelocity
-  {
-    // Calculate error
-    double error = (angle - sInertial.rotation(deg));
-    if(error > 90) error = 90;   // cap positive motor power at +90
-    if(error < -90) error = -90; // cap negative motor power at -90
-    mWheelFrontLeft.setVelocity(error, pct);
-    mWheelFrontRight.setVelocity(error, pct);
-    mWheelBackLeft.setVelocity(error, pct);
-    mWheelBackRight.setVelocity(error, pct);
-    wait(5, msec);
+  double error = fabs(fabs(angle) - fabs(sInertial.rotation(deg)));
+  int rightX;
+  while(error > 10){
+    error = fabs(fabs(angle) - fabs(sInertial.rotation(deg)));
+    if(error < 40)
+      rightX = (2 * error) + 20;
+    else
+      rightX = 90;
+    mWheelFrontLeft.spin(fwd, rightX, pct);
+    mWheelFrontRight.spin(fwd, rightX, pct);
+    mWheelBackLeft.spin(fwd, rightX, pct);
+    mWheelBackRight.spin(fwd, rightX, pct);
   }
   driveForward(0, 0);
 }
@@ -397,7 +398,7 @@ void alignToGoal(double a){
     mWheelBackLeft.setVelocity(error, pct);  // when left and right are same polarity
     mWheelBackRight.setVelocity(error, pct); // the robot rotates (turns)
     wait(5, msec);
-    if(Brain.timer(msec) - startTime > 500) break;
+    if(Brain.timer(msec) - startTime > 1000) break;
   }
   driveForward(0, 0);
 }
@@ -451,6 +452,19 @@ void strafeUntilRed(int speed, double a){
   //setStopping(brake);
 }
 
+void ejectBalls(){
+  mOutputLower.startSpinFor(-8, rotationUnits::rev, 100, velocityUnits::pct);
+  mOutputUpper.spinFor(-8, rotationUnits::rev, 100, velocityUnits::pct);
+}
+
+void waitForRed(){
+  double startTime = Brain.timer(msec);
+  while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+    wait(10, msec);
+    sVisionUpper.takeSnapshot(sigRed);
+  }
+}
+
 void autonomous(void) {
   // output(100, 5000); // Spit the ball into the goal
   // intake(-75, 1000); // Flick the intakes outward
@@ -479,6 +493,7 @@ void autonomous(void) {
   int leftX;
   int leftY;
   int rightX;
+  double startTime;
 
 //        XXXXXXXXXXXXXX
 //      XXXXXXXXXXXXXXXXXXXX
@@ -497,7 +512,7 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
-    /*sInertial.setRotation(-57, deg);
+    sInertial.setRotation(-57, deg);
 
     // PART 1 - Deploy Camera and Hood and flick ball into goal
     mOutputUpper.setVelocity(100, pct);
@@ -538,11 +553,7 @@ void autonomous(void) {
     wait(400, msec);
     mOutputUpper.setVelocity(100, pct);
     mOutputLower.setVelocity(100, pct);
-    double startTime = Brain.timer(msec);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
+    waitForRed();
     mOutputUpper.setVelocity(0, pct);
     intakeOpenAuton();
 
@@ -554,8 +565,9 @@ void autonomous(void) {
 
     
     turnFast(-225); // turn quickly to eject blue
-    mOutputLower.startSpinFor(10, rotationUnits::rev, 90, velocityUnits::pct);
-    mOutputUpper.spinFor(10, rotationUnits::rev, 90, velocityUnits::pct); // blocking command to allow time to eject
+
+    ejectBalls();
+
     turnTo(-270);
     strafeViaDistanceGyro(400,-270);
     turnTo(-360); // face center goal
@@ -571,12 +583,7 @@ void autonomous(void) {
     mOutputUpper.spin(fwd,100, pct);
     mOutputLower.spin(fwd,70, pct);
     // Watch for red ball going into goal
-    startTime = Brain.timer(msec);
-    sVisionUpper.takeSnapshot(sigRed);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
+    waitForRed();
     // Stop upper output scoring wheel
     mOutputUpper.spin(fwd,0, pct);
     intakeOpenAuton();
@@ -585,16 +592,14 @@ void autonomous(void) {
     intakeIn();
     mOutputLower.spin(fwd,80, pct);
     wait(800, msec);
-    */
+    
     intakeOpenAuton();
     
-    sInertial.setRotation(-360, deg); // Temporary
     // Back away from center goal
     driveViaDistanceGyro(-1700, -360);
     // Turn towards goal 1 to eject balls
     turnFast(-205);
-    mOutputLower.startSpinFor(4, rotationUnits::rev, 100, velocityUnits::pct);
-    mOutputUpper.spinFor(8, rotationUnits::rev, 100, velocityUnits::pct);
+    ejectBalls();
     // Close intake arms
     mIntakeLeft.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
     mIntakeRight.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
@@ -602,25 +607,21 @@ void autonomous(void) {
 /////////////////////////////////////////////////////////////////////////
     // PART 4 - goal 4
     // Get red ball
-    turnTo(-126.87); // did trig to find this
+    turnTo(-135); // did trig to find this
     intakeOpenAuton();
     mOutputLower.spin(fwd,80, pct);
-    driveViaDistanceGyroCamera(10300, -126.87);
+    driveViaDistanceGyroCamera(5300, -135);
     intakeIn();
 
     // Go to goal
-    turnTo(-146.31); //did trig to find this
-    driveViaTimeGyroCamera(4000, -146.31, sigGreen);
-    alignToGoal(-146.31);
+    turnTo(-135); //did trig to find this
+    driveViaTimeGyroCamera(4000, -135, sigGreen);
+    alignToGoal(-135);
 
     // Goal 4 score red and descore blue
     mOutputUpper.spin(fwd,100, pct);
     mOutputLower.spin(fwd,80, pct);
-    double startTime = Brain.timer(msec); // Temporary double
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
+    waitForRed();
     mOutputUpper.spin(fwd,0, pct);
     
 
@@ -636,8 +637,7 @@ void autonomous(void) {
     // Turn to face the wall
     turnFast(-270);
     // Eject Blue
-    mOutputLower.startSpinFor(4, rotationUnits::rev, 100, velocityUnits::pct);
-    mOutputUpper.spinFor(8, rotationUnits::rev, 100, velocityUnits::pct);
+    ejectBalls();
     wait(800, msec);
     // Turn to red
     turnTo(-90);
@@ -650,7 +650,7 @@ void autonomous(void) {
     // Scoot back
     driveViaDistanceGyro(-2000, -90);
     
-/*
+
     // Strafe to goal
     strafeUntilGreen(50, -90);
 
@@ -667,13 +667,9 @@ void autonomous(void) {
     intakeIn();
     mOutputUpper.spin(fwd,100, pct);
     mOutputLower.spin(fwd,100, pct);
-    startTime = Brain.timer(msec);
-    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-      wait(10, msec);
-      sVisionUpper.takeSnapshot(sigRed);
-    }
+    waitForRed();
     mOutputUpper.spin(fwd,0, pct);
-
+/*
 
 ////////////////////////////////////////////////////////////////////////
 
