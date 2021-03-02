@@ -476,20 +476,20 @@ void autonomous(void) {
   int rightX;
   double startTime;
 
-//        XXXXXXXXXXXXXX
-//      XXXXXXXXXXXXXXXXXXXX
-//    XXXXXXXXXXXXXXXXXXXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXXXXXXXXXXXXXXXXXXX
-//    XXXXXXXXXXXXXXXXXXXXXXXX
-//    XXXXXXXXXXXXXXXXXXXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX    
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
+  //        XXXXXXXXXXXXXX
+  //      XXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX    
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
@@ -501,7 +501,7 @@ void autonomous(void) {
     mOutputUpper.setVelocity(0, pct);
 
 
-///////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////
 
 
     // PART 2 - Get ball 1,
@@ -539,7 +539,7 @@ void autonomous(void) {
     intakeOpenAuton();
 
 
-///////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////
     // PART 3 - Back up and eject blue
     driveViaDistanceGyro(-1900, -180);
     wait(100, msec);
@@ -585,7 +585,7 @@ void autonomous(void) {
     mIntakeLeft.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
     mIntakeRight.startSpinFor(-3, rotationUnits::rev, 90, velocityUnits::pct);
 
-/////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
     // PART 4 - goal 4
     // Get red ball
     turnTo(-135); // did trig to find this
@@ -607,7 +607,7 @@ void autonomous(void) {
     
 
 
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // Part 5 - Back out of the goal
@@ -650,9 +650,9 @@ void autonomous(void) {
     mOutputLower.spin(fwd,100, pct);
     waitForRed();
     mOutputUpper.spin(fwd,0, pct);
-/*
+  /*
 
-////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////
 
 
     // PART 6 - Back up and eject blue
@@ -683,8 +683,8 @@ void autonomous(void) {
     // Rotate toward goal 6
     turnTo(-33.69);
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-// Part 7 - Goals 6 and 7
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Part 7 - Goals 6 and 7
     // Score goal 6
     intakeIn();
     driveViaTimeGyroCamera(5000, -33.69, sigGreen);
@@ -731,7 +731,7 @@ void autonomous(void) {
     mOutputUpper.spin(fwd,0, pct);
     mOutputLower.spin(fwd,80, pct);
     intakeOff();
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Goal 8 and Experimental: knock blue ball into center, score corner
 
@@ -759,8 +759,8 @@ void autonomous(void) {
     intakeOff();
     // Back out
     driveViaDistanceGyro(-6000, -416.31);
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PART 8 - Goal nine followed by CELEBRATION!
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // PART 8 - Goal nine followed by CELEBRATION!
     //turnTo(-540);
 
     // Get the red ball
@@ -799,8 +799,8 @@ void autonomous(void) {
      intakeOff();
      intakeOpenWall();
      driveViaDistanceGyro(-1700, -540);
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
      strafeUntilRed(50, -540);
      mOutputLower.spin(fwd, 100, pct);
      driveViaTimeGyro(3000, -540);
@@ -825,21 +825,21 @@ void autonomous(void) {
 
  // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-*/
-}
+  */
+  }
 
-   // Right 1
-   if (mode == 'Y') {
-     // Get to the goal
-     mWheelFrontLeft.setVelocity(40, pct);
-     mWheelFrontRight.setVelocity(0, pct);
-     mWheelBackLeft.setVelocity(40, pct);
-     mWheelBackRight.setVelocity(0, pct);
-     vexDelay(300);
-     mWheelFrontLeft.setVelocity(0, pct);
-     mWheelFrontRight.setVelocity(0, pct);
-     mWheelBackLeft.setVelocity(0, pct);
-     mWheelBackRight.setVelocity(0, pct);
+  // Right 1
+  if (mode == 'Y') {
+    // Get to the goal
+    mWheelFrontLeft.setVelocity(40, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(40, pct);
+    mWheelBackRight.setVelocity(0, pct);
+    vexDelay(300);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
 
     // Ensure we are at the goal
     driveForward(100, 1000);
@@ -1478,13 +1478,26 @@ void usercontrol(void) {
     leftY = Controller1.Axis3.position();
     rightX = Controller1.Axis1.position();
 
-    // Zero the values
-    if (leftX < 20 && leftX > -20)
-      leftX = 0;
-    if (leftY < 20 && leftY > -20)
-      leftY = 0;
-    if (rightX < 20 && rightX > -20)
-      rightX = 0;
+    // // Zero the values
+    // if (leftX < 20 && leftX > -20)
+    //   leftX = 0;
+    // if (leftY < 20 && leftY > -20)
+    //   leftY = 0;
+    // if (rightX < 20 && rightX > -20)
+    //   rightX = 0;
+
+    // Bend values from a linear to a cubic function
+    leftX /= 100; // Shift value to below one
+    leftX = leftX * leftX * leftX; // Cube the value
+    leftX *= 100; // Shift back to 100
+
+    leftY /= 100;
+    leftY = leftY * leftY * leftY;
+    leftY *= 100;
+
+    rightX /= 100;
+    rightX = rightX * rightX * rightX;
+    rightX *= 100;
 
     // Assign wheel speeds
     mWheelFrontLeft.setVelocity((rightX * 1.5) + leftY + leftX, pct);
