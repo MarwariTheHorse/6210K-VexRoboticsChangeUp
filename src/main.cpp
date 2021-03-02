@@ -131,18 +131,17 @@ void scoreFirstCornerGoal(int dir) {
 
 // Used for turning when we don't need accuracy
 void turnFast(double angle){
-  double error = fabs(fabs(angle) - fabs(sInertial.rotation(deg)));
-  int rightX;
-  while(error > 10){
-    error = fabs(fabs(angle) - fabs(sInertial.rotation(deg)));
-    if(error < 40)
-      rightX = (2 * error) + 20;
-    else
-      rightX = 90;
-    mWheelFrontLeft.spin(fwd, rightX, pct);
-    mWheelFrontRight.spin(fwd, rightX, pct);
-    mWheelBackLeft.spin(fwd, rightX, pct);
-    mWheelBackRight.spin(fwd, rightX, pct);
+  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2) // uses global variable TurnVelocity
+  {
+    // Calculate error
+    double error = (angle - sInertial.rotation(deg));
+    if(error > 90) error = 90;   // cap positive motor power at +90
+    if(error < -90) error = -90; // cap negative motor power at -90
+    mWheelFrontLeft.setVelocity(error, pct);
+    mWheelFrontRight.setVelocity(error, pct);
+    mWheelBackLeft.setVelocity(error, pct);
+    mWheelBackRight.setVelocity(error, pct);
+    wait(5, msec);
   }
   driveForward(0, 0);
 }
@@ -1478,48 +1477,13 @@ void usercontrol(void) {
     leftY = Controller1.Axis3.position();
     rightX = Controller1.Axis1.position();
 
-    // // Moving average replacement for the code above
-    // leftX = (leftX * 0.9) + (Controller1.Axis4.position() * 0.1);
-    // leftY = (leftY * 0.9) + (Controller1.Axis3.position() * 0.1);
-    // rightX = (rightX * 0.9) + (Controller1.Axis1.position() * 0.1);
-
-
-    // // Zero the values (Likely not needed if we use the cubing function)
-    // if (leftX < 20 && leftX > -20)
-    //   leftX = 0;
-    // if (leftY < 20 && leftY > -20)
-    //   leftY = 0;
-    // if (rightX < 20 && rightX > -20)
-    //   rightX = 0;
-
-    // Bend values from a linear to a cubic function
-    leftX /= 100; // Shift value to below one
-    leftX = leftX * leftX * leftX; // Cube the value
-    leftX *= 100; // Shift back to 100
-
-    leftY /= 100;
-    leftY = leftY * leftY * leftY;
-    leftY *= 100;
-
-    rightX /= 100;
-    rightX = rightX * rightX * rightX;
-    rightX *= 100;
-
-    // // Perfect extreme code
-    // if(leftX > 70)
-    //   leftX = 100;
-    // if(leftX < -70)
-    //   leftX = -100;
-    
-    // if(leftY > 70)
-    //   leftY = 100;
-    // if(leftY < -70)
-    //   leftY = -100;
-
-    // if(rightX > 70)
-    //   rightX = 100;
-    // if(rightX < -70)
-    //   rightX = -100;
+    // Zero the values (Likely not needed if we use the cubing function)
+    if (leftX < 20 && leftX > -20)
+      leftX = 0;
+    if (leftY < 20 && leftY > -20)
+      leftY = 0;
+    if (rightX < 20 && rightX > -20)
+      rightX = 0;
 
     // Assign wheel speeds
     mWheelFrontLeft.spin(fwd, (rightX * 1.5) + leftY + leftX, pct);
@@ -1685,7 +1649,6 @@ int main() {
   task taskPrintCameraObjects(printCameraObjects);
   task taskComputeMotorParameters(computeMotorParameters);
   
-  Competition.test_auton();
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
