@@ -10,6 +10,8 @@
 #include "vex.h"
 #include "miscmethods.h"
 
+#define pi 3.14159265358979323
+
 using namespace vex;
 
 // A global instance of competition
@@ -1478,59 +1480,47 @@ void usercontrol(void) {
     leftY = Controller1.Axis3.position();
     rightX = Controller1.Axis1.position();
 
-    // // Moving average replacement for the code above
-    // leftX = (leftX * 0.9) + (Controller1.Axis4.position() * 0.1);
-    // leftY = (leftY * 0.9) + (Controller1.Axis3.position() * 0.1);
-    // rightX = (rightX * 0.9) + (Controller1.Axis1.position() * 0.1);
+    // Zero the values (Likely not needed if we use the cubing function)
+    if (leftX < 10 && leftX > -10){
+      leftX = 0;
+    }
+    if (leftY < 10 && leftY > -10){
+      leftY = 0;
+    }
+    if (rightX < 10 && rightX > -10){
+      rightX = 0;
+    }
 
-
-    // // Zero the values (Likely not needed if we use the cubing function)
-    // if (leftX < 20 && leftX > -20)
-    //   leftX = 0;
-    // if (leftY < 20 && leftY > -20)
-    //   leftY = 0;
-    // if (rightX < 20 && rightX > -20)
-    //   rightX = 0;
-
-    // Bend values from a linear to a cubic function
-    leftX /= 100; // Shift value to below one
-    leftX = leftX * leftX * leftX; // Cube the value
-    leftX *= 100; // Shift back to 100
-
-    leftY /= 100;
-    leftY = leftY * leftY * leftY;
-    leftY *= 100;
-
-    rightX /= 100;
-    rightX = rightX * rightX * rightX;
-    rightX *= 100;
-
-    // // Perfect extreme code
-    // if(leftX > 70)
-    //   leftX = 100;
-    // if(leftX < -70)
-    //   leftX = -100;
     
-    // if(leftY > 70)
-    //   leftY = 100;
-    // if(leftY < -70)
-    //   leftY = -100;
 
-    // if(rightX > 70)
-    //   rightX = 100;
-    // if(rightX < -70)
-    //   rightX = -100;
+    double magnitude = sqrt((leftX * leftX) + (leftY * leftY));
+    double direction;
+    if(leftX > 0){
+      direction = (2 * pi) + asin(leftY/magnitude) - (pi/4);
+    }else{
+      direction = pi - asin(leftY/magnitude) - (pi/4);
+    }
+    
+    // Controller1.Screen.setCursor(1, 1);
+    // Controller1.Screen.print("MAG: "); // print Gyro Angle
+    // Controller1.Screen.setCursor(1, 6);
+    // Controller1.Screen.print(magnitude);
+
+    // Controller1.Screen.setCursor(2, 1);
+    // Controller1.Screen.print("DIR: "); // print Gyro Angle
+    // Controller1.Screen.setCursor(2, 6);
+    // Controller1.Screen.print(direction);
+
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, (rightX * 1.5) - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, (rightX * 1.5) + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, (rightX * 1.5) - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelFrontRight.spin(fwd, (rightX * 1.5) - ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelBackLeft.spin(fwd, (rightX * 1.5) + ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelBackRight.spin(fwd, (rightX * 1.5) - ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    if (!disableIntakes) {
+    if (!disableIntakes){
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
         intakePhase = 1;
@@ -1682,10 +1672,8 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
-  task taskPrintCameraObjects(printCameraObjects);
-  task taskComputeMotorParameters(computeMotorParameters);
-  
-  Competition.test_auton();
+  //task taskPrintCameraObjects(printCameraObjects);
+  //task taskComputeMotorParameters(computeMotorParameters);
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
