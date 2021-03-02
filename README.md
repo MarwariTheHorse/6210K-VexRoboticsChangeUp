@@ -12,6 +12,7 @@ Team members include:
 - Autonomous
     - Full Auton
     - Mirrored 1, 2, and 3 goal 15 second auton
+    - Special Auton for online tournaments
 - Drivercode
     - Drivetrain
     - Intakes
