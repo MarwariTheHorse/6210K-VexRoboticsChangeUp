@@ -109,15 +109,15 @@ void scoreFirstCornerGoal(int dir) {
   }
 
   // Get to the goal
-  mWheelFrontLeft.setVelocity(leftVelocity, pct);
-  mWheelFrontRight.setVelocity(rightVelocity, pct);
-  mWheelBackLeft.setVelocity(leftVelocity, pct);
-  mWheelBackRight.setVelocity(rightVelocity, pct);
+  mWheelFrontLeft.spin(fwd, leftVelocity, pct);
+  mWheelFrontRight.spin(fwd, rightVelocity, pct);
+  mWheelBackLeft.spin(fwd, leftVelocity, pct);
+  mWheelBackRight.spin(fwd, rightVelocity, pct);
   vexDelay(300);
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
+  mWheelFrontLeft.spin(fwd, 0, pct);
+  mWheelFrontRight.spin(fwd, 0, pct);
+  mWheelBackLeft.spin(fwd, 0, pct);
+  mWheelBackRight.spin(fwd, 0, pct);
 
   // Ensure we are in the goal
   driveForward(100, 1000);
@@ -155,10 +155,10 @@ void turnTo(double angle){
     double error = angle - sInertial.rotation(deg);
     if(error > 90) error = 90;   // cap positive motor power at +90
     if(error < -90) error = -90; // cap negative motor power at -90
-    mWheelFrontLeft.setVelocity(error, pct);
-    mWheelFrontRight.setVelocity(error, pct);
-    mWheelBackLeft.setVelocity(error, pct);
-    mWheelBackRight.setVelocity(error, pct);
+    mWheelFrontLeft.spin(fwd, error, pct);
+    mWheelFrontRight.spin(fwd, error, pct);
+    mWheelBackLeft.spin(fwd, error, pct);
+    mWheelBackRight.spin(fwd, error, pct);
     wait(5, msec);
   }
   driveForward(0, 0);
@@ -178,10 +178,10 @@ void driveViaDistanceGyro(double dist, double a){
       int leftY = 80;
       int rightX = (a - sInertial.rotation(deg)) * 3;
       int leftX = 0;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
       wait(5, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
@@ -190,10 +190,10 @@ void driveViaDistanceGyro(double dist, double a){
       int leftY = -80;
       int rightX = (a - sInertial.rotation(deg)) * 3;
       int leftX = 0;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
       wait(5, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
@@ -224,10 +224,10 @@ void driveViaDistanceGyroCamera(double dist, double a){
       if (sVisionLower.objectCount > 0 && sVisionLower.largestObject.width > 40) {
         leftX = (sVisionLower.largestObject.centerX - 180) * .8;
       }
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
       wait(10, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
@@ -251,10 +251,10 @@ void strafeViaDistanceGyro(double dist, double a){
       int leftY = 0;
       int rightX = (a - sInertial.rotation(deg)) * 3;
       int leftX = 50;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
       wait(5, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
@@ -263,10 +263,10 @@ void strafeViaDistanceGyro(double dist, double a){
       int leftY = -80;
       int rightX = (a - sInertial.rotation(deg)) * 3;
       int leftX = 0;
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
       wait(5, msec);
       d = mWheelFrontLeft.rotation(rotationUnits::raw) - mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
     }
@@ -291,10 +291,10 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
     }
     leftY = 50;
     rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     if (Brain.timer(msec) - startTime > 400) {
       if (ForwardVelocity < 20) {
         break;
@@ -320,10 +320,10 @@ void driveViaTimeGyro(double timeInMS, double a){
     leftX = 0;
     leftY = 50;
     rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     if (Brain.timer(msec) - startTime > 400) {
       if (ForwardVelocity < 20) {
         break;
@@ -348,10 +348,10 @@ void driveBackwardsViaTimeGyro(double timeInMS, double a){
     leftX = 0;
     leftY = -50;
     rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     if (Brain.timer(msec) - startTime > 400) {
       if (ForwardVelocity < 20) {
         break;
@@ -374,10 +374,10 @@ void alignToGoal(double a){
     double error = (a - sInertial.rotation(deg)) * 5;
     if(error > 90) error = 90;   // cap positive motor power at +90
     if(error < -90) error = -90; // cap negative motor power at -90
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(error, pct);  // when left and right are same polarity
-    mWheelBackRight.setVelocity(error, pct); // the robot rotates (turns)
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, error, pct);  // when left and right are same polarity
+    mWheelBackRight.spin(fwd, error, pct); // the robot rotates (turns)
     wait(5, msec);
     if(Brain.timer(msec) - startTime > 1000) break;
   }
@@ -396,16 +396,16 @@ void strafeUntilGreen(int speed, double a){
     wait(10, msec);
     sVisionUpper.takeSnapshot(sigGreen);
     rightX = (a - sInertial.rotation(deg)) * 2;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
 
   }
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.spin(fwd, 0, pct);
+  mWheelFrontLeft.spin(fwd, 0, pct);
+  mWheelBackRight.spin(fwd, 0, pct);
+  mWheelFrontRight.spin(fwd, 0, pct);
   //setStopping(brake);
 }
 void strafeUntilRed(int speed, double a){
@@ -420,16 +420,16 @@ void strafeUntilRed(int speed, double a){
     wait(10, msec);
     sVisionLower.takeSnapshot(sigRed);
     rightX = (a - sInertial.rotation(deg)) * 2;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
 
   }
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.spin(fwd, 0, pct);
+  mWheelFrontLeft.spin(fwd, 0, pct);
+  mWheelBackRight.spin(fwd, 0, pct);
+  mWheelFrontRight.spin(fwd, 0, pct);
   //setStopping(brake);
 }
 
@@ -460,14 +460,14 @@ void autonomous(void) {
   mOutputLower.spin(fwd);
   mOutputUpper.spin(fwd);
 
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
-  mIntakeLeft.setVelocity(0, pct);
-  mIntakeRight.setVelocity(0, pct);
-  mOutputLower.setVelocity(0, pct);
-  mOutputUpper.setVelocity(0, pct);
+  mWheelFrontLeft.spin(fwd, 0, pct);
+  mWheelFrontRight.spin(fwd, 0, pct);
+  mWheelBackLeft.spin(fwd, 0, pct);
+  mWheelBackRight.spin(fwd, 0, pct);
+  mIntakeLeft.spin(fwd, 0, pct);
+  mIntakeRight.spin(fwd, 0, pct);
+  mOutputLower.spin(fwd, 0, pct);
+  mOutputUpper.spin(fwd, 0, pct);
   mOutputLower.setBrake(hold);
   mOutputUpper.setBrake(hold);
 
@@ -496,16 +496,16 @@ void autonomous(void) {
     sInertial.setRotation(-57, deg);
 
     // PART 1 - Deploy Camera and Hood and flick ball into goal
-    mOutputUpper.setVelocity(100, pct);
+    mOutputUpper.spin(fwd, 100, pct);
     wait(300, msec);
-    mOutputUpper.setVelocity(0, pct);
+    mOutputUpper.spin(fwd, 0, pct);
 
 
   ///////////////////////////////////////////////////////
 
 
     // PART 2 - Get ball 1,
-    mOutputLower.setVelocity(100, pct);
+    mOutputLower.spin(fwd, 100, pct);
     driveViaDistanceGyro(6000, -57);
 
     // Step 2 - Deploy Arms
@@ -532,10 +532,10 @@ void autonomous(void) {
     //Score and descore
     intakeIn();
     wait(400, msec);
-    mOutputUpper.setVelocity(100, pct);
-    mOutputLower.setVelocity(100, pct);
+    mOutputUpper.spin(fwd, 100, pct);
+    mOutputLower.spin(fwd, 100, pct);
     waitForRed();
-    mOutputUpper.setVelocity(0, pct);
+    mOutputUpper.spin(fwd, 0, pct);
     intakeOpenAuton();
 
 
@@ -673,7 +673,7 @@ void autonomous(void) {
     
     // Get the red ball
     intakeOpenWall();
-    mOutputLower.setVelocity(80, pct);
+    mOutputLower.spin(fwd, 80, pct);
     driveViaTimeGyro(3000, -90);
     intakeIn();
 
@@ -739,7 +739,7 @@ void autonomous(void) {
     driveViaDistanceGyro(1000, -360);
     turnTo(-396.87); // did trig to find this
     intakeOpenAuton();
-    mOutputLower.setVelocity(80, pct);
+    mOutputLower.spin(fwd, 80, pct);
     driveViaDistanceGyro(10300, -396.87);
     intakeIn();
     turnTo(-416.31); //did trig to find this
@@ -831,15 +831,15 @@ void autonomous(void) {
   // Right 1
   if (mode == 'Y') {
     // Get to the goal
-    mWheelFrontLeft.setVelocity(40, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(40, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 40, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 40, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     vexDelay(300);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Ensure we are at the goal
     driveForward(100, 1000);
@@ -854,15 +854,15 @@ void autonomous(void) {
   // Left 1
   if (mode == '<') {
     // Get to the goal
-    // mWheelFrontLeft.setVelocity(0, pct);
-    // mWheelFrontRight.setVelocity(-40, pct);
-    // mWheelBackLeft.setVelocity(0, pct);
-    // mWheelBackRight.setVelocity(-40, pct);
+    // mWheelFrontLeft.spin(fwd, 0, pct);
+    // mWheelFrontRight.spin(fwd, -40, pct);
+    // mWheelBackLeft.spin(fwd, 0, pct);
+    // mWheelBackRight.spin(fwd, -40, pct);
     // vexDelay(300);
-    // mWheelFrontLeft.setVelocity(0, pct);
-    // mWheelFrontRight.setVelocity(0, pct);
-    // mWheelBackLeft.setVelocity(0, pct);
-    // mWheelBackRight.setVelocity(0, pct);
+    // mWheelFrontLeft.spin(fwd, 0, pct);
+    // mWheelFrontRight.spin(fwd, 0, pct);
+    // mWheelBackLeft.spin(fwd, 0, pct);
+    // mWheelBackRight.spin(fwd, 0, pct);
 
     // // Ensure we are in the goal
     // driveForward(100, 1000);
@@ -874,9 +874,9 @@ void autonomous(void) {
     // driveForward(-20, 500);
 
     // Deploy
-    mOutputUpper.setVelocity(100, pct);
+    mOutputUpper.spin(fwd, 100, pct);
     wait(300, msec);
-    mOutputUpper.setVelocity(0, pct);
+    mOutputUpper.spin(fwd, 0, pct);
 
     intakeIn();
 
@@ -884,15 +884,15 @@ void autonomous(void) {
     wait(750, msec);
 
     // Get into the goal
-    mWheelFrontLeft.setVelocity(20, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(20, pct);
-    mWheelBackRight.setVelocity(-40, pct);
+    mWheelFrontLeft.spin(fwd, 20, pct);
+    mWheelFrontRight.spin(fwd, -40, pct);
+    mWheelBackLeft.spin(fwd, 20, pct);
+    mWheelBackRight.spin(fwd, -40, pct);
     vexDelay(500);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Score preload, score the red ball off the ground, and descore the blues
     output(100, 2000);
@@ -918,15 +918,15 @@ void autonomous(void) {
   // Right 2
   if (mode == 'X') {
     // Get to the goal
-    mWheelFrontLeft.setVelocity(40, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(40, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 40, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 40, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     vexDelay(300);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     // Outtake the preload
     output(100, 400); // 500 > 300 timems
     // Drive in reverse
@@ -934,11 +934,11 @@ void autonomous(void) {
     // Turn 45 deg ccw
     sInertial.resetRotation();
     while (sInertial.rotation(deg) < 40) {
-      mWheelBackRight.setVelocity(40, pct);
-      mWheelFrontRight.setVelocity(40, pct);
+      mWheelBackRight.spin(fwd, 40, pct);
+      mWheelFrontRight.spin(fwd, 40, pct);
     }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
 
     intakeIn();
 
@@ -954,29 +954,29 @@ void autonomous(void) {
       else
         leftY = -10;
       // Assign wheel speeds
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Drive to the left a bit
     leftX = -25;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     vexDelay(300); // 500
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     intakeOpen();
     vexDelay(500);
@@ -989,33 +989,33 @@ void autonomous(void) {
     // Spit out the ball we have
     output(100, 600); // 500 > 300 timems
 
-    mWheelFrontLeft.setVelocity(-50, pct);
-    mWheelFrontRight.setVelocity(50, pct);
-    mWheelBackLeft.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(50, pct);
+    mWheelFrontLeft.spin(fwd, -50, pct);
+    mWheelFrontRight.spin(fwd, 50, pct);
+    mWheelBackLeft.spin(fwd, -50, pct);
+    mWheelBackRight.spin(fwd, 50, pct);
 
     vexDelay(1000);
 
     intakeOff();
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
   }
 
   // Left 2
   if (mode == '^') {
     // Get to the goal
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(-40, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, -40, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, -40, pct);
     vexDelay(300);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     // Outtake the preload
     output(100, 400); // 500 > 300 timems
     // Drive in reverse
@@ -1023,11 +1023,11 @@ void autonomous(void) {
     // Turn 45 deg ccw
     sInertial.resetRotation();
     while (sInertial.rotation(deg) > -40) {
-      mWheelBackLeft.setVelocity(-40, pct);
-      mWheelFrontLeft.setVelocity(-40, pct);
+      mWheelBackLeft.spin(fwd, -40, pct);
+      mWheelFrontLeft.spin(fwd, -40, pct);
     }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
 
     intakeIn();
 
@@ -1043,29 +1043,29 @@ void autonomous(void) {
       else
         leftY = -10;
       // Assign wheel speeds
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Drive to the left a bit
     leftX = -25;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     vexDelay(300); // 500
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     intakeOpen();
     vexDelay(500);
@@ -1078,33 +1078,33 @@ void autonomous(void) {
     // Spit out the ball we have
     output(100, 600); // 500 > 300 timems
 
-    mWheelFrontLeft.setVelocity(-50, pct);
-    mWheelFrontRight.setVelocity(50, pct);
-    mWheelBackLeft.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(50, pct);
+    mWheelFrontLeft.spin(fwd, -50, pct);
+    mWheelFrontRight.spin(fwd, 50, pct);
+    mWheelBackLeft.spin(fwd, -50, pct);
+    mWheelBackRight.spin(fwd, 50, pct);
 
     vexDelay(1000);
 
     intakeOff();
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
   }
 
   // Right 3
   if (mode == 'A') {
     // Get to the goal
-    mWheelFrontLeft.setVelocity(40, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(40, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 40, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 40, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     vexDelay(300);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     // Outtake the preload
     output(100, 400); // 500 > 300 timems
     // Drive in reverse
@@ -1112,11 +1112,11 @@ void autonomous(void) {
     // Turn 45 deg ccw
     sInertial.resetRotation();
     while (sInertial.rotation(deg) < 40) {
-      mWheelBackRight.setVelocity(40, pct);
-      mWheelFrontRight.setVelocity(40, pct);
+      mWheelBackRight.spin(fwd, 40, pct);
+      mWheelFrontRight.spin(fwd, 40, pct);
     }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
 
     intakeIn();
 
@@ -1132,29 +1132,29 @@ void autonomous(void) {
       else
         leftY = -10;
       // Assign wheel speeds
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Drive to the left a bit
     leftX = -25;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     vexDelay(300); // 500
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Thrust into the goal
     driveForward(100, 1000);
@@ -1164,33 +1164,33 @@ void autonomous(void) {
     // Spit out the ball we have
     output(100, 600); // 500 > 300 timems
 
-    mWheelFrontLeft.setVelocity(-50, pct);
-    mWheelFrontRight.setVelocity(50, pct);
-    mWheelBackLeft.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(50, pct);
+    mWheelFrontLeft.spin(fwd, -50, pct);
+    mWheelFrontRight.spin(fwd, 50, pct);
+    mWheelBackLeft.spin(fwd, -50, pct);
+    mWheelBackRight.spin(fwd, 50, pct);
 
     vexDelay(1000);
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Line track until we reach the perpendicular line
     leftX = 100;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
 
     waitUntil(sDistanceRight.objectDistance(distanceUnits::in) < 4);
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     driveForward(100, 1000);
 
@@ -1206,15 +1206,15 @@ void autonomous(void) {
   // Left 3
   if (mode == '>') {
     // Get to the goal
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(-40, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, -40, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, -40, pct);
     vexDelay(300);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Outtake the preload
     output(100, 400); // 500 > 300 timems
@@ -1225,11 +1225,11 @@ void autonomous(void) {
     // Turn 45 deg ccw
     sInertial.resetRotation();
     while (sInertial.rotation(deg) > -40) {
-      mWheelBackLeft.setVelocity(-40, pct);
-      mWheelFrontLeft.setVelocity(-40, pct);
+      mWheelBackLeft.spin(fwd, -40, pct);
+      mWheelFrontLeft.spin(fwd, -40, pct);
     }
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
 
     // Deploy the intakes
     intakeIn();
@@ -1246,15 +1246,15 @@ void autonomous(void) {
       else
         leftY = -10;
       // Assign wheel speeds
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Open the intakes
     intakeOpen();
@@ -1263,15 +1263,15 @@ void autonomous(void) {
     leftX = -25;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     vexDelay(300); // 500
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Thrust into the goal
     driveForward(100, 1000);
@@ -1280,33 +1280,33 @@ void autonomous(void) {
     output(100, 600); // 500 > 300 timems
 
     // Back up
-    mWheelFrontLeft.setVelocity(-50, pct);
-    mWheelFrontRight.setVelocity(50, pct);
-    mWheelBackLeft.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(50, pct);
+    mWheelFrontLeft.spin(fwd, -50, pct);
+    mWheelFrontRight.spin(fwd, 50, pct);
+    mWheelBackLeft.spin(fwd, -50, pct);
+    mWheelBackRight.spin(fwd, 50, pct);
 
     vexDelay(1000);
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Line track until we reach the wall
     leftX = -100;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
 
     waitUntil(sDistanceLeft.objectDistance(distanceUnits::in) < 4);
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Open the intakes
     intakeOpen();
@@ -1328,28 +1328,28 @@ void autonomous(void) {
   if (mode == 'S') {
     // Get to the goal
     sInertial.setRotation(-107, deg);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(-40, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, -40, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, -40, pct);
     vexDelay(500);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
     // Score the preload
     output(100, 500); // 500 > 300 timems
     // Drive in reverse
     driveForward(-20, 200);
     // Turn 45 deg ccw
     while (sInertial.rotation(deg) > -175) {
-      mWheelFrontLeft.setVelocity(-20, pct);
-      mWheelBackLeft.setVelocity(-20, pct);
+      mWheelFrontLeft.spin(fwd, -20, pct);
+      mWheelBackLeft.spin(fwd, -20, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     intakeIn();
 
@@ -1365,15 +1365,15 @@ void autonomous(void) {
       else
         leftY = -10;
       // Assign wheel speeds
-      mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-      mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-      mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-      mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     intakeOpen();
 
@@ -1381,15 +1381,15 @@ void autonomous(void) {
     leftX = -25;
     leftY = 0;
     rightX = 0;
-    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
-    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
     vexDelay(200); // 500 > 300
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     // Thrust into the goal
     driveForward(100, 1000);
@@ -1405,37 +1405,37 @@ void autonomous(void) {
       int rotSpeed;
       ySpeed = -75;
       rotSpeed = -(sInertial.rotation() + 180) * 2;
-      mWheelFrontLeft.setVelocity(rotSpeed + ySpeed, pct);
-      mWheelFrontRight.setVelocity(rotSpeed - ySpeed, pct);
-      mWheelBackLeft.setVelocity(rotSpeed + ySpeed, pct);
-      mWheelBackRight.setVelocity(rotSpeed - ySpeed, pct);
+      mWheelFrontLeft.spin(fwd, rotSpeed + ySpeed, pct);
+      mWheelFrontRight.spin(fwd, rotSpeed - ySpeed, pct);
+      mWheelBackLeft.spin(fwd, rotSpeed + ySpeed, pct);
+      mWheelBackRight.spin(fwd, rotSpeed - ySpeed, pct);
     }
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     intakeOff();
 
     // Turn towards
-    mWheelFrontRight.setVelocity(-50, pct);
-    mWheelBackRight.setVelocity(-50, pct);
+    mWheelFrontRight.spin(fwd, -50, pct);
+    mWheelBackRight.spin(fwd, -50, pct);
     waitUntil(sInertial.rotation() > -225);
 
     // Gun it towards the wall
-    mWheelFrontLeft.setVelocity(-100, pct);
-    mWheelFrontRight.setVelocity(-100, pct);
-    mWheelBackLeft.setVelocity(100, pct);
-    mWheelBackRight.setVelocity(100, pct);
+    mWheelFrontLeft.spin(fwd, -100, pct);
+    mWheelFrontRight.spin(fwd, -100, pct);
+    mWheelBackLeft.spin(fwd, 100, pct);
+    mWheelBackRight.spin(fwd, 100, pct);
 
     intakeOpen();
 
     vexDelay(2000);
 
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
+    mWheelFrontLeft.spin(fwd, 0, pct);
+    mWheelFrontRight.spin(fwd, 0, pct);
+    mWheelBackLeft.spin(fwd, 0, pct);
+    mWheelBackRight.spin(fwd, 0, pct);
 
     output(100, 1000);
 
@@ -1522,10 +1522,10 @@ void usercontrol(void) {
     //   rightX = -100;
 
     // Assign wheel speeds
-    mWheelFrontLeft.setVelocity((rightX * 1.5) + leftY + leftX, pct);
-    mWheelFrontRight.setVelocity((rightX * 1.5) - leftY + leftX, pct);
-    mWheelBackLeft.setVelocity((rightX * 1.5) + leftY - leftX, pct);
-    mWheelBackRight.setVelocity((rightX * 1.5) - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, (rightX * 1.5) - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, (rightX * 1.5) + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, (rightX * 1.5) - leftY - leftX, pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1550,14 +1550,14 @@ void usercontrol(void) {
       // If absolutly nothing is happening, stop
       if (!Controller1.ButtonR1.pressing() &&
           !Controller1.ButtonR2.pressing() && intakePhase == 0) {
-        mIntakeLeft.setVelocity(0, pct);
-        mIntakeRight.setVelocity(0, pct);
+        mIntakeLeft.spin(fwd, 0, pct);
+        mIntakeRight.spin(fwd, 0, pct);
       }
 
       // Phase 1: Spin to the hardstops
       if (intakePhase == 1) {
-        mIntakeLeft.setVelocity(100, pct);
-        mIntakeRight.setVelocity(100, pct);
+        mIntakeLeft.spin(fwd, 100, pct);
+        mIntakeRight.spin(fwd, 100, pct);
       }
 
       // Both arms hit > Phase 2
@@ -1568,8 +1568,8 @@ void usercontrol(void) {
 
       // Phase 2: Continue to press against the hard stops, but relax the torque a bit
       if (intakePhase == 2) {
-        mIntakeLeft.setVelocity(100, pct);
-        mIntakeRight.setVelocity(100, pct);
+        mIntakeLeft.spin(fwd, 100, pct);
+        mIntakeRight.spin(fwd, 100, pct);
         mIntakeLeft.setMaxTorque(40, pct);
         mIntakeRight.setMaxTorque(40, pct);
       }
@@ -1580,16 +1580,16 @@ void usercontrol(void) {
 
     // Spin in
     if (Controller1.ButtonL1.pressing()) {
-      mOutputLower.setVelocity(100, pct);
-      mOutputUpper.setVelocity(100, pct);
+      mOutputLower.spin(fwd, 100, pct);
+      mOutputUpper.spin(fwd, 100, pct);
       // Spin out
     } else if (Controller1.ButtonL2.pressing()) {
-      mOutputLower.setVelocity(-100, pct);
-      mOutputUpper.setVelocity(-100, pct);
+      mOutputLower.spin(fwd, -100, pct);
+      mOutputUpper.spin(fwd, -100, pct);
       // Stop
     } else {
-      mOutputLower.setVelocity(0, pct);
-      mOutputUpper.setVelocity(0, pct);
+      mOutputLower.spin(fwd, 0, pct);
+      mOutputUpper.spin(fwd, 0, pct);
     }
 
     vexDelay(5);
