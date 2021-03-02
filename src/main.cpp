@@ -1,40 +1,13 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVisionUpper         vision        17              
-// sVisionLower         vision        20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVision              vision        21
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVision              vision        21
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
+/*    Author:       Practically all the members of 6210K                      */
 /*    Created:      Thu Sep 26 2019                                           */
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
-// Caleb Baker
-// Caleb Buening
-// Joey Curnutt
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVision              vision        21
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
-
 #include "miscmethods.h"
 
 using namespace vex;
@@ -156,6 +129,7 @@ void scoreFirstCornerGoal(int dir) {
   driveForward(-20, 500);
 }
 
+// Used for turning when we don't need accuracy
 void turnFast(double angle){
   double error = fabs(fabs(angle) - fabs(sInertial.rotation(deg)));
   int rightX;
@@ -173,6 +147,7 @@ void turnFast(double angle){
   driveForward(0, 0);
 }
 
+// Used for turning with accuracy
 void turnTo(double angle){
   while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 10) // uses global variable TurnVelocity
   {
@@ -189,6 +164,7 @@ void turnTo(double angle){
   driveForward(0, 0);
 }
 
+// Self explanatory
 void driveViaDistanceGyro(double dist, double a){
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
@@ -225,6 +201,7 @@ void driveViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
+// Using lower camera on the red sig
 void driveViaDistanceGyroCamera(double dist, double a){
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
@@ -243,7 +220,8 @@ void driveViaDistanceGyroCamera(double dist, double a){
       rightX = (a - sInertial.rotation(deg)) * 3;
       leftX = 0;
       sVisionLower.takeSnapshot(sigRed);
-      if (sVisionLower.largestObject.width > 40 && sVisionLower.largestObject.centerX > 120 && sVisionLower.largestObject.centerX < 240) {
+      // Width > 40
+      if (sVisionLower.objectCount > 0 && sVisionLower.largestObject.width > 40) {
         leftX = (sVisionLower.largestObject.centerX - 180) * .8;
       }
       mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
@@ -256,6 +234,7 @@ void driveViaDistanceGyroCamera(double dist, double a){
   driveForward(0, 0);
 }
 
+// Self explanatory
 void strafeViaDistanceGyro(double dist, double a){
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
@@ -295,6 +274,7 @@ void strafeViaDistanceGyro(double dist, double a){
   driveForward(0, 0);
 }
 
+// Using the signature passed into the method and upper camera
 void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
   // The loop breaks if the robot runs into an obstacle
@@ -304,7 +284,7 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   int rightX;
   while (Brain.timer(msec) - startTime < timeInMS){
     sVisionUpper.takeSnapshot(sig);
-    if (sVisionUpper.objectCount > 0) {
+    if (sVisionUpper.objectCount > 0 && sVisionUpper.largestObject.width > 40) {
       leftX = (sVisionUpper.largestObject.centerX - 180) * .6; // used to be 0.8
     } else {
       leftX = 0;
@@ -328,6 +308,7 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   driveForward(0, 0);
 }
 
+// Self explanatory
 void driveViaTimeGyro(double timeInMS, double a){
   // This method drives according to time and corrects with camera (strafe) and gyro (angle)
   // The loop breaks if the robot runs into an obstacle
@@ -411,7 +392,7 @@ void strafeUntilGreen(int speed, double a){
   leftY = 0;
   sVisionUpper.takeSnapshot(sigGreen);
   // looks 80 pixels in advance to accomidate for overshoot
-  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 60 || sVisionUpper.largestObject.width < 30){
+  while(sVisionUpper.objectCount == 0 || fabs(sVisionUpper.largestObject.centerX - 180) > 60 || sVisionUpper.largestObject.width < 40){
     wait(10, msec);
     sVisionUpper.takeSnapshot(sigGreen);
     rightX = (a - sInertial.rotation(deg)) * 2;
@@ -435,7 +416,7 @@ void strafeUntilRed(int speed, double a){
   leftY = 0;
   sVisionLower.takeSnapshot(sigRed);
   // looks 80 pixels in advance to accomidate for overshoot
-  while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 30){
+  while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
     wait(10, msec);
     sVisionLower.takeSnapshot(sigRed);
     rightX = (a - sInertial.rotation(deg)) * 2;
