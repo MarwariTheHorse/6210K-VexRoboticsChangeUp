@@ -535,12 +535,12 @@ void autonomous(void) {
     mOutputLower.spin(fwd, 100, pct);
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
-    intakeOpenAuton();
 
 
   ///////////////////////////////////////////////////////////
     // PART 3 - Back up and eject blue
     driveViaDistanceGyro(-1900, -180);
+    intakeOpenAuton();
     wait(100, msec);
 
     
@@ -554,7 +554,7 @@ void autonomous(void) {
 
     // Drive towards center goal and scoop red ball along the way
     mOutputLower.spin(fwd,100, pct);
-    driveViaTimeGyroCamera(2000, -360, sigBlue);
+    driveViaTimeGyroCamera(3000, -360, sigBlue);
     // Strike center goal and align
     alignToGoal(-360);
     // Descore first blue from center goal
@@ -590,12 +590,12 @@ void autonomous(void) {
     turnTo(-135); // did trig to find this
     intakeOpenAuton();
     mOutputLower.spin(fwd,80, pct);
-    driveViaDistanceGyroCamera(5300, -135);
+    driveViaDistanceGyroCamera(6500, -135);
     intakeIn();
 
     // Go to goal
     turnTo(-135); //did trig to find this
-    driveViaTimeGyroCamera(4000, -135, sigGreen);
+    driveViaTimeGyroCamera(3000, -135, sigGreen);
     alignToGoal(-135);
 
     // Goal 4 score red and descore blue
@@ -611,12 +611,14 @@ void autonomous(void) {
 
     // Part 5 - Back out of the goal
 
-    driveViaDistanceGyro(-4500, -146.31);
     intakeIn();
+    driveViaDistanceGyro(-2500, -146.31);
+    intakeOpenAuton();
+    driveViaDistanceGyro(-2000, -135);
 
     // Turn to face the wall
     turnFast(-270);
-    // Eject Blue
+    // Eject Blue 
     ejectBalls();
     wait(800, msec);
     // Turn to red
@@ -628,28 +630,29 @@ void autonomous(void) {
     intakeIn();
 
     // Scoot back
-    driveViaDistanceGyro(-2000, -90);
+    driveViaDistanceGyro(-7000, -90);
     
 
     // Strafe to goal
-    strafeUntilGreen(50, -90);
+    strafeUntilRed(50, -90);
 
-    // prep for the goal
-    intakeOpenAuton(); // open arms
+    // open arms
+    intakeOpenAuton();
     wait(100, msec);
 
     // drive into goal
-    driveViaTimeGyroCamera(2000, -90, sigGreen);
-    alignToGoal(-90);
+    driveViaTimeGyroCamera(2000, -180, sigGreen);
+    alignToGoal(-180);
     intakeOff();
 
     //Score and descore
     intakeIn();
-    mOutputUpper.spin(fwd,100, pct);
-    mOutputLower.spin(fwd,100, pct);
+    wait(400, msec);
+    mOutputUpper.spin(fwd, 100, pct);
+    mOutputLower.spin(fwd, 100, pct);
     waitForRed();
-    mOutputUpper.spin(fwd,0, pct);
-  /*
+    mOutputUpper.spin(fwd, 0, pct);
+  
 
   ////////////////////////////////////////////////////////////////////////
 
@@ -668,7 +671,7 @@ void autonomous(void) {
     turnTo(-90);
 
     // Strafe to the next red ball
-    strafeUntilRed(50, -90;)
+    strafeUntilRed(50, -90);
     
     // Get the red ball
     intakeOpenWall();
@@ -681,7 +684,7 @@ void autonomous(void) {
 
     // Rotate toward goal 6
     turnTo(-33.69);
-
+/*
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   // Part 7 - Goals 6 and 7
     // Score goal 6
@@ -1645,6 +1648,8 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
+
+  Competition.test_auton();
 
   task taskPrintCameraObjects(printCameraObjects);
   task taskComputeMotorParameters(computeMotorParameters);
