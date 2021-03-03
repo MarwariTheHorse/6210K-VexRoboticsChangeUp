@@ -612,7 +612,7 @@ void autonomous(void) {
     // Part 5 - Back out of the goal
 
     intakeIn();
-    driveViaDistanceGyro(-2500, -146.31);
+    driveViaDistanceGyro(-2500, -135);
     intakeOpenAuton();
     driveViaDistanceGyro(-2000, -135);
 
@@ -640,7 +640,7 @@ void autonomous(void) {
     intakeOpenAuton();
     wait(100, msec);
 
-    // drive into goal
+    // drive into goal and grab second red along the way
     driveViaTimeGyroCamera(2000, -180, sigGreen);
     alignToGoal(-180);
     intakeOff();
