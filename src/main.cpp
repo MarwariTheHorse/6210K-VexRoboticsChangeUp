@@ -216,12 +216,12 @@ void driveViaDistanceGyroCamera(double dist, double a){
 
     leftY = 50;
     while (d < dist){
-      rightX = (a - sInertial.rotation(deg)) * 3;
+      rightX = (a - sInertial.rotation(deg)) * 2;
       leftX = 0;
       sVisionLower.takeSnapshot(sigRed);
       // Width > 40
       if (sVisionLower.objectCount > 0 && sVisionLower.largestObject.width > 40) {
-        leftX = (sVisionLower.largestObject.centerX - 180) * .8;
+        leftX = (sVisionLower.largestObject.centerX - 180) * .6;
       }
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
       mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
@@ -259,7 +259,7 @@ void strafeViaDistanceGyro(double dist, double a){
     }
   }else{
     while (d > dist){
-      int leftY = -80;
+      int leftY = -50;
       int rightX = (a - sInertial.rotation(deg)) * 3;
       int leftX = 0;
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
@@ -284,11 +284,11 @@ void driveViaTimeGyroCamera(double timeInMS, double a, signature sig){
   while (Brain.timer(msec) - startTime < timeInMS){
     sVisionUpper.takeSnapshot(sig);
     if (sVisionUpper.objectCount > 0 && sVisionUpper.largestObject.width > 40) {
-      leftX = (sVisionUpper.largestObject.centerX - 180) * .6; // used to be .6
+      leftX = (sVisionUpper.largestObject.centerX - 180) * .6; // used to be .8
     } else {
       leftX = 0;
     }
-    leftY = 80;
+    leftY = 50;
     rightX = (a - sInertial.rotation(deg)) * 2; // used to be 3
     mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
@@ -537,7 +537,7 @@ void autonomous(void) {
 
   ///////////////////////////////////////////////////////////
     // PART 3 - Back up and eject blue
-    driveViaDistanceGyro(-1900, -180);
+    driveViaDistanceGyro(-2300, -180);
     intakeOpenAuton();
 
     
