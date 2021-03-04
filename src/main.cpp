@@ -524,7 +524,7 @@ void autonomous(void) {
 
     // drive into goal
     driveViaTimeGyroCamera(1000, -180, sigGreen);
-    alignToGoal(-180);
+    //alignToGoal(-180);
     intakeOff();
 
     //Score and descore
@@ -597,7 +597,7 @@ void autonomous(void) {
     turnTo(-135, 5); //did trig to find this
     strafeViaDistanceGyro(750, -135);
     driveViaTimeGyroCamera(5000, -135, sigGreen);
-    alignToGoal(-135);
+    //alignToGoal(-135);
 
     // Goal 4 score red and descore blue
     mOutputUpper.spin(fwd,100, pct);
@@ -638,7 +638,7 @@ void autonomous(void) {
     
 
     // Strafe to goal
-    strafeUntilRed(60, -90);
+    strafeUntilGreen(60, -90); // Used to be UntilRed
     mOutputLower.spin(fwd, 0, pct);
     // open arms
     intakeOpenAuton();
@@ -646,10 +646,10 @@ void autonomous(void) {
 
     // drive into goal and grab second red along the way
     driveViaTimeGyroCamera(2000, -90, sigGreen);
-    alignToGoal(-90);
+    //alignToGoal(-90);
     intakeOff();
 
-    //Score and descore
+    //Score and descore goal 5
     intakeIn();
     wait(400, msec);
     mOutputUpper.spin(fwd, 100, pct);
@@ -658,7 +658,7 @@ void autonomous(void) {
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
   
-/*
+
   ////////////////////////////////////////////////////////////////////////
 
 
@@ -742,7 +742,7 @@ void autonomous(void) {
     // Align to goal via back wheels
     startTime = Brain.timer(msec);
     // Needs tuning:  the accuracy (2 degrees) the velocity indicator (40 units) and gyro multiplier (x 5)
-    while(fabs(fabs(-360) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
+    while(fabs(abs(-360) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
     {
       // Calculate error
       double error = (-360 - sInertial.rotation(deg)) * 5;
@@ -801,7 +801,7 @@ void autonomous(void) {
     
 
     // Strafe to goal
-    strafeUntilRed(60, -270);
+    strafeUntilGreen(60, -270); // UntilRed
     mOutputLower.spin(fwd, 0, pct);
     // open arms
     intakeOpenAuton();
@@ -825,7 +825,7 @@ void autonomous(void) {
      driveViaDistanceGyro(-2500, -270);
      turnFast(-315);
      intakeOpenAuton();
-     ejectBalls();*//*
+     ejectBalls();
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
      strafeUntilRed(50, -540);
@@ -852,7 +852,8 @@ void autonomous(void) {
 
  // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  */
+
+  
   }
 
   // Right 1
