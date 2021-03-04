@@ -131,35 +131,72 @@ void scoreFirstCornerGoal(int dir) {
 
 // Used for turning when we don't need accuracy
 void turnFast(double angle){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > 10) // uses global variable TurnVelocity
+  double error;
+  int leftY = 0;
+  int rightX = 0;
+  int leftX = 0;
+  error = (angle - sInertial.rotation(deg));
+  while(fabs(error) > 10) // keeps turning until within 10 degrees of objective
   {
-    // Calculate error
-    double error = (angle - sInertial.rotation(deg));
-    if(error > 90) error = 90;   // cap positive motor power at +90
-    if(error < -90) error = -90; // cap negative motor power at -90
-    mWheelFrontLeft.setVelocity(error, pct);
-    mWheelFrontRight.setVelocity(error, pct);
-    mWheelBackLeft.setVelocity(error, pct);
-    mWheelBackRight.setVelocity(error, pct);
+      if (fabs(error) < 40){
+            // if within 40 degrees of objective, the motors start slowing
+            // and the speed never drops below 20
+           rightX = (2 * error);
+      } else {
+            rightX = 90 * sgn(error);
+            // otherwise maintain fast turning speed of 90
+      }
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
+      error = (angle - sInertial.rotation(deg));
   }
+  // these next lines attempt to slow down the robot's rotational momentum
+  // might be better just to put the motors into braking mode
+  rightX = -5;
+  mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+  mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+  mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+  mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+  wait(50, msec);
   driveForward(0, 0);
 }
 
 // Used for turning with accuracy
 void turnTo(double angle, int accuracy){
-  while(fabs(fabs(angle) - fabs(sInertial.rotation(deg))) > accuracy) // uses global variable TurnVelocity
+  double error = 0;
+  int leftY = 0;
+  int rightX = 0;
+  int leftX = 0;
+ error = (angle - sInertial.rotation(deg));
+  // keep turning until within 10 degrees of objective
+  // keep adjusting until the robot's velocity slows
+  while(fabs(error) > accuracy || fabs(TurnVelocity) > 80)) 
   {
-    // Calculate error
-    double error = angle - sInertial.rotation(deg);
-    if(error > 90) error = 90;   // cap positive motor power at +90
-    if(error < -90) error = -90; // cap negative motor power at -90
-    mWheelFrontLeft.spin(fwd, error, pct);
-    mWheelFrontRight.spin(fwd, error, pct);
-    mWheelBackLeft.spin(fwd, error, pct);
-    mWheelBackRight.spin(fwd, error, pct);
+      if (fabs(error) < 40 ){
+            // if within 40 degrees of objective, the motors start slowing
+           rightX = (2 * error);
+      } else {
+           rightX = 90 * sgn(error);
+            // otherwise maintain fast turning speed of 90
+      }
+    mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+    mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+    mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+    mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
+    (error = angle - sInertial.rotation(deg));
   }
+  // these next lines attempt to slow down the robot's rotational momentum
+  // might be better just to put the motors into braking mode
+  rightX = -5;
+  mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
+  mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
+  mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
+  mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
+  wait(50, msec);
   driveForward(0, 0);
 }
 
@@ -351,7 +388,7 @@ void driveBackwardsViaTimeGyro(double timeInMS, double a){
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
     mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    if (Brain.timer(msec) - startTime > 1000) {
+    if (Brain.timer(msec) - startTime > 750) {
       if (ForwardVelocity < 20) {
         break;
       }
@@ -378,7 +415,7 @@ void alignToGoal(double a){
     mWheelBackLeft.spin(fwd, error, pct);  // when left and right are same polarity
     mWheelBackRight.spin(fwd, error, pct); // the robot rotates (turns)
     wait(5, msec);
-    if(Brain.timer(msec) - startTime > 1000) break;
+    if(Brain.timer(msec) - startTime > 500) break;
   }
   driveForward(0, 0);
 }
@@ -414,8 +451,9 @@ void strafeUntilRed(int speed, double a){
   leftX = speed;
   leftY = 0;
   sVisionLower.takeSnapshot(sigRed);
-  // looks 80 pixels in advance to accomidate for overshoot
-  while(sVisionLower.objectCount == 0 || sVisionLower.largestObject.width < 40){
+  // looks for red ball within +/-60 pixels of centerline
+  // red ball must be 40 pixels in width
+  while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
     wait(10, msec);
     sVisionLower.takeSnapshot(sigRed);
     rightX = (a - sInertial.rotation(deg)) * 2;
