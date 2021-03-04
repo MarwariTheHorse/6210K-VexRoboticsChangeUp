@@ -143,7 +143,7 @@ void turnFast(double angle){
             // and the speed never drops below 20
            rightX = (2 * error);
       } else {
-            rightX = 90 * sgn(error);
+            rightX = 90 * (error > 0) - (error < 0);
             // otherwise maintain fast turning speed of 90
       }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
@@ -173,13 +173,13 @@ void turnTo(double angle, int accuracy){
  error = (angle - sInertial.rotation(deg));
   // keep turning until within 10 degrees of objective
   // keep adjusting until the robot's velocity slows
-  while(fabs(error) > accuracy || fabs(TurnVelocity) > 80)) 
+  while(fabs(error) > accuracy || fabs(TurnVelocity) > 80) 
   {
       if (fabs(error) < 40 ){
             // if within 40 degrees of objective, the motors start slowing
            rightX = (2 * error);
       } else {
-           rightX = 90 * sgn(error);
+           rightX = 90 * (error > 0) - (error < 0);
             // otherwise maintain fast turning speed of 90
       }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
@@ -676,7 +676,7 @@ void autonomous(void) {
     
 
     // Strafe to goal
-    strafeUntilGreen(60, -90); // Used to be UntilRed
+    strafeUntilRed(60, -90); // Used to be UntilRed
     mOutputLower.spin(fwd, 0, pct);
     // open arms
     intakeOpenAuton();
@@ -839,7 +839,7 @@ void autonomous(void) {
     
 
     // Strafe to goal
-    strafeUntilGreen(60, -270); // UntilRed
+    strafeUntilRed(60, -270); // UntilRed
     mOutputLower.spin(fwd, 0, pct);
     // open arms
     intakeOpenAuton();
