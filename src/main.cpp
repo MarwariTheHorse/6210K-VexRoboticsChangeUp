@@ -164,34 +164,38 @@ void turnFast(double angle){
   driveForward(0, 0);
 }
 
+int sgn(double d){
+  return ((d > 0) - (d < 0));
+}
+
 // Used for turning with accuracy
 void turnTo(double angle, int accuracy){
-  double error = 0;
+  double error = angle - sInertial.rotation(deg);
   int leftY = 0;
   int rightX = 0;
   int leftX = 0;
- error = (angle - sInertial.rotation(deg));
   // keep turning until within 10 degrees of objective
   // keep adjusting until the robot's velocity slows
   while(fabs(error) > accuracy || fabs(TurnVelocity) > 80) 
   {
-      if (fabs(error) < 40 ){
-            // if within 40 degrees of objective, the motors start slowing
-           rightX = (2 * error);
-      } else {
-           rightX = 90 * (error > 0) - (error < 0);
-            // otherwise maintain fast turning speed of 90
-      }
+    if(fabs(error) < 40){
+      // if within 40 degrees of objective, the motors start slowing
+      rightX = (2 * error);
+    }else{
+      rightX = 90 * sgn(error);
+      // otherwise maintain fast turning speed of 90
+      // in the proper direction
+    }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
-    (error = angle - sInertial.rotation(deg));
+    error = angle - sInertial.rotation(deg);
   }
   // these next lines attempt to slow down the robot's rotational momentum
   // might be better just to put the motors into braking mode
-  rightX = -5;
+  rightX = -5 * sgn(error);
   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
