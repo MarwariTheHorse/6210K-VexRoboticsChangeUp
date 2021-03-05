@@ -96,7 +96,6 @@ void pre_auton(void) {
 }
 
 // Experimental reusable auton methods
-
 void scoreFirstCornerGoal(int dir) {
   int leftVelocity;
   int rightVelocity;
@@ -138,24 +137,30 @@ void turnFast(double angle){
   error = (angle - sInertial.rotation(deg));
   while(fabs(error) > 10) // keeps turning until within 10 degrees of objective
   {
-      if (fabs(error) < 40){
-            // if within 40 degrees of objective, the motors start slowing
-            // and the speed never drops below 20
-           rightX = (2 * error);
+    if (fabs(error) < 40){
+      // if within 40 degrees of objective, the motors start slowing
+      // and the speed never drops below 20
+      rightX = (2 * error);
+    } else {
+      // otherwise maintain fast turning speed of 90
+      if (error > 0) {
+        rightX = 90;
       } else {
-            rightX = 90 * (error > 0) - (error < 0);
-            // otherwise maintain fast turning speed of 90
+        rightX = -90;
       }
+    }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
-      error = (angle - sInertial.rotation(deg));
+    error = angle - sInertial.rotation(deg);
   }
   // these next lines attempt to slow down the robot's rotational momentum
   // might be better just to put the motors into braking mode
-  rightX = -5;
+  rightX = 0;
+  if (TurnVelocity>10) rightX = -5;
+  if (TurnVelocity<10) rightX = 5;
   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
@@ -174,10 +179,12 @@ void turnTo(double angle, int accuracy){
   int leftY = 0;
   int rightX = 0;
   int leftX = 0;
+  error = (angle - sInertial.rotation(deg));
   // keep turning until within 10 degrees of objective
   // keep adjusting until the robot's velocity slows
   while(fabs(error) > accuracy || fabs(TurnVelocity) > 80) 
   {
+<<<<<<< HEAD
     if(fabs(error) < 40){
       // if within 40 degrees of objective, the motors start slowing
       rightX = (2 * error);
@@ -185,6 +192,19 @@ void turnTo(double angle, int accuracy){
       rightX = 90 * sgn(error);
       // otherwise maintain fast turning speed of 90
       // in the proper direction
+=======
+    if (fabs(error) < 40){
+      // if within 40 degrees of objective, the motors start slowing
+      // and the speed never drops below 20
+      rightX = (2 * error);
+    } else {
+      // otherwise maintain fast turning speed of 90
+      if (error > 0) {
+        rightX = 90;
+      } else {
+        rightX = -90;
+      }
+>>>>>>> c80b881a380083bbfc1015b76cf03f252e787ee6
     }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
@@ -206,6 +226,9 @@ void turnTo(double angle, int accuracy){
 
 // Self explanatory
 void driveViaDistanceGyro(double dist, double a){
+  int leftY = 0;
+  int rightX = 0;
+  int leftX = 0;
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
   mWheelFrontLeft.resetRotation();
@@ -215,9 +238,9 @@ void driveViaDistanceGyro(double dist, double a){
   int d = 0;
   if(d < dist){
     while (d < dist){
-      int leftY = 80;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 0;
+      leftY = 80;
+      rightX = (a - sInertial.rotation(deg)) * 3;
+      leftX = 0;
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
       mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
       mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -227,9 +250,9 @@ void driveViaDistanceGyro(double dist, double a){
     }
   }else{
     while (d > dist){
-      int leftY = -80;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 0;
+      leftY = -80;
+      rightX = (a - sInertial.rotation(deg)) * 3;
+      leftX = 0;
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
       mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
       mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -250,7 +273,6 @@ void driveViaDistanceGyroCamera(double dist, double a){
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
   int d = 0;
-
   double leftY;
   double leftX;
   double rightX;
@@ -276,21 +298,23 @@ void driveViaDistanceGyroCamera(double dist, double a){
 
 // Self explanatory
 void strafeViaDistanceGyro(double dist, double a){
+  int leftY = 0;
+  int rightX = 0;
+  int leftX = 0;
+  int d = 0;
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
   mWheelFrontLeft.resetRotation();
   mWheelBackLeft.resetRotation();
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
-  int d = 0;
-
+  
   d = mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
-
   if(d < dist){
     while (d < dist){
-      int leftY = 0;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 50;
+      leftY = 0;
+      rightX = (a - sInertial.rotation(deg)) * 3;
+      leftX = 50;
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
       mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
       mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -300,9 +324,9 @@ void strafeViaDistanceGyro(double dist, double a){
     }
   }else{
     while (d > dist){
-      int leftY = -50;
-      int rightX = (a - sInertial.rotation(deg)) * 3;
-      int leftX = 0;
+      leftY = -50;
+      rightX = (a - sInertial.rotation(deg)) * 3;
+      leftX = 0;
       mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
       mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
       mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -407,11 +431,12 @@ void driveBackwardsViaTimeGyro(double timeInMS, double a){
 
 void alignToGoal(double a){
   double startTime = Brain.timer(msec);
+  double error = 0;
   // Needs tuning:  the accuracy (2 degrees) the velocity indicator (40 units) and gyro multiplier (x 5)
   while(fabs(fabs(a) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
   {
     // Calculate error
-    double error = (a - sInertial.rotation(deg)) * 3;
+    error = (a - sInertial.rotation(deg)) * 3;
     if(error > 90) error = 90;   // cap positive motor power at +90
     if(error < -90) error = -90; // cap negative motor power at -90
     mWheelFrontLeft.spin(fwd, 0, pct);
@@ -448,6 +473,7 @@ void strafeUntilGreen(int speed, double a){
   mWheelFrontRight.spin(fwd, 0, pct);
   //setStopping(brake);
 }
+
 void strafeUntilRed(int speed, double a){
   int leftX;
   int leftY;
@@ -516,6 +542,7 @@ void autonomous(void) {
   int leftY;
   int rightX;
   double startTime;
+  double error;
 
   //         XXXXXXXXXXXXXX
   //      XXXXXXXXXXXXXXXXXXXX
@@ -534,6 +561,21 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
+    // -----------------------------------------------------------------TEST CODE
+    sInertial.setRotation(0, deg);
+    wait(1000,msec);
+    turnFast(90);       // turn clockwise
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnTo(180, 5);     // turn clockwise to 180
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnFast(90);       // turn counterclockwise
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnTo(180, 5);     // turn counterclockwise to 0
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    // -----------------------------------------------------------------TEST CODE
+
+
+    /* -----------------------------------------------------------------CODE COMMENTED OUT BELOW
     sInertial.setRotation(-57, deg);
 
     // PART 1 - Deploy Camera and Hood and flick ball into goal
@@ -787,7 +829,7 @@ void autonomous(void) {
     while(fabs(abs(-360) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
     {
       // Calculate error
-      double error = (-360 - sInertial.rotation(deg)) * 5;
+      error = (-360 - sInertial.rotation(deg)) * 5;
       if(error > 90) error = 90;   // cap positive motor power at +90
       if(error < -90) error = -90; // cap negative motor power at -90
       mWheelFrontLeft.spin(fwd, error, pct);
@@ -863,41 +905,57 @@ void autonomous(void) {
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
 
-     // Eject
-     driveViaDistanceGyro(-2500, -270);
-     turnFast(-315);
-     intakeOpenAuton();
-     ejectBalls();
+    // Eject
+    driveViaDistanceGyro(-2500, -270);
+    turnFast(-315);
+    intakeOpenAuton();
+    ejectBalls();
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
-     strafeUntilRed(50, -540);
-     mOutputLower.spin(fwd, 100, pct);
-     driveViaTimeGyro(3000, -540);
-     intakeIn();
-     wait(200, msec);// This may not be needed
-     driveViaDistanceGyro(-4500, -540);
-     turnTo(-585, 10);
-     driveViaTimeGyroCamera(5000, -585, sigGreen);
-     mOutputUpper.spin(fwd, 100, pct);
-     startTime = Brain.timer(msec);
-     while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-       wait(10, msec);
-       sVisionUpper.takeSnapshot(sigRed);
-     }
-     mOutputLower.spin(fwd, 0, pct);
-     mOutputUpper.spin(fwd, 0, pct);
-     intakeOpenAuton();
-     wait(400, msec);
-     intakeIn();
-     driveViaDistanceGyro(-4000, -585);
-
-
- // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-  
+    strafeUntilRed(50, -540);
+    mOutputLower.spin(fwd, 100, pct);
+    driveViaTimeGyro(3000, -540);
+    intakeIn();
+    wait(200, msec);// This may not be needed
+    driveViaDistanceGyro(-4500, -540);
+    turnTo(-585, 10);
+    driveViaTimeGyroCamera(5000, -585, sigGreen);
+    mOutputUpper.spin(fwd, 100, pct);
+    startTime = Brain.timer(msec);
+    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+      wait(10, msec);
+      sVisionUpper.takeSnapshot(sigRed);
+    }
+    mOutputLower.spin(fwd, 0, pct);
+    mOutputUpper.spin(fwd, 0, pct);
+    intakeOpenAuton();
+    wait(400, msec);
+    intakeIn();
+    driveViaDistanceGyro(-4000, -585);
+    // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    */ //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
+    while(1){
+      // forever loop so the controller continues to display data
+      wait(100,msec);
+    }
   }
 
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX  
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+
+  // TOURNAMENT AUTONOMOUS
   // Right 1
   if (mode == 'Y') {
     // Get to the goal
@@ -1517,6 +1575,22 @@ void autonomous(void) {
   }
 }
 
+//    XXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX        XXXXXXX
+//    XXXXXXX         XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX         XXXXXXX    
+//    XXXXXXX        XXXXXXX
+//    XXXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXX
+
+// DRIVER MODE
 void usercontrol(void) {
 
   // Set everything into motion
@@ -1631,6 +1705,21 @@ void usercontrol(void) {
   }
 }
 
+//    XXXXXXXXXXX          XXXXXXXXXXX
+//    XXXXXXXXXXXX        XXXXXXXXXXXX
+//    XXXXXXXXXXXXX      XXXXXXXXXXXXX
+//    XXXXXXXXXXXXXX    XXXXXXXXXXXXXX
+//    XXXXXXX   XXXXX  XXXXX   XXXXXXX
+//    XXXXXXX   XXXXXXXXXXXX   XXXXXXX
+//    XXXXXXX    XXXXXXXXXX    XXXXXXX
+//    XXXXXXX     XXXXXXXX     XXXXXXX
+//    XXXXXXX      XXXXXX      XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+
+// MAIN program and MULTI-TASK METHODS
 int computeMotorParameters() {
   wait(100, msec);
   // Local variables
