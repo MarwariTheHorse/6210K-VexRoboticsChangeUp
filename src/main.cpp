@@ -155,11 +155,13 @@ void turnFast(double angle){
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
-      error = (angle - sInertial.rotation(deg));
+    error = angle - sInertial.rotation(deg);
   }
   // these next lines attempt to slow down the robot's rotational momentum
   // might be better just to put the motors into braking mode
-  rightX = -5;
+  rightX = 0;
+  if (TurnVelocity>10) rightX = -5;
+  if (TurnVelocity<10) rightX = 5;
   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
@@ -174,7 +176,7 @@ void turnTo(double angle, int accuracy){
   int leftY = 0;
   int rightX = 0;
   int leftX = 0;
- error = (angle - sInertial.rotation(deg));
+  error = (angle - sInertial.rotation(deg));
   // keep turning until within 10 degrees of objective
   // keep adjusting until the robot's velocity slows
   while(fabs(error) > accuracy || fabs(TurnVelocity) > 80) 
@@ -196,11 +198,13 @@ void turnTo(double angle, int accuracy){
     mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
     mWheelBackRight.setVelocity(rightX - leftY - leftX, pct);
     wait(5, msec);
-    (error = angle - sInertial.rotation(deg));
+    error = angle - sInertial.rotation(deg);
   }
   // these next lines attempt to slow down the robot's rotational momentum
   // might be better just to put the motors into braking mode
-  rightX = -5;
+  rightX = 0;
+  if (TurnVelocity>10) rightX = -5;
+  if (TurnVelocity<10) rightX = 5;
   mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
   mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
   mWheelBackLeft.setVelocity(rightX + leftY - leftX, pct);
@@ -875,41 +879,52 @@ void autonomous(void) {
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
 
-     // Eject
-     driveViaDistanceGyro(-2500, -270);
-     turnFast(-315);
-     intakeOpenAuton();
-     ejectBalls();
+    // Eject
+    driveViaDistanceGyro(-2500, -270);
+    turnFast(-315);
+    intakeOpenAuton();
+    ejectBalls();
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // PART 9 - Experimental: Go back to the first flick-in goal and score 1 red + descore 2 blue
-     strafeUntilRed(50, -540);
-     mOutputLower.spin(fwd, 100, pct);
-     driveViaTimeGyro(3000, -540);
-     intakeIn();
-     wait(200, msec);// This may not be needed
-     driveViaDistanceGyro(-4500, -540);
-     turnTo(-585, 10);
-     driveViaTimeGyroCamera(5000, -585, sigGreen);
-     mOutputUpper.spin(fwd, 100, pct);
-     startTime = Brain.timer(msec);
-     while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
-       wait(10, msec);
-       sVisionUpper.takeSnapshot(sigRed);
-     }
-     mOutputLower.spin(fwd, 0, pct);
-     mOutputUpper.spin(fwd, 0, pct);
-     intakeOpenAuton();
-     wait(400, msec);
-     intakeIn();
-     driveViaDistanceGyro(-4000, -585);
-
-
- // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-  
+    strafeUntilRed(50, -540);
+    mOutputLower.spin(fwd, 100, pct);
+    driveViaTimeGyro(3000, -540);
+    intakeIn();
+    wait(200, msec);// This may not be needed
+    driveViaDistanceGyro(-4500, -540);
+    turnTo(-585, 10);
+    driveViaTimeGyroCamera(5000, -585, sigGreen);
+    mOutputUpper.spin(fwd, 100, pct);
+    startTime = Brain.timer(msec);
+    while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
+      wait(10, msec);
+      sVisionUpper.takeSnapshot(sigRed);
+    }
+    mOutputLower.spin(fwd, 0, pct);
+    mOutputUpper.spin(fwd, 0, pct);
+    intakeOpenAuton();
+    wait(400, msec);
+    intakeIn();
+    driveViaDistanceGyro(-4000, -585);
+    // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
   }
 
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX  
+  //           XXXXXXX
+  //           XXXXXXX
+  //           XXXXXXX
+
+  // TOURNAMENT AUTONOMOUS
   // Right 1
   if (mode == 'Y') {
     // Get to the goal
@@ -1529,6 +1544,22 @@ void autonomous(void) {
   }
 }
 
+  //    XXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXX        XXXXXXX
+  //    XXXXXXX         XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX          XXXXXXX
+  //    XXXXXXX         XXXXXXX    
+  //    XXXXXXX        XXXXXXX
+  //    XXXXXXXXXXXXXXXXXXXX
+  //    XXXXXXXXXXXXXXXXXXX
+
+// DRIVER MODE
 void usercontrol(void) {
 
   // Set everything into motion
