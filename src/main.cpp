@@ -96,7 +96,6 @@ void pre_auton(void) {
 }
 
 // Experimental reusable auton methods
-
 void scoreFirstCornerGoal(int dir) {
   int leftVelocity;
   int rightVelocity;
@@ -262,7 +261,6 @@ void driveViaDistanceGyroCamera(double dist, double a){
   mWheelFrontRight.resetRotation();
   mWheelBackRight.resetRotation();
   int d = 0;
-
   double leftY;
   double leftX;
   double rightX;
@@ -532,6 +530,7 @@ void autonomous(void) {
   int leftY;
   int rightX;
   double startTime;
+  double error;
 
   //         XXXXXXXXXXXXXX
   //      XXXXXXXXXXXXXXXXXXXX
@@ -818,7 +817,7 @@ void autonomous(void) {
     while(fabs(abs(-360) - fabs(sInertial.rotation(deg))) > 2 || fabs(TurnVelocity) > 40) // uses global variable TurnVelocity
     {
       // Calculate error
-      double error = (-360 - sInertial.rotation(deg)) * 5;
+      error = (-360 - sInertial.rotation(deg)) * 5;
       if(error > 90) error = 90;   // cap positive motor power at +90
       if(error < -90) error = -90; // cap negative motor power at -90
       mWheelFrontLeft.spin(fwd, error, pct);
@@ -1564,20 +1563,20 @@ void autonomous(void) {
   }
 }
 
-  //    XXXXXXXXXXXXXXXXXXX
-  //    XXXXXXXXXXXXXXXXXXXX
-  //    XXXXXXX        XXXXXXX
-  //    XXXXXXX         XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX          XXXXXXX
-  //    XXXXXXX         XXXXXXX    
-  //    XXXXXXX        XXXXXXX
-  //    XXXXXXXXXXXXXXXXXXXX
-  //    XXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX        XXXXXXX
+//    XXXXXXX         XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX          XXXXXXX
+//    XXXXXXX         XXXXXXX    
+//    XXXXXXX        XXXXXXX
+//    XXXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXX
 
 // DRIVER MODE
 void usercontrol(void) {
@@ -1694,6 +1693,21 @@ void usercontrol(void) {
   }
 }
 
+//    XXXXXXXXXXX          XXXXXXXXXXX
+//    XXXXXXXXXXXX        XXXXXXXXXXXX
+//    XXXXXXXXXXXXX      XXXXXXXXXXXXX
+//    XXXXXXXXXXXXXX    XXXXXXXXXXXXXX
+//    XXXXXXX   XXXXX  XXXXX   XXXXXXX
+//    XXXXXXX   XXXXXXXXXXXX   XXXXXXX
+//    XXXXXXX    XXXXXXXXXX    XXXXXXX
+//    XXXXXXX     XXXXXXXX     XXXXXXX
+//    XXXXXXX      XXXXXX      XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+//    XXXXXXX                  XXXXXXX
+
+// MAIN program and MULTI-TASK METHODS
 int computeMotorParameters() {
   wait(100, msec);
   // Local variables
