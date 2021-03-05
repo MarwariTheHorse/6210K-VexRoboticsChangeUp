@@ -184,7 +184,6 @@ void turnTo(double angle, int accuracy){
   // keep adjusting until the robot's velocity slows
   while(fabs(error) > accuracy || fabs(TurnVelocity) > 80) 
   {
-<<<<<<< HEAD
     if(fabs(error) < 40){
       // if within 40 degrees of objective, the motors start slowing
       rightX = (2 * error);
@@ -192,19 +191,6 @@ void turnTo(double angle, int accuracy){
       rightX = 90 * sgn(error);
       // otherwise maintain fast turning speed of 90
       // in the proper direction
-=======
-    if (fabs(error) < 40){
-      // if within 40 degrees of objective, the motors start slowing
-      // and the speed never drops below 20
-      rightX = (2 * error);
-    } else {
-      // otherwise maintain fast turning speed of 90
-      if (error > 0) {
-        rightX = 90;
-      } else {
-        rightX = -90;
-      }
->>>>>>> c80b881a380083bbfc1015b76cf03f252e787ee6
     }
     mWheelFrontLeft.setVelocity(rightX + leftY + leftX, pct);
     mWheelFrontRight.setVelocity(rightX - leftY + leftX, pct);
