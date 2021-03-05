@@ -550,6 +550,21 @@ void autonomous(void) {
 
   // STATE AUTONOMOUS
   if (mode == 'V') {
+    // -----------------------------------------------------------------TEST CODE
+    sInertial.setRotation(0, deg);
+    wait(1000,msec);
+    turnFast(90);       // turn clockwise
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnTo(180, 5);     // turn clockwise to 180
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnFast(90);       // turn counterclockwise
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    turnTo(180, 5);     // turn counterclockwise to 0
+    wait(5000,msec);    // look at controller display and see what actual angle is recorded
+    // -----------------------------------------------------------------TEST CODE
+
+
+    /* -----------------------------------------------------------------CODE COMMENTED OUT BELOW
     sInertial.setRotation(-57, deg);
 
     // PART 1 - Deploy Camera and Hood and flick ball into goal
@@ -907,6 +922,11 @@ void autonomous(void) {
     intakeIn();
     driveViaDistanceGyro(-4000, -585);
     // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    */ -----------------------------------------------------------------CODE COMMENTED OUT ABOVE
+    while(1){
+      // forever loop so the controller continues to display data
+      wait(100,msec);
+    }
   }
 
   //    XXXXXXXXXXXXXXXXXXXXX
