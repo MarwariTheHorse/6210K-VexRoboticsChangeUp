@@ -16,6 +16,9 @@ void driveForward(int speed, int timems){
   mWheelBackLeft.setVelocity(0, pct);
   mWheelBackRight.setVelocity(0, pct);
 }
+int sgn(double d){
+  return ((d > 0) - (d < 0));
+}
 void intake(int speed, int timems){
   mIntakeLeft.setVelocity(speed, pct);
   mIntakeRight.setVelocity(speed, pct);
