@@ -288,9 +288,9 @@ void driveViaDistanceGyroCamera(double dist, double a){
 
 // Self explanatory
 void strafeViaDistanceGyro(double dist, double a){
-  leftY = 0;
-  rightX = 0;
-  leftX = 0;
+  int leftY = 0;
+  int rightX = 0;
+  int leftX = 0;
   int d = 0;
   // reset all motor encoders to zero
   // 10000 units is equal to 56" of travel
@@ -922,7 +922,7 @@ void autonomous(void) {
     intakeIn();
     driveViaDistanceGyro(-4000, -585);
     // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    */ -----------------------------------------------------------------CODE COMMENTED OUT ABOVE
+    */ //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
     while(1){
       // forever loop so the controller continues to display data
       wait(100,msec);
