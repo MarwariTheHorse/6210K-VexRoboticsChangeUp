@@ -9,6 +9,7 @@
 
 #include "vex.h"
 #include "miscmethods.h"
+#include "auton-externs.h"
 
 using namespace vex;
 
