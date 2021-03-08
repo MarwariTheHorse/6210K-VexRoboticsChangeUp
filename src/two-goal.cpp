@@ -1,3 +1,11 @@
-void twoGoal(){
-  // Add twoGoal code here once we get the code off of the HP
+#include "vex.h"
+#include "miscmethods.h"
+
+extern void oneGoal(int);
+
+// THIS CODE IS AN ADD-ON TO ONE-GOAL
+
+void twoGoal(int dir){
+  oneGoal(dir);
+  // More code here
 }

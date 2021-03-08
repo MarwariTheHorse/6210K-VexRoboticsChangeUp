@@ -1,7 +1,8 @@
 using namespace vex;
 
-extern void threeGoal();
-extern void twoGoal();
-extern void oneGoal();
+extern void threeGoalCenter(int);
+extern void threeGoal(int);
+extern void twoGoal(int);
+extern void oneGoal(int);
 extern void fullAuton();
 extern void specialAuton();
