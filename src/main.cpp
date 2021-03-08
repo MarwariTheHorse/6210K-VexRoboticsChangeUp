@@ -1633,7 +1633,7 @@ void usercontrol(void) {
 //    XXXXXXX                  XXXXXXX
 
 // MAIN program and MULTI-TASK METHODS
-int computeMotorParameters() {
+int computeGlobals() {
   wait(100, msec);
   // Local variables
   // float FrontLeftDistance;
@@ -1672,7 +1672,7 @@ while (1 > 0) {
   }
 } // end of computerMotorParameters
 
-int printCameraObjects() {
+int printInfo() {
   wait(100, msec);
   while (1 > 0) {
     Controller1.Screen.clearScreen();
@@ -1721,8 +1721,8 @@ int main() {
 
   Competition.test_auton();
 
-  task taskPrintCameraObjects(printCameraObjects);
-  task taskComputeMotorParameters(computeMotorParameters);
+  task taskPrintCameraObjects(printInfo);
+  task taskComputeMotorParameters(computeGlobals);
   
 
   // Prevent main from exiting with an infinite loop.
