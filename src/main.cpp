@@ -1,9 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// sVisionUpper         vision        21              
-// sVisionLower         vision        20              
-// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -823,16 +817,10 @@ void autonomous(void) {
     wait(800, msec);
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
-<<<<<<< HEAD
+    
     // Gun backwards
     driveBackwardsViaTimeGyro(3000, 90);
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
-=======
-    driveViaDistanceGyro(-4500, 900);
 
->>>>>>> f1bb64f124f85e32c5ce5984d38e9251741a4caa
     while(1){
       // forever loop so the controller continues to display data
       wait(100,msec);
@@ -927,10 +915,10 @@ void usercontrol(void) {
       rightX = 0;
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, (rightX * 1.5) - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, (rightX * 1.5) + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, (rightX * 1.5) - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, (rightX * 1) + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, (rightX * 1) - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, (rightX * 1) + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, (rightX * 1) - leftY - leftX, pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1112,16 +1100,8 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
-<<<<<<< HEAD
-  task taskPrintCameraObjects(printCameraObjects);
-  task taskComputeMotorParameters(computeMotorParameters);
-=======
-  Competition.test_auton();
-
   task taskPrintCameraObjects(printInfo);
   task taskComputeMotorParameters(computeGlobals);
->>>>>>> f1bb64f124f85e32c5ce5984d38e9251741a4caa
-  
 
   // Prevent main from exiting with an infinite loop.
   while (true) {

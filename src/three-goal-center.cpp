@@ -1,7 +1,6 @@
 #include "vex.h"
 #include "miscmethods.h"
-
-extern void threeGoal(int);
+#include "auton-externs.h"
 
 // THIS METHOD SHOULD BE AN ADD-ON TO THREE-GOAL
 

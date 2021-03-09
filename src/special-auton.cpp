@@ -1,5 +1,6 @@
 #include "vex.h"
 #include "miscmethods.h"
+#include "auton-externs.h"
 
 /*
   Currently we have no use for this method, but if the need arises, we should rewrite this code

@@ -1,7 +1,6 @@
 #include "vex.h"
 #include "miscmethods.h"
-
-extern void oneGoal(int);
+#include "auton-externs.h"
 
 // THIS CODE IS AN ADD-ON TO ONE-GOAL
 

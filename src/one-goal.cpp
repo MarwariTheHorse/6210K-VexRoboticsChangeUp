@@ -1,5 +1,6 @@
 #include "vex.h"
 #include "miscmethods.h"
+#include "auton-externs.h"
 
 void oneGoal(int dir){
   float ForwardVelocity;
@@ -139,12 +140,12 @@ void oneGoal(int dir){
       int rightX;
       leftX = 55;
       leftY = 0;
-      sVisionLower.takeSnapshot(sigBlue);
+      sVisionUpper.takeSnapshot(sigGreen);
       // looks for red ball within +/-60 pixels of centerline
       // red ball must be 40 pixels in width
       while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
         wait(10, msec);
-        sVisionLower.takeSnapshot(sigBlue);
+        sVisionLower.takeSnapshot(sigGreen);
         rightX = (-135 - sInertial.rotation(deg)) * 2;
         mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
         mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
@@ -383,12 +384,12 @@ void oneGoal(int dir){
       int rightX;
       leftX = 55;
       leftY = 0;
-      sVisionLower.takeSnapshot(sigRed);
+      sVisionUpper.takeSnapshot(sigGreen);
       // looks for red ball within +/-60 pixels of centerline
       // red ball must be 40 pixels in width
       while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
         wait(10, msec);
-        sVisionLower.takeSnapshot(sigRed);
+        sVisionLower.takeSnapshot(sigGreen);
         rightX = (-135 - sInertial.rotation(deg)) * 2;
         mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
         mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
