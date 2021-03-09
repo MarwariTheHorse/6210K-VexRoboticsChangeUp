@@ -15,6 +15,7 @@
 
 #include "vex.h"
 #include "miscmethods.h"
+#include "auton-externs.h"
 
 using namespace vex;
 
@@ -99,39 +100,6 @@ void pre_auton(void) {
   sOpticalBack.setLight(ledState::on);
   sOpticalFront.setLightPower(100, pct);
   sOpticalBack.setLightPower(100, pct);
-}
-
-// Experimental reusable auton methods
-void scoreFirstCornerGoal(int dir) {
-  int leftVelocity;
-  int rightVelocity;
-  if (dir == LEFT) {
-    leftVelocity = 0;
-    rightVelocity = -40;
-  } else {
-    leftVelocity = 40;
-    rightVelocity = 0;
-  }
-
-  // Get to the goal
-  mWheelFrontLeft.spin(fwd, leftVelocity, pct);
-  mWheelFrontRight.spin(fwd, rightVelocity, pct);
-  mWheelBackLeft.spin(fwd, leftVelocity, pct);
-  mWheelBackRight.spin(fwd, rightVelocity, pct);
-  vexDelay(300);
-  mWheelFrontLeft.spin(fwd, 0, pct);
-  mWheelFrontRight.spin(fwd, 0, pct);
-  mWheelBackLeft.spin(fwd, 0, pct);
-  mWheelBackRight.spin(fwd, 0, pct);
-
-  // Ensure we are in the goal
-  driveForward(100, 1000);
-
-  // Outtake the preload
-  output(100, 400);
-
-  // Make sure we are out of the goal
-  driveForward(-20, 500);
 }
 
 // Used for turning when we don't need accuracy
@@ -855,11 +823,16 @@ void autonomous(void) {
     wait(800, msec);
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
+<<<<<<< HEAD
     // Gun backwards
     driveBackwardsViaTimeGyro(3000, 90);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
      //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
+=======
+    driveViaDistanceGyro(-4500, 900);
+
+>>>>>>> f1bb64f124f85e32c5ce5984d38e9251741a4caa
     while(1){
       // forever loop so the controller continues to display data
       wait(100,msec);
@@ -883,622 +856,19 @@ void autonomous(void) {
 
   // TOURNAMENT AUTONOMOUS
   // Right 1
-  if (mode == 'Y') {
-    // Get to the goal
-    mWheelFrontLeft.spin(fwd, 40, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 40, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    vexDelay(300);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Ensure we are at the goal
-    driveForward(100, 1000);
-
-    // Outtake the preload
-    output(100, 400); // 500 > 300 timems
-
-    // Drive in reverse to make sure we aren't touching anything in the goal
-    driveForward(-20, 500);
-  }
-
+  if (mode == 'Y') oneGoal(RIGHT);
   // Left 1
-  if (mode == '<') {
-    // Get to the goal
-    // mWheelFrontLeft.spin(fwd, 0, pct);
-    // mWheelFrontRight.spin(fwd, -40, pct);
-    // mWheelBackLeft.spin(fwd, 0, pct);
-    // mWheelBackRight.spin(fwd, -40, pct);
-    // vexDelay(300);
-    // mWheelFrontLeft.spin(fwd, 0, pct);
-    // mWheelFrontRight.spin(fwd, 0, pct);
-    // mWheelBackLeft.spin(fwd, 0, pct);
-    // mWheelBackRight.spin(fwd, 0, pct);
-
-    // // Ensure we are in the goal
-    // driveForward(100, 1000);
-
-    // // Outtake the preload
-    // output(100, 400); //500 > 300 > 400timems
-
-    // // Drive in reverse
-    // driveForward(-20, 500);
-
-    // Deploy
-    mOutputUpper.spin(fwd, 100, pct);
-    wait(300, msec);
-    mOutputUpper.spin(fwd, 0, pct);
-
-    intakeIn();
-
-    // Wait to fully deplay
-    wait(750, msec);
-
-    // Get into the goal
-    mWheelFrontLeft.spin(fwd, 20, pct);
-    mWheelFrontRight.spin(fwd, -40, pct);
-    mWheelBackLeft.spin(fwd, 20, pct);
-    mWheelBackRight.spin(fwd, -40, pct);
-    vexDelay(500);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Score preload, score the red ball off the ground, and descore the blues
-    output(100, 2000);
-
-    // Fully deploy
-    driveForward(-75, 500);
-
-    intakeIn();
-    wait(500, msec);
-
-    driveForward(100, 1000);
-
-    output(100, 2000);
-    intakeOff();
-    intakeOpen();
-    wait(100, msec);
-    intakeIn();
-    prepOutput(100, 400);
-    driveForward(-100, 500);
-    intakeOff();
-  }
-
+  if (mode == '<') oneGoal(LEFT);
   // Right 2
-  if (mode == 'X') {
-    // Get to the goal
-    mWheelFrontLeft.spin(fwd, 40, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 40, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    vexDelay(300);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    // Outtake the preload
-    output(100, 400); // 500 > 300 timems
-    // Drive in reverse
-    driveForward(-20, 200);
-    // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while (sInertial.rotation(deg) < 40) {
-      mWheelBackRight.spin(fwd, 40, pct);
-      mWheelFrontRight.spin(fwd, 40, pct);
-    }
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-
-    intakeIn();
-
-    // Line track until we reach the perpendicular line
-    while (sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD) {
-      // Calculate new moving average for the front optical
-      // Assign movement variables
-      leftX = 25;
-      leftY;
-      rightX = 0;
-      if (sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
-        leftY = 30;
-      else
-        leftY = -10;
-      // Assign wheel speeds
-      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Drive to the left a bit
-    leftX = -25;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    vexDelay(300); // 500
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    intakeOpen();
-    vexDelay(500);
-
-    // Thrust into the goal
-    driveForward(100, 1000);
-
-    // Turn intake off
-
-    // Spit out the ball we have
-    output(100, 600); // 500 > 300 timems
-
-    mWheelFrontLeft.spin(fwd, -50, pct);
-    mWheelFrontRight.spin(fwd, 50, pct);
-    mWheelBackLeft.spin(fwd, -50, pct);
-    mWheelBackRight.spin(fwd, 50, pct);
-
-    vexDelay(1000);
-
-    intakeOff();
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-  }
-
+  if (mode == 'X') twoGoal(RIGHT);
   // Left 2
-  if (mode == '^') {
-    // Get to the goal
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, -40, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, -40, pct);
-    vexDelay(300);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    // Outtake the preload
-    output(100, 400); // 500 > 300 timems
-    // Drive in reverse
-    driveForward(-20, 200);
-    // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while (sInertial.rotation(deg) > -40) {
-      mWheelBackLeft.spin(fwd, -40, pct);
-      mWheelFrontLeft.spin(fwd, -40, pct);
-    }
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-
-    intakeIn();
-
-    // Line track until we reach the perpendicular line
-    while (sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD) {
-      // Calculate new moving average for the front optical
-      // Assign movement variables
-      leftX = -25;
-      leftY;
-      rightX = 0;
-      if (sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
-        leftY = 30;
-      else
-        leftY = -10;
-      // Assign wheel speeds
-      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Drive to the left a bit
-    leftX = -25;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    vexDelay(300); // 500
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    intakeOpen();
-    vexDelay(500);
-
-    // Thrust into the goal
-    driveForward(100, 1000);
-
-    // Turn intake off
-
-    // Spit out the ball we have
-    output(100, 600); // 500 > 300 timems
-
-    mWheelFrontLeft.spin(fwd, -50, pct);
-    mWheelFrontRight.spin(fwd, 50, pct);
-    mWheelBackLeft.spin(fwd, -50, pct);
-    mWheelBackRight.spin(fwd, 50, pct);
-
-    vexDelay(1000);
-
-    intakeOff();
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-  }
-
+  if (mode == '^') twoGoal(LEFT);
   // Right 3
-  if (mode == 'A') {
-    // Get to the goal
-    mWheelFrontLeft.spin(fwd, 40, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 40, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    vexDelay(300);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    // Outtake the preload
-    output(100, 400); // 500 > 300 timems
-    // Drive in reverse
-    driveForward(-20, 200);
-    // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while (sInertial.rotation(deg) < 40) {
-      mWheelBackRight.spin(fwd, 40, pct);
-      mWheelFrontRight.spin(fwd, 40, pct);
-    }
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-
-    intakeIn();
-
-    // Line track until we reach the perpendicular line
-    while (sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD) {
-      // Calculate new moving average for the front optical
-      // Assign movement variables
-      leftX = 25;
-      leftY;
-      rightX = 0;
-      if (sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
-        leftY = 30;
-      else
-        leftY = -10;
-      // Assign wheel speeds
-      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Drive to the left a bit
-    leftX = -25;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    vexDelay(300); // 500
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Thrust into the goal
-    driveForward(100, 1000);
-
-    // Turn intake off
-
-    // Spit out the ball we have
-    output(100, 600); // 500 > 300 timems
-
-    mWheelFrontLeft.spin(fwd, -50, pct);
-    mWheelFrontRight.spin(fwd, 50, pct);
-    mWheelBackLeft.spin(fwd, -50, pct);
-    mWheelBackRight.spin(fwd, 50, pct);
-
-    vexDelay(1000);
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Line track until we reach the perpendicular line
-    leftX = 100;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-
-    waitUntil(sDistanceRight.objectDistance(distanceUnits::in) < 4);
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    driveForward(100, 1000);
-
-    output(100, 1000);
-
-    intakeOpen();
-
-    driveForward(-100, 500);
-
-    intakeOff();
-  }
-
+  if (mode == 'A') threeGoal(RIGHT);
   // Left 3
-  if (mode == '>') {
-    // Get to the goal
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, -40, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, -40, pct);
-    vexDelay(300);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Outtake the preload
-    output(100, 400); // 500 > 300 timems
-
-    // Drive in reverse
-    driveForward(-20, 200);
-
-    // Turn 45 deg ccw
-    sInertial.resetRotation();
-    while (sInertial.rotation(deg) > -40) {
-      mWheelBackLeft.spin(fwd, -40, pct);
-      mWheelFrontLeft.spin(fwd, -40, pct);
-    }
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-
-    // Deploy the intakes
-    intakeIn();
-
-    // Line track until we reach the perpendicular line
-    while (sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD) {
-      // Calculate new moving average for the front optical
-      // Assign movement variables
-      leftX = -25;
-      leftY;
-      rightX = 0;
-      if (sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
-        leftY = 30;
-      else
-        leftY = -10;
-      // Assign wheel speeds
-      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Open the intakes
-    intakeOpen();
-
-    // Drive to the left a bit to align with the goal
-    leftX = -25;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    vexDelay(300); // 500
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Thrust into the goal
-    driveForward(100, 1000);
-
-    // Spit out the ball we have
-    output(100, 600); // 500 > 300 timems
-
-    // Back up
-    mWheelFrontLeft.spin(fwd, -50, pct);
-    mWheelFrontRight.spin(fwd, 50, pct);
-    mWheelBackLeft.spin(fwd, -50, pct);
-    mWheelBackRight.spin(fwd, 50, pct);
-
-    vexDelay(1000);
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Line track until we reach the wall
-    leftX = -100;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-
-    waitUntil(sDistanceLeft.objectDistance(distanceUnits::in) < 4);
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Open the intakes
-    intakeOpen();
-
-    // Gun it into the goal
-    driveForward(100, 1000);
-
-    // Spit the ball out
-    output(100, 1000);
-
-    // Get away from the goal
-    driveForward(-100, 500);
-
-    // Relax the intakes
-    intakeOff();
-  }
-
+  if (mode == '>') threeGoal(LEFT);
   // Online tournament 15 seconds
-  if (mode == 'S') {
-    // Get to the goal
-    sInertial.setRotation(-107, deg);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, -40, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, -40, pct);
-    vexDelay(500);
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-    // Score the preload
-    output(100, 500); // 500 > 300 timems
-    // Drive in reverse
-    driveForward(-20, 200);
-    // Turn 45 deg ccw
-    while (sInertial.rotation(deg) > -175) {
-      mWheelFrontLeft.spin(fwd, -20, pct);
-      mWheelBackLeft.spin(fwd, -20, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    intakeIn();
-
-    // Line track until we reach the perpendicular line
-    while (sOpticalFront.getRgb().clear < OPTICAL_THRESHOLD) {
-      // Calculate new moving average for the front optical
-      // Assign movement variables
-      leftX = -25;
-      leftY;
-      rightX = 0;
-      if (sOpticalBack.getRgb().clear > OPTICAL_THRESHOLD)
-        leftY = 30;
-      else
-        leftY = -10;
-      // Assign wheel speeds
-      mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-      mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-      mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-      mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    intakeOpen();
-
-    // Drive to the left a bit
-    leftX = -25;
-    leftY = 0;
-    rightX = 0;
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
-    vexDelay(200); // 500 > 300
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    // Thrust into the goal
-    driveForward(100, 1000);
-
-    // Spit out the ball we have
-    output(100, 600); // 500 > 300 timems
-
-    // Reverse into the center goal
-
-    double startTime = Brain.timer(msec);
-    while (Brain.timer(msec) - startTime < 2000) {
-      int ySpeed;
-      int rotSpeed;
-      ySpeed = -75;
-      rotSpeed = -(sInertial.rotation() + 180) * 2;
-      mWheelFrontLeft.spin(fwd, rotSpeed + ySpeed, pct);
-      mWheelFrontRight.spin(fwd, rotSpeed - ySpeed, pct);
-      mWheelBackLeft.spin(fwd, rotSpeed + ySpeed, pct);
-      mWheelBackRight.spin(fwd, rotSpeed - ySpeed, pct);
-    }
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    intakeOff();
-
-    // Turn towards
-    mWheelFrontRight.spin(fwd, -50, pct);
-    mWheelBackRight.spin(fwd, -50, pct);
-    waitUntil(sInertial.rotation() > -225);
-
-    // Gun it towards the wall
-    mWheelFrontLeft.spin(fwd, -100, pct);
-    mWheelFrontRight.spin(fwd, -100, pct);
-    mWheelBackLeft.spin(fwd, 100, pct);
-    mWheelBackRight.spin(fwd, 100, pct);
-
-    intakeOpen();
-
-    vexDelay(2000);
-
-    mWheelFrontLeft.spin(fwd, 0, pct);
-    mWheelFrontRight.spin(fwd, 0, pct);
-    mWheelBackLeft.spin(fwd, 0, pct);
-    mWheelBackRight.spin(fwd, 0, pct);
-
-    output(100, 1000);
-
-    intakeOpen();
-
-    driveForward(-100, 500);
-
-    intakeOff();
-  }
+  if (mode == 'S') specialAuton();
 }
 
 //    XXXXXXXXXXXXXXXXXXX
@@ -1652,7 +1022,7 @@ void usercontrol(void) {
 //    XXXXXXX                  XXXXXXX
 
 // MAIN program and MULTI-TASK METHODS
-int computeMotorParameters() {
+int computeGlobals() {
   wait(100, msec);
   // Local variables
   // float FrontLeftDistance;
@@ -1683,6 +1053,7 @@ while (1 > 0) {
     FrontRightVelocity = mWheelFrontRight.velocity(pct);
     BackLeftVelocity = mWheelBackLeft.velocity(pct);
     BackRightVelocity = mWheelBackRight.velocity(pct);
+
     ForwardVelocity = BackLeftVelocity - BackRightVelocity;
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
@@ -1691,7 +1062,7 @@ while (1 > 0) {
   }
 } // end of computerMotorParameters
 
-int printCameraObjects() {
+int printInfo() {
   wait(100, msec);
   while (1 > 0) {
     Controller1.Screen.clearScreen();
@@ -1731,6 +1102,9 @@ int printCameraObjects() {
 } // end of printCameraObjects
 
 int main() {
+  // Mark the start of the program
+  //sdLog("[PROGRAM START](" +  + ")");
+
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
@@ -1738,8 +1112,15 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
+<<<<<<< HEAD
   task taskPrintCameraObjects(printCameraObjects);
   task taskComputeMotorParameters(computeMotorParameters);
+=======
+  Competition.test_auton();
+
+  task taskPrintCameraObjects(printInfo);
+  task taskComputeMotorParameters(computeGlobals);
+>>>>>>> f1bb64f124f85e32c5ce5984d38e9251741a4caa
   
 
   // Prevent main from exiting with an infinite loop.

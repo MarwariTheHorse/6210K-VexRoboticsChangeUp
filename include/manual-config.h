@@ -2,6 +2,9 @@ using namespace vex;
 
 using signature = vision::signature;
 
+extern date Date;
+extern struct time Time;
+
 extern motor mWheelFrontLeft;
 extern motor mWheelFrontRight;
 extern motor mWheelBackLeft;
