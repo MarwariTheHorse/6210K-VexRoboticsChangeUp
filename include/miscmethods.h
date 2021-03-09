@@ -117,7 +117,6 @@ void outputOff(){
   mOutputLower.setVelocity(0, pct);
   mOutputUpper.setVelocity(0, pct);
 }
-<<<<<<< HEAD
 void strafeRight(int speed, int timems){
   mWheelFrontRight.setVelocity(-speed, pct);
   mWheelFrontLeft.setVelocity(speed, pct);
@@ -150,8 +149,7 @@ void prepOutput(int speed, int timems){
   mOutputLower.setVelocity(speed, pct);
   vexDelay(timems);
   mOutputLower.setVelocity(speed, pct);
-=======
-
+}
 void sdLog(string label, string message){
   if(Brain.SDcard.isInserted() ) {
     // Variables to store our date info
@@ -178,5 +176,4 @@ void sdLog(string label, string message){
     ofs << "[" << label << "](" << Time.ti_hour << ":" << Time.ti_min << ":" << Time.ti_sec << "." << Time.ti_hund << ") " << message << "\r\n"; // ie [WARNING](11:25:34.45) Motor ___ has reached overheat temperature
     ofs.close();
   }
->>>>>>> Logging
 }
