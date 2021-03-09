@@ -4,12 +4,12 @@
 
 void oneGoal(int dir, bool isBlue){
   // Set Gyro
-  sInertial.setRotation(135, deg);
+  sInertial.setRotation(0, deg); // Everything is going to be relative to our starting position for the sake of my sanity
 
   // Deploy intakes
   intakeIn();
 
-  // Strafe until Goal
+  // Strafe until Green
   int leftX;
   int leftY;
   int rightX;
@@ -18,10 +18,10 @@ void oneGoal(int dir, bool isBlue){
   sVisionLower.takeSnapshot(sigGreen);
   // looks for red ball within +/-60 pixels of centerline
   // red ball must be 40 pixels in width
-  while(sVisionLower.objectCount == 0 || abs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
+  while(sVisionUpper.objectCount == 0 || abs(sVisionUpper.largestObject.centerX - 180) > 60 || sVisionUpper.largestObject.width < 40){
     wait(10, msec);
-    sVisionLower.takeSnapshot(sigBlue);
-    rightX = (135 - sInertial.rotation(deg)) * 2;
+    sVisionUpper.takeSnapshot(sigGreen);
+    rightX = (0 - sInertial.rotation(deg)) * 2;
     mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
