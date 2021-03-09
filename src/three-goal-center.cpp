@@ -4,7 +4,7 @@
 
 // THIS METHOD SHOULD BE AN ADD-ON TO THREE-GOAL
 
-void threeGoalCenter(int dir, int col){
-  threeGoal(dir, col);
+void threeGoalCenter(int dir, bool isBlue){
+  threeGoal(dir, isBlue);
   // More code below
 }

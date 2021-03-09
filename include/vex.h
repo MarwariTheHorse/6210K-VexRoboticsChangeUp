@@ -24,6 +24,8 @@
 #define LEFT 1
 #define RIGHT -1
 
+using signature = vision::signature;
+
 #define waitUntil(condition)                                                   \
   do {                                                                         \
     wait(5, msec);                                                             \

@@ -2,21 +2,23 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
-void oneGoal(int dir, int col){
+void oneGoal(int dir, bool isBlue){
   // Set Gyro
   sInertial.setRotation(135, deg);
+
   // Deploy intakes
   intakeIn();
-  // Strafe until Blue ball
+
+  // Strafe until Goal
   int leftX;
   int leftY;
   int rightX;
-  leftX = 55;
+  leftX = 55 * dir;
   leftY = 0;
-  sVisionLower.takeSnapshot(sigBlue);
+  sVisionLower.takeSnapshot(sigGreen);
   // looks for red ball within +/-60 pixels of centerline
   // red ball must be 40 pixels in width
-  while(sVisionLower.objectCount == 0 || fabs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
+  while(sVisionLower.objectCount == 0 || abs(sVisionLower.largestObject.centerX - 180) > 60 || sVisionLower.largestObject.width < 40){
     wait(10, msec);
     sVisionLower.takeSnapshot(sigBlue);
     rightX = (135 - sInertial.rotation(deg)) * 2;
@@ -25,10 +27,7 @@ void oneGoal(int dir, int col){
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
     mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
   }
-  mWheelBackLeft.spin(fwd, 0, pct);
-  mWheelFrontLeft.spin(fwd, 0, pct);
-  mWheelBackRight.spin(fwd, 0, pct);
-  mWheelFrontRight.spin(fwd, 0, pct);
+  
   // Go to blue ball
   intakeOpen();
   double startTime = Brain.timer(msec);
