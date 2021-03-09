@@ -7,6 +7,7 @@ Team members include:
 *Caleb Buening,*
 *Joey Curnutt,*
 *Caleb Baker,*
+and that Hans kid.
 
 ### Project Breakdown:
 - Autonomous
