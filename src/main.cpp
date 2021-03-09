@@ -856,6 +856,7 @@ void autonomous(void) {
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
     // Gun backwards
+    driveBackwardsViaTimeGyro(3000, 90);
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
      //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
