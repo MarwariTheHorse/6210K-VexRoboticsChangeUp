@@ -18,6 +18,7 @@ competition Competition;
 
 // Other global variables
 char mode = 'N';
+char autonColor = '-';
 bool disableIntakes = false;
 // these are global variables
 float ForwardDistance;
@@ -66,6 +67,27 @@ void pre_auton(void) {
     }
   }
   Controller1.Screen.clearScreen();
+
+  // What color are we?
+  if(mode == '<' && mode == '^' && mode == '>' && mode == 'Y' && mode == 'A' && mode == 'X'){
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Red or Blue?");
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Red: A");
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("Blue: Y");
+
+    while (autonColor == '-') {
+      if (Controller1.ButtonA.pressing())
+        autonColor = 'R';
+      if (Controller1.ButtonY.pressing())
+        autonColor = 'B';
+    }
+    Controller1.Screen.clearScreen();
+  }
+
+  waitUntil(!Controller1.ButtonA.pressing());
 
   // Calibrate
   Controller1.Screen.clearScreen();
@@ -844,17 +866,17 @@ void autonomous(void) {
 
   // TOURNAMENT AUTONOMOUS
   // Right 1
-  if (mode == 'Y') oneGoal(RIGHT);
+  if (mode == 'Y') oneGoal(RIGHT, autonColor);
   // Left 1
-  if (mode == '<') oneGoal(LEFT);
+  if (mode == '<') oneGoal(LEFT, autonColor);
   // Right 2
-  if (mode == 'X') twoGoal(RIGHT);
+  if (mode == 'X') twoGoal(RIGHT, autonColor);
   // Left 2
-  if (mode == '^') twoGoal(LEFT);
+  if (mode == '^') twoGoal(LEFT, autonColor);
   // Right 3
-  if (mode == 'A') threeGoal(RIGHT);
+  if (mode == 'A') threeGoal(RIGHT, autonColor);
   // Left 3
-  if (mode == '>') threeGoal(LEFT);
+  if (mode == '>') threeGoal(LEFT, autonColor);
   // Online tournament 15 seconds
   if (mode == 'S') specialAuton();
 }

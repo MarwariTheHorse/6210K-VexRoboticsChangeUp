@@ -18,4 +18,7 @@ void strafeRight(int speed, int timems);
 void strafeLeft(int speed, int timems);
 void halt();
 void prepOutput(int speed, int timems);
+double getForwardVelocity();
+double getStrafeVelocity();
+double getTurnVelocity();
 void sdLog(string label, string message);

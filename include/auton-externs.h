@@ -1,8 +1,8 @@
 using namespace vex;
 
-void threeGoalCenter(int);
-void threeGoal(int);
-void twoGoal(int);
-void oneGoal(int);
+void threeGoalCenter(int, int);
+void threeGoal(int, int);
+void twoGoal(int, int);
+void oneGoal(int, int);
 void fullAuton();
 void specialAuton();

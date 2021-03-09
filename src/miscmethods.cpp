@@ -151,6 +151,19 @@ void prepOutput(int speed, int timems){
   vexDelay(timems);
   mOutputLower.setVelocity(speed, pct);
 }
+
+double getForwardVelocity(){
+  return mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+}
+
+double getTurnVelocity(){
+  return mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) + mWheelBackLeft.rotation(rotationUnits::raw) + mWheelBackRight.rotation(rotationUnits::raw);
+}
+
+double getStrafeVelocity(){
+  return mWheelFrontLeft.rotation(rotationUnits::raw) + mWheelFrontRight.rotation(rotationUnits::raw) - mWheelBackLeft.rotation(rotationUnits::raw) - mWheelBackRight.rotation(rotationUnits::raw);
+}
+
 void sdLog(string label, string message){
   if(Brain.SDcard.isInserted() ) {
     // Variables to store our date info
