@@ -1,3 +1,9 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// sVisionUpper         vision        21              
+// sVisionLower         vision        20              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -677,7 +683,7 @@ void autonomous(void) {
     intakeIn();
     driveViaDistanceGyro(-2500, -135);
     intakeOpenAuton();
-    driveViaDistanceGyro(-2000, -135);
+    driveViaDistanceGyro(-2300, -135);
 
     // Turn to face the wall
     turnTo(-225, 2);
@@ -706,7 +712,7 @@ void autonomous(void) {
     wait(50, msec);
 
     // drive to goal and grab second red along the way
-    driveViaDistanceGyroCamera(6000, 0);
+    driveViaDistanceGyroCamera(6700, 0);
     intakeIn();
     turnTo(-90, 2);
     intakeOpenAuton();
@@ -751,13 +757,15 @@ void autonomous(void) {
   // Part 7 - Goals 6 and 7
     // Score goal 6
     intakeIn();
-    strafeViaDistanceGyro(750, -45);
+    strafeViaDistanceGyro(1250, -45);
     driveViaTimeGyroCamera(8000, -45, sigGreen);
     //alignToGoal(-45);
     mOutputUpper.spin(fwd,100, pct);
     mOutputLower.spin(fwd,100, pct);
     waitForRed();
-    mOutputUpper.spin(fwd,0, pct);
+    mOutputUpper.spin(fwd,-100, pct);
+    wait(200, msec);
+    mOutputUpper.spin(fwd, 0, pct);
     intakeOff();
     driveViaDistanceGyro(-3000, -45);
     turnTo(0, 2);
@@ -787,7 +795,9 @@ void autonomous(void) {
     turnTo(45, 2);
     
     // Get red ball
+
     mOutputLower.spin(fwd,80, pct);
+    strafeViaDistanceGyro(1000, 45);
     driveViaDistanceGyroCamera(6500, 45);
     intakeIn();
 
@@ -820,29 +830,32 @@ void autonomous(void) {
     wait(500, msec); // Added the in to give the intakes time to back out and almost grab the ball
 
     // Scoot back
-    driveViaDistanceGyro(-7000, 90);
+    driveViaDistanceGyro(-3000, 90);
     
 
-    // Strafe to goal
-    strafeUntilRed(60, 90); // UntilRed
+    // Drive to goal
+    turnTo(180, 2);
     mOutputLower.spin(fwd, 0, pct);
     // open arms
     intakeOpenAuton();
-    wait(100, msec);
+    wait(50, msec);
 
-    // drive into goal and grab second red along the way
+    // drive to goal and grab second red along the way
+    driveViaDistanceGyroCamera(6500, 180);
+    intakeIn();
+    turnTo(90, 2);
+    intakeOpenAuton();
     driveViaTimeGyroCamera(8000, 90, sigGreen);
-    //alignToGoal(-270);
-    intakeOff();
+    //alignToGoal(-90);
 
-    //Score and descore
+    //Score goal 9
     intakeIn();
     mOutputUpper.spin(fwd, 100, pct);
     mOutputLower.spin(fwd, 100, pct);
-    wait(900, msec);
+    wait(800, msec);
     waitForRed();
     mOutputUpper.spin(fwd, 0, pct);
-    driveViaDistanceGyro(-4500, 900);
+    // Gun backwards
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // DONE!!!!!!!!!!!!!!!!!!!!!!!!!!!
      //-----------------------------------------------------------------CODE COMMENTED OUT ABOVE
@@ -1552,6 +1565,11 @@ void usercontrol(void) {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     if (!disableIntakes) {
+
+      if(Controller1.ButtonDown.pressing()){
+      autonomous();
+    }
+
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
         intakePhase = 1;
@@ -1613,6 +1631,7 @@ void usercontrol(void) {
       mOutputUpper.spin(fwd, 0, pct);
     }
 
+
     vexDelay(5);
   }
 }
@@ -1666,7 +1685,7 @@ while (1 > 0) {
     ForwardVelocity = BackLeftVelocity - BackRightVelocity;
     TurnVelocity = FrontLeftVelocity + FrontRightVelocity + BackLeftVelocity + BackRightVelocity;
     StrafeVelocity = FrontLeftVelocity + FrontRightVelocity - BackLeftVelocity - BackRightVelocity;
-    
+
     wait(5, msec);
   }
 } // end of computerMotorParameters
@@ -1717,8 +1736,6 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
-
-  Competition.test_auton();
 
   task taskPrintCameraObjects(printCameraObjects);
   task taskComputeMotorParameters(computeMotorParameters);
