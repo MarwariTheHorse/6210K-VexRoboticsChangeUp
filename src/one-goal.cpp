@@ -38,7 +38,6 @@ void oneGoal(int dir){
       // Go to blue ball
       intakeOpen();
       double startTime = Brain.timer(msec);
-
       while (Brain.timer(msec) - startTime < 8000){
         sVisionUpper.takeSnapshot(sigGreen);
         if (sVisionUpper.objectCount > 0 && sVisionUpper.largestObject.width > 40) {
