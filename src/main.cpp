@@ -1075,6 +1075,9 @@ int printInfo() {
 } // end of printCameraObjects
 
 int main() {
+  // Mark the start of the program
+  sdLog("[PROGRAM START](" +  + ")");
+
   // Set up callbacks for autonomous and driver control periods.
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
