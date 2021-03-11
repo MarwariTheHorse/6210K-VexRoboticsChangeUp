@@ -1,9 +1,9 @@
 using namespace vex;
 using signature = vision::signature;
 
-void threeGoalCenter(int, bool);
-void threeGoal(int, bool);
-void twoGoal(int, bool);
-void oneGoal(int, bool);
+void threeGoalCenter(int);
+void threeGoal(int);
+void twoGoal(int);
+void oneGoal(int);
 void fullAuton();
 void specialAuton();

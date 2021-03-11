@@ -4,7 +4,7 @@
 
 // THIS CODE IS AN ADD-ON TO ONE-GOAL
 
-void twoGoal(int dir, bool isBlue){
+void twoGoal(int dir){
   float TurnVelocity;
   float ForwardVelocity;
   Controller1.Screen.clearScreen();
@@ -12,7 +12,7 @@ void twoGoal(int dir, bool isBlue){
   Controller1.Screen.print("<-Blue Y-Red");
   if(Controller1.ButtonLeft.pressing()){
     if(dir == LEFT){
-      oneGoal(dir, isBlue);
+      oneGoal(dir);
       double error = 180 - sInertial.rotation(deg);
       int leftY = 0;
       int rightX = 0;

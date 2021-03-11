@@ -18,7 +18,7 @@ competition Competition;
 
 // Other global variables
 char mode = 'N';
-char autonColor = '-';
+bool isBlue = false;
 bool disableIntakes = false;
 // these are global variables
 float ForwardDistance;
@@ -78,11 +78,13 @@ void pre_auton(void) {
     Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("Blue: Y");
 
-    while (autonColor == '-') {
+    while (true) {
       if (Controller1.ButtonA.pressing())
-        autonColor = 'R';
-      if (Controller1.ButtonY.pressing())
-        autonColor = 'B';
+        break;
+      if (Controller1.ButtonY.pressing()){
+        isBlue = true;
+        break;
+      }
     }
     Controller1.Screen.clearScreen();
   }
@@ -353,6 +355,7 @@ void driveViaTimeGyro(double timeInMS, double a){
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
     mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
+
     if (Brain.timer(msec) - startTime > 400) {
       if (ForwardVelocity < 20) {
         break;
@@ -866,17 +869,17 @@ void autonomous(void) {
 
   // TOURNAMENT AUTONOMOUS
   // Right 1
-  if (mode == 'Y') oneGoal(RIGHT, autonColor);
+  if (mode == 'Y') oneGoal(RIGHT);
   // Left 1
-  if (mode == '<') oneGoal(LEFT, autonColor);
+  if (mode == '<') oneGoal(LEFT);
   // Right 2
-  if (mode == 'X') twoGoal(RIGHT, autonColor);
+  if (mode == 'X') twoGoal(RIGHT);
   // Left 2
-  if (mode == '^') twoGoal(LEFT, autonColor);
+  if (mode == '^') twoGoal(LEFT);
   // Right 3
-  if (mode == 'A') threeGoal(RIGHT, autonColor);
+  if (mode == 'A') threeGoal(RIGHT);
   // Left 3
-  if (mode == '>') threeGoal(LEFT, autonColor);
+  if (mode == '>') threeGoal(LEFT);
   // Online tournament 15 seconds
   if (mode == 'S') specialAuton();
 }

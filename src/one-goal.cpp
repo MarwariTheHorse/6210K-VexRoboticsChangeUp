@@ -2,11 +2,11 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
-void oneGoal(int dir, bool isBlue){
+void oneGoal(int dir){
   // Set Gyro
-  sInertial.setRotation(0, deg); // Everything is going to be relative to our starting position for the sake of my sanity
+  sInertial.setRotation(-135 * dir, deg); // Everything is going to be relative to our starting position for the sake of my sanity
 
-  // Deploy intakes
+  // Deploy intake
   intakeIn();
 
   // Strafe until Green
