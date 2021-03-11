@@ -92,7 +92,7 @@ void pre_auton(void) {
   waitUntil(!Controller1.ButtonA.pressing());
 
   // Calibrate and battery check
-  char batteryCapacity = Brain.Battery.capacity();
+  int batteryCapacity = Brain.Battery.capacity();
   if(batteryCapacity < 75){
   std::string batteryCapacity;
   Controller1.Screen.clearScreen();
