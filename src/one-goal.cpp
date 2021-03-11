@@ -4,12 +4,22 @@
 
 void oneGoal(int dir){
   // Set Gyro
+<<<<<<< HEAD
   sInertial.setRotation(-135 * dir, deg); // Everything is going to be relative to our starting position for the sake of my sanity
 
   // Deploy intake
+=======
+  sInertial.setRotation(0, deg); // Everything is going to be relative to our starting position for the sake of my sanity
+  if(dir == LEFT) dir = 1;
+  else dir = -1;
+  if(isBlue == true) signature sig = sigBlue;
+  else signature sig = sigRed;
+  // Deploy intakes
+>>>>>>> 940bcc508659f4a7983aa5ab27d7370bcdf566ad
   intakeIn();
 
   // Strafe until Green
+  signature sig;
   int leftX;
   int leftY;
   int rightX;
@@ -38,8 +48,8 @@ void oneGoal(int dir){
     } else {
       leftX = 0;
     }
-    leftY = 50;
-    rightX = (135 - sInertial.rotation(deg)) * 2; // used to be 3
+    leftY = 80;
+    rightX = (0 - sInertial.rotation(deg)) * 2; // used to be 3
     mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -65,8 +75,8 @@ void oneGoal(int dir){
     } else {
       leftX = 0;
     }
-    leftY = 50;
-    rightX = (135 - sInertial.rotation(deg)) * 2; // used to be 3
+    leftY = 60;
+    rightX = (0 - sInertial.rotation(deg)) * 2; // used to be 3
     mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
     mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
     mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
@@ -83,10 +93,10 @@ void oneGoal(int dir){
   mOutputLower.spin(fwd, 100, pct);
   mOutputUpper.spin(fwd, 100, pct);
   wait(800, msec);
-  sVisionUpper.takeSnapshot(sigBlue);
+  sVisionUpper.takeSnapshot(sig);
   while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 2500){
     wait(10, msec);
-    sVisionUpper.takeSnapshot(sigBlue);
+    sVisionUpper.takeSnapshot(sig);
   }
   mOutputLower.spin(fwd, 0, pct);
   // Make sure we score the last ball
