@@ -6,7 +6,7 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
+#include <string>
 #include "vex.h"
 #include "miscmethods.h"
 #include "auton-externs.h"
@@ -89,20 +89,27 @@ void pre_auton(void) {
 
   waitUntil(!Controller1.ButtonA.pressing());
 
-  // Calibrate
+  // Calibrate and battery check
+  char batteryCapacity = Brain.Battery.capacity();
+  if(batteryCapacity < 75){
+  std::string batteryCapacity;
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("The battery's at" + (batteryCapacity));
+  Controller1.Screen.setCursor(2, 1);
+  Controller1.Screen.print("Press A to continue");
+  Controller1.Screen.setCursor(3, 1);
+  Controller1.Screen.print("Press B to abort");
+  waitUntil(Controller1.ButtonA.pressing());
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrate?");
-  Controller1.Screen.setCursor(2, 1);
-  Controller1.Screen.print("Press A");
   waitUntil(Controller1.ButtonA.pressing());
-
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrating...");
   sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
-
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.rumble("..");
@@ -110,7 +117,25 @@ void pre_auton(void) {
   wait(500, msec);
   Controller1.Screen.clearScreen();
   disableIntakes = false;
-
+  }
+  else{
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Calibrate?");
+  waitUntil(Controller1.ButtonA.pressing());
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Calibrating...");
+  sInertial.calibrate();
+  waitUntil(!sInertial.isCalibrating());
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.rumble("..");
+  Controller1.Screen.print("DONE");
+  wait(500, msec);
+  Controller1.Screen.clearScreen();
+  disableIntakes = false;
+  }
   // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
   sOpticalBack.setLight(ledState::on);
