@@ -11,8 +11,6 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
-#define pi 3.14159265358979323
-
 using namespace vex;
 
 // A global instance of competition
@@ -918,7 +916,6 @@ void usercontrol(void) {
     rightX = Controller1.Axis1.position();
 
     // Zero the values (Likely not needed if we use the cubing function)
-<<<<<<< HEAD
     if (leftX < 20 && leftX > -20)
       leftX = 0;
     if (leftY < 20 && leftY > -20)
@@ -941,48 +938,6 @@ void usercontrol(void) {
       autonomous();
     }
 
-=======
-    if (leftX < 10 && leftX > -10){
-      leftX = 0;
-    }
-    if (leftY < 10 && leftY > -10){
-      leftY = 0;
-    }
-    if (rightX < 10 && rightX > -10){
-      rightX = 0;
-    }
-
-    
-
-    double magnitude = sqrt((leftX * leftX) + (leftY * leftY));
-    double direction;
-    if(leftX > 0){
-      direction = (2 * pi) + asin(leftY/magnitude) - (pi/4);
-    }else{
-      direction = pi - asin(leftY/magnitude) - (pi/4);
-    }
-    
-    // Controller1.Screen.setCursor(1, 1);
-    // Controller1.Screen.print("MAG: "); // print Gyro Angle
-    // Controller1.Screen.setCursor(1, 6);
-    // Controller1.Screen.print(magnitude);
-
-    // Controller1.Screen.setCursor(2, 1);
-    // Controller1.Screen.print("DIR: "); // print Gyro Angle
-    // Controller1.Screen.setCursor(2, 6);
-    // Controller1.Screen.print(direction);
-
-
-    // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
-    mWheelFrontRight.spin(fwd, (rightX * 1.5) - ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
-    mWheelBackLeft.spin(fwd, (rightX * 1.5) + ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
-    mWheelBackRight.spin(fwd, (rightX * 1.5) - ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
-
-    // Intake
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    if (!disableIntakes){
->>>>>>> parent of f8165a7 (Revert "Attempt to use trig for robot wheel speeds")
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
         intakePhase = 1;
@@ -1154,13 +1109,8 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
-<<<<<<< HEAD
   task taskPrintCameraObjects(printInfo);
   task taskComputeMotorParameters(computeGlobals);
-=======
-  //task taskPrintCameraObjects(printCameraObjects);
-  //task taskComputeMotorParameters(computeMotorParameters);
->>>>>>> parent of f8165a7 (Revert "Attempt to use trig for robot wheel speeds")
 
   // Prevent main from exiting with an infinite loop.
   while (true) {
