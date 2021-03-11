@@ -18,7 +18,6 @@ competition Competition;
 
 // Other global variables
 char mode = 'N';
-bool isBlue = false;
 bool disableIntakes = false;
 // these are global variables
 float ForwardDistance;
@@ -68,41 +67,19 @@ void pre_auton(void) {
   }
   Controller1.Screen.clearScreen();
 
-  // What color are we?
-  if(mode == '<' && mode == '^' && mode == '>' && mode == 'Y' && mode == 'A' && mode == 'X'){
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("Red or Blue?");
-    Controller1.Screen.setCursor(2, 1);
-    Controller1.Screen.print("Red: A");
-    Controller1.Screen.setCursor(3, 1);
-    Controller1.Screen.print("Blue: Y");
-
-    while (true) {
-      if (Controller1.ButtonA.pressing())
-        break;
-      if (Controller1.ButtonY.pressing()){
-        isBlue = true;
-        break;
-      }
-    }
-    Controller1.Screen.clearScreen();
-  }
-
-  waitUntil(!Controller1.ButtonA.pressing());
-
-  // Calibrate and battery check
+  // Battery check
   int batteryCapacity = Brain.Battery.capacity();
   if(batteryCapacity < 75){
-  std::string batteryCapacity;
-  Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("The battery's at" + (batteryCapacity));
-  Controller1.Screen.setCursor(2, 1);
-  Controller1.Screen.print("Press A to continue");
-  Controller1.Screen.setCursor(3, 1);
-  Controller1.Screen.print("Press B to abort");
-  waitUntil(Controller1.ButtonA.pressing());
+    std::string batteryCapacity;
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("The battery's at" + (batteryCapacity));
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Press A to continue");
+    waitUntil(Controller1.ButtonA.pressing());
+  }
+
+  // Calibration
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrate?");
@@ -119,25 +96,7 @@ void pre_auton(void) {
   wait(500, msec);
   Controller1.Screen.clearScreen();
   disableIntakes = false;
-  }
-  else{
-  Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Calibrate?");
-  waitUntil(Controller1.ButtonA.pressing());
-  Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Calibrating...");
-  sInertial.calibrate();
-  waitUntil(!sInertial.isCalibrating());
-  Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
-  Controller1.rumble("..");
-  Controller1.Screen.print("DONE");
-  wait(500, msec);
-  Controller1.Screen.clearScreen();
-  disableIntakes = false;
-  }
+  
   // Activiate the opticals
   sOpticalFront.setLight(ledState::on);
   sOpticalBack.setLight(ledState::on);
