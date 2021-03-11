@@ -72,9 +72,10 @@ void pre_auton(void) {
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
   if(batteryCapacity < 75){
+    std::string batteryCapacity;
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("The battery's at %i", batteryCapacity);
+    Controller1.Screen.print("The battery's at" + (batteryCapacity));
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("Press A to continue");
     waitUntil(Controller1.ButtonA.pressing());
@@ -916,13 +917,42 @@ void usercontrol(void) {
     leftY = Controller1.Axis3.position();
     rightX = Controller1.Axis1.position();
 
-    // Zero the values
+    // Zero the values (Likely not needed if we use the cubing function)
+<<<<<<< HEAD
     if (leftX < 20 && leftX > -20)
       leftX = 0;
     if (leftY < 20 && leftY > -20)
       leftY = 0;
     if (rightX < 20 && rightX > -20)
       rightX = 0;
+
+    // Assign wheel speeds
+    mWheelFrontLeft.spin(fwd, (rightX * 1) + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, (rightX * 1) - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, (rightX * 1) + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, (rightX * 1) - leftY - leftX, pct);
+
+    // Intake
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if (!disableIntakes) {
+
+      if(Controller1.ButtonDown.pressing()){
+      autonomous();
+    }
+
+=======
+    if (leftX < 10 && leftX > -10){
+      leftX = 0;
+    }
+    if (leftY < 10 && leftY > -10){
+      leftY = 0;
+    }
+    if (rightX < 10 && rightX > -10){
+      rightX = 0;
+    }
+
+    
 
     double magnitude = sqrt((leftX * leftX) + (leftY * leftY));
     double direction;
@@ -944,19 +974,15 @@ void usercontrol(void) {
 
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX * .5) + ((cos(direction) * magnitude)), pct);
-    mWheelFrontRight.spin(fwd, (rightX * .5) - ((sin(direction) * magnitude)), pct);
-    mWheelBackLeft.spin(fwd, (rightX * .5) + ((sin(direction) * magnitude)), pct);
-    mWheelBackRight.spin(fwd, (rightX * .5) - ((cos(direction) * magnitude)), pct);
+    mWheelFrontLeft.spin(fwd, (rightX * 1.5) + ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelFrontRight.spin(fwd, (rightX * 1.5) - ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelBackLeft.spin(fwd, (rightX * 1.5) + ((sin(direction) * magnitude) /* 1.41421356237*/), pct);
+    mWheelBackRight.spin(fwd, (rightX * 1.5) - ((cos(direction) * magnitude) /* 1.41421356237*/), pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     if (!disableIntakes){
-
-      if(Controller1.ButtonDown.pressing()){
-        autonomous();
-      }
-
+>>>>>>> parent of f8165a7 (Revert "Attempt to use trig for robot wheel speeds")
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
         intakePhase = 1;
@@ -1128,8 +1154,13 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
+<<<<<<< HEAD
   task taskPrintCameraObjects(printInfo);
   task taskComputeMotorParameters(computeGlobals);
+=======
+  //task taskPrintCameraObjects(printCameraObjects);
+  //task taskComputeMotorParameters(computeMotorParameters);
+>>>>>>> parent of f8165a7 (Revert "Attempt to use trig for robot wheel speeds")
 
   // Prevent main from exiting with an infinite loop.
   while (true) {

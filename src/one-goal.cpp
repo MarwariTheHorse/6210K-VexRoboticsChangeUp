@@ -4,9 +4,18 @@
 
 void oneGoal(int dir){
   // Set Gyro
+<<<<<<< HEAD
   sInertial.setRotation(-135 * dir, deg); // Everything is going to be relative to our starting position for the sake of my sanity
 
   // Deploy intake
+=======
+  sInertial.setRotation(0, deg); // Everything is going to be relative to our starting position for the sake of my sanity
+  if(dir == LEFT) dir = 1;
+  else dir = -1;
+  if(isBlue == true) signature sig = sigBlue;
+  else signature sig = sigRed;
+  // Deploy intakes
+>>>>>>> 940bcc508659f4a7983aa5ab27d7370bcdf566ad
   intakeIn();
 
   // Strafe until Green
