@@ -70,10 +70,9 @@ void pre_auton(void) {
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
   if(batteryCapacity < 75){
-    std::string batteryCapacity;
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("The battery's at" + (batteryCapacity));
+    Controller1.Screen.print("The battery's at %d", (batteryCapacity));
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("Press A to continue");
     waitUntil(Controller1.ButtonA.pressing());
