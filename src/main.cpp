@@ -146,20 +146,20 @@ void autonomous(void) {
   if (mode == 'S') specialAuton();
 }
 
-//    XXXXXXXXXXXXXXXXXXX
-//    XXXXXXXXXXXXXXXXXXXX
-//    XXXXXXX        XXXXXXX
-//    XXXXXXX         XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX          XXXXXXX
-//    XXXXXXX         XXXXXXX    
-//    XXXXXXX        XXXXXXX
-//    XXXXXXXXXXXXXXXXXXXX
-//    XXXXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXX         XXXXXXXXXXXXXXXXXXXXXXX    XXXXXXXXXXXXXXXXXX   
+//    XXXXXXXXXXXXXXXXXXXX        XXXXXXXXXXXXXXXXXXXXXXX    XXXXXXXXXXXXXXXXXX
+//    XXXXXXX        XXXXXXX      XXXXX             XXXXX          XXXXXX
+//    XXXXXXX         XXXXXXX     XXXXX             XXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXX             XXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXX             XXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXX             XXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXXXXXXXXXXXXXXXXXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXXXXXXXXXXXXXXXXXXXX          XXXXXX
+//    XXXXXXX          XXXXXXX    XXXXX         XXXXXX             XXXXXX
+//    XXXXXXX         XXXXXXX     XXXXX          XXXXXX            XXXXXX
+//    XXXXXXX        XXXXXXX      XXXXX           XXXXXX           XXXXXX
+//    XXXXXXXXXXXXXXXXXXXX        XXXXX            XXXXXX     XXXXXXXXXXXXXXXXX
+//    XXXXXXXXXXXXXXXXXXX         XXXXX             XXXXXX    XXXXXXXXXXXXXXXXX
 
 // DRIVER MODE
 void usercontrol(void) {
@@ -278,19 +278,19 @@ void usercontrol(void) {
   }
 }
 
-//    XXXXXXXXXXX          XXXXXXXXXXX
-//    XXXXXXXXXXXX        XXXXXXXXXXXX
-//    XXXXXXXXXXXXX      XXXXXXXXXXXXX
-//    XXXXXXXXXXXXXX    XXXXXXXXXXXXXX
-//    XXXXXXX   XXXXX  XXXXX   XXXXXXX
-//    XXXXXXX   XXXXXXXXXXXX   XXXXXXX
-//    XXXXXXX    XXXXXXXXXX    XXXXXXX
-//    XXXXXXX     XXXXXXXX     XXXXXXX
-//    XXXXXXX      XXXXXX      XXXXXXX
-//    XXXXXXX                  XXXXXXX
-//    XXXXXXX                  XXXXXXX
-//    XXXXXXX                  XXXXXXX
-//    XXXXXXX                  XXXXXXX
+//    XXXXXXXXXXX          XXXXXXXXXXX                XXXXXXXXXXXX
+//    XXXXXXXXXXXX        XXXXXXXXXXXX               XXXXXXXXXXXXXX
+//    XXXXXXXXXXXXX      XXXXXXXXXXXXX              XXXXXX    XXXXXX
+//    XXXXXXXXXXXXXX    XXXXXXXXXXXXXX             XXXXXX      XXXXXX
+//    XXXXXXX   XXXXX  XXXXX   XXXXXXX            XXXXXX        XXXXXX
+//    XXXXXXX   XXXXXXXXXXXX   XXXXXXX           XXXXXX          XXXXXX
+//    XXXXXXX    XXXXXXXXXX    XXXXXXX          XXXXXX            XXXXXX
+//    XXXXXXX     XXXXXXXX     XXXXXXX         XXXXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX      XXXXXX      XXXXXXX        XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+//    XXXXXXX                  XXXXXXX       XXXXXX                  XXXXXX
+//    XXXXXXX                  XXXXXXX      XXXXXX                    XXXXXX
+//    XXXXXXX                  XXXXXXX     XXXXXX                      XXXXXX
+//    XXXXXXX                  XXXXXXX    XXXXXX                        XXXXXX
 
 // MAIN program and MULTI-TASK METHODS
 int computeGlobals() {
