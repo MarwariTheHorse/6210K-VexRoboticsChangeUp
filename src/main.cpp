@@ -202,19 +202,15 @@ void usercontrol(void) {
       rightX = 0;
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX * 1) + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, (rightX * 1) - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, (rightX * 1) + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, (rightX * 1) - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
+    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
+    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
+    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    if (!disableIntakes) {
-
-      if(Controller1.ButtonDown.pressing()){
-      autonomous();
-    }
+    if (!disableIntakes) { // runs when the intakes aren't disabled
 
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
