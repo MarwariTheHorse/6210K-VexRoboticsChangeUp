@@ -174,6 +174,11 @@ void usercontrol(void) {
   mOutputLower.spin(fwd);
   mOutputUpper.spin(fwd);
 
+  // Set motor stopping mode
+  mWheelFrontLeft.setStopping(coast);
+  mWheelFrontRight.setStopping(coast);
+  mWheelBackLeft.setStopping(coast);
+  mWheelBackRight.setStopping(coast);
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
 
@@ -337,7 +342,7 @@ int printInfo() {
   wait(100, msec);
   while (1 > 0) {
     Controller1.Screen.clearScreen();
-
+    /*
     Controller1.Screen.setCursor(1, 1);
     Controller1.Screen.print("GY"); // print Gyro Angle
     Controller1.Screen.setCursor(1, 5);
@@ -360,6 +365,36 @@ int printInfo() {
 
     Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("VUX "); // Vision Upper X-Axis
+    Controller1.Screen.setCursor(3, 5);
+    Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
+
+    Controller1.Screen.setCursor(3, 11);
+    Controller1.Screen.print("VLX"); // Vision Lower X-Axis
+    Controller1.Screen.setCursor(3, 15);
+    Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
+    */
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("FL"); // Print motor temperature
+    Controller1.Screen.setCursor(1, 5);
+    Controller1.Screen.print(mWheelFrontLeft.temperature());
+
+    Controller1.Screen.setCursor(1, 11);
+    Controller1.Screen.print("FR"); // Print motor temperature
+    Controller1.Screen.setCursor(1, 15);
+    Controller1.Screen.print(mWheelFrontRight.temperature());
+
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("BL"); // Print motor temperature
+    Controller1.Screen.setCursor(2, 5);
+    Controller1.Screen.print(mWheelBackLeft.temperature());
+
+    Controller1.Screen.setCursor(2, 11);
+    Controller1.Screen.print("BR"); // Print motor temperature
+    Controller1.Screen.setCursor(2, 15);
+    Controller1.Screen.print(mWheelBackRight.temperature());
+
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("VUX"); // Vision Upper X-Axis
     Controller1.Screen.setCursor(3, 5);
     Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
 
