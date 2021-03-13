@@ -34,5 +34,5 @@ void alignToGoal(double);
 void strafeUntilGreen(int, double);
 void strafeUntilRed(int, double);
 void ejectBalls();
-void waitForRed();
+void waitForColor(bool);
 void waitForNoGreen();

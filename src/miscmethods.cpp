@@ -549,11 +549,12 @@ void ejectBalls(){
   mOutputUpper.spinFor(-8, rotationUnits::rev, 100, velocityUnits::pct);
 }
 
-void waitForRed(){
+void waitForColor(bool blue){
+  sVisionUpper.takeSnapshot(blue ? sigBlue : sigRed);
   double startTime = Brain.timer(msec);
   while(sVisionUpper.largestObject.width < 100 && Brain.timer(msec) - startTime < 1000){
     wait(10, msec);
-    sVisionUpper.takeSnapshot(sigRed);
+    sVisionUpper.takeSnapshot(blue ? sigBlue : sigRed);
   }
 }
 

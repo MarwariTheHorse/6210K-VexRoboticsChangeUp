@@ -62,7 +62,7 @@ void fullAuton(){
   intakeIn();
   mOutputUpper.spin(fwd, 100, pct);
   mOutputLower.spin(fwd, 100, pct);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd, 0, pct);
 
 
@@ -95,7 +95,7 @@ void fullAuton(){
   mOutputUpper.spin(fwd,100, pct);
   mOutputLower.spin(fwd,70, pct);
   // Watch for red ball going into goal
-  waitForRed();
+  waitForColor(RED);
   // Stop upper output scoring wheel
   mOutputUpper.spin(fwd,0, pct);
   wait(400, msec);
@@ -136,7 +136,7 @@ void fullAuton(){
   mOutputUpper.spin(fwd,100, pct);
   mOutputLower.spin(fwd,80, pct);
   wait(500, msec);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd,0, pct);
   
 
@@ -188,7 +188,7 @@ void fullAuton(){
   //Score goal 5
   mOutputUpper.spin(fwd, 100, pct);
   mOutputLower.spin(fwd, 100, pct);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd, -100, pct);
   wait(200, msec);
   mOutputUpper.spin(fwd, 0, pct);
@@ -228,7 +228,7 @@ void fullAuton(){
   //alignToGoal(-45);
   mOutputUpper.spin(fwd,100, pct);
   mOutputLower.spin(fwd,100, pct);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd,-100, pct);
   wait(200, msec);
   mOutputUpper.spin(fwd, 0, pct);
@@ -243,7 +243,7 @@ void fullAuton(){
   intakeIn();
   mOutputLower.spin(fwd, 100, pct);
   mOutputUpper.spin(fwd, 100, pct);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd, 0, pct);
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -276,7 +276,7 @@ void fullAuton(){
   // Score goal 8
   mOutputUpper.spin(fwd,100, pct);
   mOutputLower.spin(fwd,100, pct);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd,0, pct);
   mOutputLower.spin(fwd,0, pct);
   intakeOff();
@@ -319,7 +319,7 @@ void fullAuton(){
   mOutputUpper.spin(fwd, 100, pct);
   mOutputLower.spin(fwd, 100, pct);
   wait(800, msec);
-  waitForRed();
+  waitForColor(RED);
   mOutputUpper.spin(fwd, 0, pct);
   
   // Gun backwards

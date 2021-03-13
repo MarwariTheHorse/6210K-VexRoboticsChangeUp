@@ -19,6 +19,7 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 bool disableIntakes = false;
+bool colorBool = false;
 // these are global variables
 float ForwardDistance;
 float TurnDistance;
@@ -68,7 +69,30 @@ void pre_auton(void) {
   Controller1.Screen.clearScreen();
 
   // Get Team Color
-  
+  if(mode != 'V'){
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Choose color to score");
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("A: Red");
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("B: Blue");
+
+    disableIntakes = true;
+
+    // Get Auton mode
+    while (true) {
+      if (Controller1.ButtonA.pressing()){
+        colorBool = RED;
+        break;
+      }
+      if (Controller1.ButtonB.pressing()){
+        colorBool = BLUE;
+        break;
+      }
+    }
+    Controller1.Screen.clearScreen();
+  }
 
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
@@ -135,17 +159,17 @@ void autonomous(void) {
   // Full Auton
   if(mode == 'V') fullAuton();
   // Right 1
-  if (mode == 'Y') oneGoal(RIGHT);
+  if (mode == 'Y') oneGoal(RIGHT, colorBool);
   // Left 1
-  if (mode == '<') oneGoal(LEFT);
+  if (mode == '<') oneGoal(LEFT, colorBool);
   // Right 2
-  if (mode == 'X') twoGoal(RIGHT);
+  if (mode == 'X') twoGoal(RIGHT, colorBool);
   // Left 2
-  if (mode == '^') twoGoal(LEFT);
+  if (mode == '^') twoGoal(LEFT, colorBool);
   // Right 3
-  if (mode == 'A') threeGoal(RIGHT);
+  if (mode == 'A') threeGoal(RIGHT, colorBool);
   // Left 3
-  if (mode == '>') threeGoal(LEFT);
+  if (mode == '>') threeGoal(LEFT, colorBool);
   // Online tournament 15 seconds
   if (mode == 'S') specialAuton();
 }
@@ -227,7 +251,7 @@ void usercontrol(void) {
         intakePhase = 1;
       }
       // Red ball > open intakes
-      sVisionLower.takeSnapshot(sigRed);
+      sVisionLower.takeSnapshot(isBlue ? sigBlue : sigRed);
       sVisionUpper.takeSnapshot(sigGreen);
       if(sVisionLower.largestObject.height > 90 && sVisionUpper.largestObject.width < 60){
         intakePhase = 1;
