@@ -175,10 +175,10 @@ void usercontrol(void) {
   mOutputUpper.spin(fwd);
 
   // Set motor stopping mode
-  mWheelFrontLeft.setStopping(coast);
-  mWheelFrontRight.setStopping(coast);
-  mWheelBackLeft.setStopping(coast);
-  mWheelBackRight.setStopping(coast);
+  mWheelFrontLeft.setStopping(brake);
+  mWheelFrontRight.setStopping(brake);
+  mWheelBackLeft.setStopping(brake);
+  mWheelBackRight.setStopping(brake);
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
 
@@ -395,13 +395,11 @@ int printInfo() {
 
     Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("VUX"); // Vision Upper X-Axis
-    sVisionUpper.takeSnapshot(sigGreen);
     Controller1.Screen.setCursor(3, 5);
     Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
 
     Controller1.Screen.setCursor(3, 11);
     Controller1.Screen.print("VLX"); // Vision Lower X-Axis
-    sVisionLower.takeSnapshot(sigRed);
     Controller1.Screen.setCursor(3, 15);
     Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
 

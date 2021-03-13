@@ -8,20 +8,18 @@ void oneGoal(int dir){
 
   // Deploy
   mOutputUpper.setVelocity(100, pct);
-  wait(300, msec);
+  wait(200, msec);
   mOutputUpper.setVelocity(0, pct);
-
-  intakeIn();
 
   // Wait to fully deplay
   wait(750, msec);
 
   // Get into the goal
-  mWheelFrontLeft.setVelocity(dir==LEFT ? 20 : -40, pct);
-  mWheelFrontRight.setVelocity(dir==LEFT ? -40 : 20, pct);
-  mWheelBackLeft.setVelocity(dir==LEFT ? 20 : -40, pct);
-  mWheelBackRight.setVelocity(dir==LEFT ? -40 : 20, pct);
-  vexDelay(500);
+  mWheelFrontLeft.setVelocity(40, pct);
+  mWheelFrontRight.setVelocity(-40, pct);
+  mWheelBackLeft.setVelocity(40, pct);
+  mWheelBackRight.setVelocity(-40, pct);
+  vexDelay(700);
   mWheelFrontLeft.setVelocity(0, pct);
   mWheelFrontRight.setVelocity(0, pct);
   mWheelBackLeft.setVelocity(0, pct);
@@ -30,13 +28,16 @@ void oneGoal(int dir){
   // Score preload, score the red ball off the ground, and descore the blues
   output(100, 2000);
 
-  // Fully deploy
-  driveForward(-75, 500);
+  // Fully deploy - back out
+  driveForward(-75, 1000);
 
+  // Run intakes
   intakeIn();
+  // Wait for the deploy
   wait(500, msec);
 
-  driveForward(100, 1000);
+  // Gun into the goal
+  driveForward(100, 3000);
 
   output(100, 2000);
   intakeOff();
