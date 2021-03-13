@@ -4,7 +4,7 @@
 
 void oneGoal(int dir, bool colorBool){
   // Set Gyro
-  sInertial.setRotation(-135 * dir, deg); // Everything is going to be relative to our starting position for the sake of my sanity
+  sInertial.setRotation(-135 * dir, deg);
 
   // Deploy
   mOutputUpper.setVelocity(100, pct);
@@ -15,8 +15,8 @@ void oneGoal(int dir, bool colorBool){
   wait(750, msec);
 
   // Get into the goal
-  mWheelFrontLeft.setVelocity(-40, pct);
-  mWheelFrontRight.setVelocity(0, pct);
+  mWheelFrontLeft.setVelocity(-40, pct); // TODO: This code is currently not being mirrored so it will only work on one side.
+  mWheelFrontRight.setVelocity(0, pct);  //       We should probably use a ternary operator to fix this.
   mWheelBackLeft.setVelocity(0, pct);
   mWheelBackRight.setVelocity(40, pct);
   vexDelay(1000);
