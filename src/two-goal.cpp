@@ -8,16 +8,16 @@ void twoGoal(int dir, bool colorBool){
   oneGoal(dir, colorBool);
 
   // Turn to wall
-  turnTo(180 * dir, 2);
+  turnTo(-180 * dir, 2);
 
   // strafe
-  strafeUntilGreen(65, 180 * dir);
+  strafeUntilGreen(-65 * dir, -180 * dir);
 
   // open arms
   intakeOpen();
 
   // drive into goal
-  driveViaTimeGyroCamera(8000, 180 * dir, sigGreen);
+  driveViaTimeGyroCamera(8000, -180 * dir, sigGreen);
   intakeOff();
 
   //Score and descore
@@ -32,5 +32,5 @@ void twoGoal(int dir, bool colorBool){
   intakeIn();
   wait(500, msec);
   intakeOpen();
-  driveViaDistanceGyro(-4500, 180 * dir);
+  driveViaDistanceGyro(-4500, -180 * dir);
 }
