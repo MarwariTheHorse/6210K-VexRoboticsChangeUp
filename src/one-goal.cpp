@@ -15,15 +15,18 @@ void oneGoal(int dir){
   wait(750, msec);
 
   // Get into the goal
-  mWheelFrontLeft.setVelocity(40, pct);
-  mWheelFrontRight.setVelocity(-40, pct);
-  mWheelBackLeft.setVelocity(40, pct);
-  mWheelBackRight.setVelocity(-40, pct);
-  vexDelay(700);
+  mWheelFrontLeft.setVelocity(-40, pct);
+  mWheelFrontRight.setVelocity(0, pct);
+  mWheelBackLeft.setVelocity(0, pct);
+  mWheelBackRight.setVelocity(40, pct);
+  vexDelay(1000);
   mWheelFrontLeft.setVelocity(0, pct);
   mWheelFrontRight.setVelocity(0, pct);
   mWheelBackLeft.setVelocity(0, pct);
   mWheelBackRight.setVelocity(0, pct);
+  vexDelay(200);
+  intakeIn();
+  driveForward(100, 1500);
 
   // Score preload, score the red ball off the ground, and descore the blues
   output(100, 2000);

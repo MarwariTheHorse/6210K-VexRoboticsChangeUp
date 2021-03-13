@@ -76,6 +76,7 @@ void pre_auton(void) {
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
     Controller1.Screen.print("Battery: %d", batteryCapacity);
+    Controller1.rumble("...");
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("Press A to continue");
     waitUntil(Controller1.ButtonA.pressing());
@@ -168,6 +169,7 @@ void autonomous(void) {
 void usercontrol(void) {
 
   // Set everything into motion
+  sInertial.setRotation(-57, deg); // For corner goal intakes
   mWheelFrontLeft.spin(fwd);
   mWheelFrontRight.spin(fwd);
   mWheelBackLeft.spin(fwd);
@@ -230,6 +232,21 @@ void usercontrol(void) {
       if(sVisionLower.largestObject.height > 90 && sVisionUpper.largestObject.width < 60){
         intakePhase = 1;
       }
+      double gyroAngle = sInertial.rotation(deg);
+      if(int(gyroAngle)%45 < 35 && int(gyroAngle) % 45 < 10){
+        gyroAngle = 45;
+      }
+        sVisionUpper.takeSnapshot(sigGreen);
+        if(sVisionUpper.largestObject.width > 60 && gyroAngle == 45){
+          intakePhase = 0;
+          mIntakeLeft.spin(fwd, -100, pct);
+          mIntakeRight.spin(fwd, -100, pct);
+          mIntakeLeft.setMaxTorque(100, pct);
+          mIntakeRight.setMaxTorque(100, pct);
+          mIntakeLeft.setStopping(coast);
+          mIntakeRight.setStopping(coast);
+        }
+      
 
       // ButtonR1 > Spin intakes inward
       if (Controller1.ButtonR1.pressing()) {
@@ -240,6 +257,7 @@ void usercontrol(void) {
         mIntakeRight.setMaxTorque(100, pct);
         mIntakeLeft.setStopping(coast);
         mIntakeRight.setStopping(coast);
+        mOutputLower.spin(fwd, 100, pct);
       }
 
       // If absolutly nothing is happening, stop
@@ -281,6 +299,7 @@ void usercontrol(void) {
     } else if (Controller1.ButtonL2.pressing()) {
       mOutputLower.spin(fwd, -100, pct);
       mOutputUpper.spin(fwd, -100, pct);
+      intakePhase = 1;
       // Stop
     } else {
       mOutputLower.spin(fwd, 0, pct);
@@ -405,13 +424,13 @@ int printInfo() {
     Controller1.Screen.setCursor(3, 1);
     Controller1.Screen.print("VUX"); // Vision Upper X-Axis
     Controller1.Screen.setCursor(3, 5);
-    Controller1.Screen.print(sVisionUpper.largestObject.centerX - 180);
+    Controller1.Screen.print(sVisionUpper.largestObject.height);
 
     Controller1.Screen.setCursor(3, 11);
     Controller1.Screen.print("VLX"); // Vision Lower X-Axis
     Controller1.Screen.setCursor(3, 15);
     sVisionLower.takeSnapshot(sigRed);
-    Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
+    Controller1.Screen.print(sVisionLower.largestObject.width);
 
     wait(250, msec);
   }
