@@ -109,13 +109,18 @@ void pre_auton(void) {
   // Calibration
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.Screen.print("Calibrate?");
+  Controller1.Screen.print("Please place robot");
+  Controller1.Screen.setCursor(2, 1);
+  Controller1.Screen.print("at 0 deg");
+  Controller1.Screen.setCursor(3, 1);
+  Controller1.Screen.print("Then press A");
   waitUntil(Controller1.ButtonA.pressing());
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.Screen.print("Calibrating...");
   sInertial.calibrate();
   waitUntil(!sInertial.isCalibrating());
+  sInertial.setRotation(0, deg);
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
   Controller1.rumble("..");
