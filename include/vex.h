@@ -23,6 +23,8 @@
 #define TORQUE_THRESHOLD 1.1
 #define LEFT 1
 #define RIGHT -1
+#define RED false
+#define BLUE true
 
 using signature = vision::signature;
 

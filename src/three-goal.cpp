@@ -4,7 +4,7 @@
 
 // THIS SHOULD BE AN ADD-ON TO TWO-GOAL
 
-void threeGoal(int dir){
-  twoGoal(dir);
+void threeGoal(int dir, bool colorBool){
+  twoGoal(dir, colorBool);
   // more code here
 }

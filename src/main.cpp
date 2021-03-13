@@ -19,7 +19,7 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 bool disableIntakes = false;
-bool isBlue = false;
+bool colorBool = false;
 // these are global variables
 float ForwardDistance;
 float TurnDistance;
@@ -83,11 +83,11 @@ void pre_auton(void) {
     // Get Auton mode
     while (true) {
       if (Controller1.ButtonA.pressing()){
-        isBlue = false;
+        colorBool = RED;
         break;
       }
       if (Controller1.ButtonB.pressing()){
-        isBlue = true;
+        colorBool = BLUE;
         break;
       }
     }
@@ -158,17 +158,17 @@ void autonomous(void) {
   // Full Auton
   if(mode == 'V') fullAuton();
   // Right 1
-  if (mode == 'Y') oneGoal(RIGHT);
+  if (mode == 'Y') oneGoal(RIGHT, colorBool);
   // Left 1
-  if (mode == '<') oneGoal(LEFT);
+  if (mode == '<') oneGoal(LEFT, colorBool);
   // Right 2
-  if (mode == 'X') twoGoal(RIGHT);
+  if (mode == 'X') twoGoal(RIGHT, colorBool);
   // Left 2
-  if (mode == '^') twoGoal(LEFT);
+  if (mode == '^') twoGoal(LEFT, colorBool);
   // Right 3
-  if (mode == 'A') threeGoal(RIGHT);
+  if (mode == 'A') threeGoal(RIGHT, colorBool);
   // Left 3
-  if (mode == '>') threeGoal(LEFT);
+  if (mode == '>') threeGoal(LEFT, colorBool);
   // Online tournament 15 seconds
   if (mode == 'S') specialAuton();
 }
