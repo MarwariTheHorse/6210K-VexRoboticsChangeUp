@@ -250,26 +250,25 @@ void usercontrol(void) {
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
         intakePhase = 1;
       }
+
       // Red ball > open intakes
-      sVisionLower.takeSnapshot(isBlue ? sigBlue : sigRed);
+      sVisionLower.takeSnapshot(colorBool ? sigBlue : sigRed);
       sVisionUpper.takeSnapshot(sigGreen);
       if(sVisionLower.largestObject.height > 90 && sVisionUpper.largestObject.width < 60){
         intakePhase = 1;
       }
-      double gyroAngle = sInertial.rotation(deg);
-      if(int(gyroAngle)%45 < 35 && int(gyroAngle) % 45 < 10){
-        gyroAngle = 45;
+
+      // If angled at goal and we see the goal
+      sVisionUpper.takeSnapshot(sigGreen);
+      if(sVisionUpper.largestObject.width > 100 && sInertial.rotation() != 0 && ((int)sInertial.rotation() % 90 - 45) < 15){
+        intakePhase = 0;
+        mIntakeLeft.spin(fwd, -100, pct);
+        mIntakeRight.spin(fwd, -100, pct);
+        mIntakeLeft.setMaxTorque(100, pct);
+        mIntakeRight.setMaxTorque(100, pct);
+        mIntakeLeft.setStopping(coast);
+        mIntakeRight.setStopping(coast);
       }
-        sVisionUpper.takeSnapshot(sigGreen);
-        if(sVisionUpper.largestObject.width > 60 && gyroAngle == 45){
-          intakePhase = 0;
-          mIntakeLeft.spin(fwd, -100, pct);
-          mIntakeRight.spin(fwd, -100, pct);
-          mIntakeLeft.setMaxTorque(100, pct);
-          mIntakeRight.setMaxTorque(100, pct);
-          mIntakeLeft.setStopping(coast);
-          mIntakeRight.setStopping(coast);
-        }
       
 
       // ButtonR1 > Spin intakes inward
