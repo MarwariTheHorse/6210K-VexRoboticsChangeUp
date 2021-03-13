@@ -41,7 +41,7 @@ void pre_auton(void) {
 
   disableIntakes = true;
 
-  // Get input
+  // Get Auton mode
   while (mode == 'N') {
     if (Controller1.ButtonDown.pressing())
       mode = 'V';
@@ -66,6 +66,9 @@ void pre_auton(void) {
     }
   }
   Controller1.Screen.clearScreen();
+
+  // Get Team Color
+  
 
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
@@ -219,6 +222,12 @@ void usercontrol(void) {
 
       // ButtonR2 > Begin opening the intakes
       if (Controller1.ButtonR2.pressing() && intakePhase == 0) {
+        intakePhase = 1;
+      }
+      // Red ball > open intakes
+      sVisionLower.takeSnapshot(sigRed);
+      sVisionUpper.takeSnapshot(sigGreen);
+      if(sVisionLower.largestObject.height > 90 && sVisionUpper.largestObject.width < 60){
         intakePhase = 1;
       }
 
@@ -401,6 +410,7 @@ int printInfo() {
     Controller1.Screen.setCursor(3, 11);
     Controller1.Screen.print("VLX"); // Vision Lower X-Axis
     Controller1.Screen.setCursor(3, 15);
+    sVisionLower.takeSnapshot(sigRed);
     Controller1.Screen.print(sVisionLower.largestObject.centerX - 180);
 
     wait(250, msec);
