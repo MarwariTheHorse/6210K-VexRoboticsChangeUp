@@ -19,6 +19,7 @@ competition Competition;
 // Other global variables
 char mode = 'N';
 bool disableIntakes = false;
+bool isBlue = false;
 // these are global variables
 float ForwardDistance;
 float TurnDistance;
@@ -68,7 +69,30 @@ void pre_auton(void) {
   Controller1.Screen.clearScreen();
 
   // Get Team Color
-  
+  if(mode != 'V'){
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Choose color to score");
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("A: Red");
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("B: Blue");
+
+    disableIntakes = true;
+
+    // Get Auton mode
+    while (true) {
+      if (Controller1.ButtonA.pressing()){
+        isBlue = false;
+        break;
+      }
+      if (Controller1.ButtonB.pressing()){
+        isBlue = true;
+        break;
+      }
+    }
+    Controller1.Screen.clearScreen();
+  }
 
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
@@ -225,7 +249,7 @@ void usercontrol(void) {
         intakePhase = 1;
       }
       // Red ball > open intakes
-      sVisionLower.takeSnapshot(sigRed);
+      sVisionLower.takeSnapshot(isBlue ? sigBlue : sigRed);
       sVisionUpper.takeSnapshot(sigGreen);
       if(sVisionLower.largestObject.height > 90 && sVisionUpper.largestObject.width < 60){
         intakePhase = 1;
