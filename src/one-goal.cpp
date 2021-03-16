@@ -1,7 +1,6 @@
 #include "vex.h"
 #include "miscmethods.h"
 #include "auton-externs.h"
-
 void oneGoal(int dir, bool colorBool){
   // Set Gyro
   sInertial.setRotation(-135 * dir, deg);
@@ -41,5 +40,11 @@ void oneGoal(int dir, bool colorBool){
   output(100, 700);
   intakeIn();
   driveViaDistanceGyro(-4000, -135*dir);
-  
+  while(Brain.Timer < 8000){
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+  }
+  center(dir, colorBool);
 }

@@ -7,3 +7,4 @@ void twoGoal(int, bool);
 void oneGoal(int, bool);
 void fullAuton();
 void specialAuton();
+void center(int, bool);
