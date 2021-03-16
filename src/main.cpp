@@ -28,6 +28,8 @@ float ForwardVelocity;
 float TurnVelocity;
 float StrafeVelocity;
 
+bool intakeAutoRelease = false;
+
 void pre_auton(void) {
   vexcodeInit();
 
@@ -97,14 +99,22 @@ void pre_auton(void) {
   // Battery check
   int batteryCapacity = Brain.Battery.capacity();
   if(batteryCapacity < 75){
+    Controller1.rumble(rumbleLong);
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1, 1);
     Controller1.Screen.print("Battery: %d", batteryCapacity);
-    Controller1.rumble("...");
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("Press A to continue");
     waitUntil(Controller1.ButtonA.pressing());
   }
+
+  // Camera Check
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
+  Controller1.Screen.print("Check the camera");
+  Controller1.Screen.setCursor(2, 1);
+  Controller1.Screen.print("Press A to continue");
+  waitUntil(Controller1.ButtonA.pressing());
 
   // Calibration
   Controller1.Screen.clearScreen();
@@ -323,15 +333,26 @@ void usercontrol(void) {
     if (Controller1.ButtonL1.pressing()) {
       mOutputLower.spin(fwd, 100, pct);
       mOutputUpper.spin(fwd, 100, pct);
+      if(intakeAutoRelease){
+        intakePhase = 0;
+        intakeAutoRelease = false;
+      }
       // Spin out
     } else if (Controller1.ButtonL2.pressing()) {
       mOutputLower.spin(fwd, -100, pct);
       mOutputUpper.spin(fwd, -100, pct);
       intakePhase = 1;
+      intakeAutoRelease = true;
       // Stop
-    } else {
+    } else if(Controller1.ButtonR1.pressing()){
+      mOutputLower.spin(fwd, 100, pct);
+    }else{
       mOutputLower.spin(fwd, 0, pct);
       mOutputUpper.spin(fwd, 0, pct);
+      if(intakeAutoRelease){
+        intakePhase = 0;
+        intakeAutoRelease = false;
+      }
     }
 
 
@@ -474,7 +495,7 @@ int main() {
 
   // Run the pre-autonomous function.
   pre_auton();
-
+  //Competition.test_auton();
   task taskPrintCameraObjects(printInfo);
   task taskComputeMotorParameters(computeGlobals);
 

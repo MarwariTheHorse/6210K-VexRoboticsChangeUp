@@ -15,39 +15,31 @@ void oneGoal(int dir, bool colorBool){
   wait(750, msec);
 
   // Get into the goal
-  mWheelFrontLeft.setVelocity(-40, pct); // TODO: This code is currently not being mirrored so it will only work on one side.
-  mWheelFrontRight.setVelocity(0, pct);  //       We should probably use a ternary operator to fix this.
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(40, pct);
-  vexDelay(1000);
-  mWheelFrontLeft.setVelocity(0, pct);
-  mWheelFrontRight.setVelocity(0, pct);
-  mWheelBackLeft.setVelocity(0, pct);
-  mWheelBackRight.setVelocity(0, pct);
+  intakeIn();
+  // mWheelFrontLeft.setVelocity(-40*(dir==RIGHT), pct); // TODO: This code is currently not being mirrored so it will only work on one side.
+  // mWheelFrontRight.setVelocity(40*(dir==LEFT), pct);  //       We should probably use a ternary operator to fix this.
+  // mWheelBackLeft.setVelocity(-40*(dir==LEFT), pct);
+  // mWheelBackRight.setVelocity(40*(dir==RIGHT), pct);
+  // vexDelay(1000);
+  // mWheelFrontLeft.setVelocity(0, pct);
+  // mWheelFrontRight.setVelocity(0, pct);
+  // mWheelBackLeft.setVelocity(0, pct);
+  // mWheelBackRight.setVelocity(0, pct);
+  strafeUntilGreen(-65*dir, -135*dir);
   vexDelay(200);
-  intakeIn();
-  driveForward(100, 1500);
-
-  // Score preload, score the red ball off the ground, and descore the blues
-  output(100, 2000);
-
-  // Fully deploy - back out
-  driveForward(-75, 1000);
-
-  // Run intakes
-  intakeIn();
-  // Wait for the deploy
-  wait(500, msec);
-
-  // Gun into the goal
-  driveForward(100, 3000);
-
-  output(100, 2000);
+  turnTo(-135*dir, 2);
   intakeOff();
+  driveViaTimeGyroCamera(8000, -135*dir, sigGreen);
+  mOutputUpper.spin(fwd, 100, pct);
+  mOutputLower.spin(fwd, 60, pct);
+  wait(400, msec);
+  mOutputLower.spin(fwd, 100, pct);
+  wait(900, msec);
+  waitForColor(colorBool);
   intakeOpen();
-  wait(100, msec);
+  wait(400, msec);
+  output(100, 700);
   intakeIn();
-  prepOutput(100, 400);
-  driveForward(-100, 500);
-  intakeOff();
+  driveViaDistanceGyro(-4000, -135*dir);
+  
 }
