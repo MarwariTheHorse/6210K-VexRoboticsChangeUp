@@ -111,6 +111,7 @@ void pre_auton(void) {
   // Camera Check
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
+  Controller1.rumble(rumbleLong);
   Controller1.Screen.print("Check the camera");
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("Press A to continue");
@@ -174,9 +175,17 @@ void autonomous(void) {
   // Full Auton
   if(mode == 'V') fullAuton();
   // Right 1
-  if (mode == 'Y') oneGoal(RIGHT, colorBool);
+  if (mode == 'Y'){
+    oneGoal(RIGHT, colorBool);
+    wait(10, msec);
+    centerRight(colorBool);
+  }
   // Left 1
-  if (mode == '<') oneGoal(LEFT, colorBool);
+  if (mode == '<'){
+    oneGoal(LEFT, colorBool);
+    wait(10, msec);
+    centerLeft(colorBool);
+  }
   // Right 2
   if (mode == 'X') twoGoal(RIGHT, colorBool);
   // Left 2
@@ -206,9 +215,7 @@ void autonomous(void) {
 
 // DRIVER MODE
 void usercontrol(void) {
-
   // Set everything into motion
-  sInertial.setRotation(-57, deg); // For corner goal intakes
   mWheelFrontLeft.spin(fwd);
   mWheelFrontRight.spin(fwd);
   mWheelBackLeft.spin(fwd);
@@ -227,13 +234,13 @@ void usercontrol(void) {
   mIntakeRight.setStopping(hold);
 
   // Variables local to usercontrol
+  double matchLength = Brain.timer(sec);
   int intakePhase = 0;
   int leftX;
   int leftY;
   int rightX;
 
   while (true) {
-
     // Drivetrain
     // /////////////////////////////////////////////////////////////////////////
 
@@ -355,6 +362,11 @@ void usercontrol(void) {
       }
     }
 
+     // Final seconds rumble
+    if(matchLength > 95){
+      Controller1.rumble(rumbleShort);
+      wait(1, sec);
+    }
 
     vexDelay(5);
   }

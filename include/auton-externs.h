@@ -7,4 +7,6 @@ void twoGoal(int, bool);
 void oneGoal(int, bool);
 void fullAuton();
 void specialAuton();
-void center(int, bool);
+void centerLeft(bool);
+void centerRight(bool);
+void sideGoal(int dir);
