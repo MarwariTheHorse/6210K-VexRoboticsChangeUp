@@ -179,12 +179,16 @@ void autonomous(void) {
     oneGoal(RIGHT, colorBool);
     wait(10, msec);
     centerRight(colorBool);
+    wait(10, msec);
+    sideGoal(LEFT);
   }
   // Left 1
   if (mode == '<'){
     oneGoal(LEFT, colorBool);
     wait(10, msec);
     centerLeft(colorBool);
+    wait(10, msec);
+    sideGoal(RIGHT);
   }
   // Right 2
   if (mode == 'X') twoGoal(RIGHT, colorBool);
