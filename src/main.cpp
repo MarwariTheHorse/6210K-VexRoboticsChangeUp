@@ -365,11 +365,9 @@ void usercontrol(void) {
         intakeAutoRelease = false;
       }
     }
-
-     // Final seconds rumble
-    if(matchLength > 95){
+     // Alert Josh when temperatures are high
+    if(mWheelFrontLeft.temperature(temperatureUnits::fahrenheit) > 130){
       Controller1.rumble(rumbleShort);
-      wait(1, sec);
     }
 
     vexDelay(5);
