@@ -180,7 +180,7 @@ void autonomous(void) {
     wait(10, msec);
     centerRight(colorBool);
     wait(10, msec);
-    sideGoal(LEFT);
+    sideGoal(RIGHT);
   }
   // Left 1
   if (mode == '<'){
@@ -188,7 +188,7 @@ void autonomous(void) {
     wait(10, msec);
     centerLeft(colorBool);
     wait(10, msec);
-    sideGoal(RIGHT);
+    sideGoal(LEFT);
   }
   // Right 2
   if (mode == 'X') twoGoal(RIGHT, colorBool);
