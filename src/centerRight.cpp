@@ -8,4 +8,6 @@ void centerRight(bool colorBool){
   strafeViaDistanceGyro(7000, 0);
   driveViaDistanceGyro(1000, 0);
   strafeViaDistanceGyro(1000, 0);
+  wait(100, msec);
+  driveViaDistanceGyro(-2000, 0);
 }

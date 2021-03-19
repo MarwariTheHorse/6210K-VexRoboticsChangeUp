@@ -195,9 +195,9 @@ void autonomous(void) {
   // Left 2
   if (mode == '^') twoGoal(LEFT, colorBool);
   // Right 3
-  if (mode == 'A') threeGoal(RIGHT, colorBool);
+  if (mode == 'A') threeGoalCenter(RIGHT, colorBool);
   // Left 3
-  if (mode == '>') threeGoal(LEFT, colorBool);
+  if (mode == '>') threeGoalCenter(LEFT, colorBool);
   // Online tournament 15 seconds
   if (mode == 'S') specialAuton();
 }

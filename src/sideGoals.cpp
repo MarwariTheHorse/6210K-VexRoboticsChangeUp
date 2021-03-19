@@ -4,7 +4,6 @@
 // Descores 1 ball from the side goals
 void sideGoal(int dir){
   sInertial.setRotation(0, deg);
-  driveViaDistanceGyro(-2000, 0);
   if(dir==LEFT){
     strafeViaDistanceGyro(9000, 0);
   }
@@ -12,9 +11,9 @@ void sideGoal(int dir){
     strafeViaDistanceGyro(5000, 0);
   }
   intakeOpen();
-  driveViaDistanceGyro(2000, 0);
+  driveViaDistanceGyro(2000, -5*dir);
   wait(100, msec);
-  driveViaDistanceGyro(-2000, 0);
+  driveViaDistanceGyro(-2000, -5*dir);
   turnTo(0, 2);
   intakeOff();
 }

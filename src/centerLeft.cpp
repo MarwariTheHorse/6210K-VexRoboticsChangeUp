@@ -7,4 +7,5 @@ void centerLeft(bool colorBool){
   turnTo(0, 2);
   driveViaDistanceGyro(1000, 0);
   strafeViaDistanceGyro(1000, 0);
+  driveViaDistanceGyro(-2000, 0);
 }

@@ -30,7 +30,6 @@ void twoGoal(int dir, bool colorBool){
   intakeOpen();
   wait(400, msec);
   intakeIn();
-  wait(500, msec);
-  intakeOpen();
-  driveViaDistanceGyro(-4500, -180 * dir);
+  driveViaDistanceGyro(-6500, -180 * dir);
+  turnTo(0, 2);
 }
