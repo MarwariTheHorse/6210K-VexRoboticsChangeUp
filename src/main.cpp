@@ -111,7 +111,7 @@ void pre_auton(void) {
   // Camera Check
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.rumble(rumbleLong);
+  // Controller1.rumble(rumbleLong);
   Controller1.Screen.print("Check the camera");
   Controller1.Screen.setCursor(2, 1);
   Controller1.Screen.print("Press A to continue");
@@ -134,7 +134,7 @@ void pre_auton(void) {
   sInertial.setRotation(0, deg);
   Controller1.Screen.clearScreen();
   Controller1.Screen.setCursor(1, 1);
-  Controller1.rumble("..");
+  // Controller1.rumble("..");
   Controller1.Screen.print("DONE");
   wait(500, msec);
   Controller1.Screen.clearScreen();
@@ -364,10 +364,6 @@ void usercontrol(void) {
         intakePhase = 0;
         intakeAutoRelease = false;
       }
-    }
-     // Alert Josh when temperatures are high
-    if(mWheelFrontLeft.temperature(temperatureUnits::fahrenheit) > 130){
-      Controller1.rumble(rumbleShort);
     }
 
     vexDelay(5);

@@ -24,7 +24,7 @@ void oneGoal(int dir, bool colorBool){
   // mWheelFrontRight.setVelocity(0, pct);
   // mWheelBackLeft.setVelocity(0, pct);
   // mWheelBackRight.setVelocity(0, pct);
-  strafeUntilGreen(-65*dir, -135*dir);
+  strafeUntilGreen(65*dir, -135*dir);
   vexDelay(200);
   turnTo(-135*dir, 2);
   intakeOff();
