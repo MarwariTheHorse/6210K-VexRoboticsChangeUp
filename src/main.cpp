@@ -184,11 +184,27 @@ void autonomous(void) {
   }
   // Left 1
   if (mode == '<'){
-    oneGoal(LEFT, colorBool);
-    wait(10, msec);
-    centerLeft(colorBool);
-    wait(10, msec);
-    sideGoal(LEFT);
+
+output(100, 400); //500 > 300 timems
+
+    mWheelFrontLeft.setVelocity(20, pct);
+    mWheelFrontRight.setVelocity(-40, pct);
+    mWheelBackLeft.setVelocity(20, pct);
+    mWheelBackRight.setVelocity(-40, pct);
+    vexDelay(600);
+    mWheelFrontLeft.setVelocity(0, pct);
+    mWheelFrontRight.setVelocity(0, pct);
+    mWheelBackLeft.setVelocity(0, pct);
+    mWheelBackRight.setVelocity(0, pct);
+
+    // Ensure we are at the goal
+    driveForward(100, 1000);
+
+    // Outtake the preload
+    output(100, 1500); //500 > 300 timems
+
+    // Drive in reverse to make sure we aren't touching anything in the goal
+    driveForward(-100, 1000);
   }
   // Right 2
   if (mode == 'X') twoGoal(RIGHT, colorBool);
@@ -230,10 +246,10 @@ void usercontrol(void) {
   mOutputUpper.spin(fwd);
 
   // Set motor stopping mode
-  mWheelFrontLeft.setStopping(brake);
-  mWheelFrontRight.setStopping(brake);
-  mWheelBackLeft.setStopping(brake);
-  mWheelBackRight.setStopping(brake);
+  mWheelFrontLeft.setStopping(coast);
+  mWheelFrontRight.setStopping(coast);
+  mWheelBackLeft.setStopping(coast);
+  mWheelBackRight.setStopping(coast);
   mIntakeLeft.setStopping(hold);
   mIntakeRight.setStopping(hold);
 
@@ -262,10 +278,10 @@ void usercontrol(void) {
       rightX = 0;
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, rightX + leftY + leftX, pct);
-    mWheelFrontRight.spin(fwd, rightX - leftY + leftX, pct);
-    mWheelBackLeft.spin(fwd, rightX + leftY - leftX, pct);
-    mWheelBackRight.spin(fwd, rightX - leftY - leftX, pct);
+    mWheelFrontLeft.spin(fwd, (rightX + leftY + leftX) * .9, pct);
+    mWheelFrontRight.spin(fwd, (rightX - leftY + leftX) * .9, pct);
+    mWheelBackLeft.spin(fwd, (rightX + leftY - leftX) * .9, pct);
+    mWheelBackRight.spin(fwd, (rightX - leftY - leftX) * .9, pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
