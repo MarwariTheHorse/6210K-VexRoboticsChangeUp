@@ -171,53 +171,7 @@ void autonomous(void) {
   mOutputUpper.spin(fwd, 0, pct);
   mOutputLower.setBrake(hold);
   mOutputUpper.setBrake(hold);
-
-  // Full Auton
-  if(mode == 'V') fullAuton();
-  // Right 1
-  if (mode == 'Y'){
-    oneGoal(RIGHT, colorBool);
-    wait(10, msec);
-    centerRight(colorBool);
-    wait(10, msec);
-    sideGoal(RIGHT);
-  }
-  // Left 1
-  if (mode == '<'){
-
-output(100, 400); //500 > 300 timems
-
-    mWheelFrontLeft.setVelocity(20, pct);
-    mWheelFrontRight.setVelocity(-40, pct);
-    mWheelBackLeft.setVelocity(20, pct);
-    mWheelBackRight.setVelocity(-40, pct);
-    vexDelay(600);
-    mWheelFrontLeft.setVelocity(0, pct);
-    mWheelFrontRight.setVelocity(0, pct);
-    mWheelBackLeft.setVelocity(0, pct);
-    mWheelBackRight.setVelocity(0, pct);
-
-    // Ensure we are at the goal
-    driveForward(100, 1000);
-
-    // Outtake the preload
-    output(100, 1500); //500 > 300 timems
-
-    // Drive in reverse to make sure we aren't touching anything in the goal
-    driveForward(-100, 1000);
-  }
-  // Right 2
-  if (mode == 'X') twoGoal(RIGHT, colorBool);
-  // Left 2
-  if (mode == '^') twoGoal(LEFT, colorBool);
-  // Right 3
-  if (mode == 'A') threeGoalCenter(RIGHT, colorBool);
-  // Left 3
-  if (mode == '>') threeGoalCenter(LEFT, colorBool);
-  // Online tournament 15 seconds
-  if (mode == 'S') specialAuton();
 }
-
 //    XXXXXXXXXXXXXXXXXXX         XXXXXXXXXXXXXXXXXXXXXXX    XXXXXXXXXXXXXXXXXX   
 //    XXXXXXXXXXXXXXXXXXXX        XXXXXXXXXXXXXXXXXXXXXXX    XXXXXXXXXXXXXXXXXX
 //    XXXXXXX        XXXXXXX      XXXXX             XXXXX          XXXXXX
@@ -255,7 +209,6 @@ void usercontrol(void) {
 
   // Variables local to usercontrol
   int intakePhase = 0;
-  int leftX;
   int leftY;
   int rightX;
 
@@ -264,23 +217,20 @@ void usercontrol(void) {
     // /////////////////////////////////////////////////////////////////////////
 
     // Controller joystick values
-    leftX = Controller1.Axis4.position();
     leftY = Controller1.Axis3.position();
     rightX = Controller1.Axis1.position();
 
     // Zero the values (Likely not needed if we use the cubing function)
-    if (leftX < 20 && leftX > -20)
-      leftX = 0;
     if (leftY < 20 && leftY > -20)
       leftY = 0;
     if (rightX < 20 && rightX > -20)
       rightX = 0;
 
     // Assign wheel speeds
-    mWheelFrontLeft.spin(fwd, (rightX + leftY + leftX) * .9, pct);
-    mWheelFrontRight.spin(fwd, (rightX - leftY + leftX) * .9, pct);
-    mWheelBackLeft.spin(fwd, (rightX + leftY - leftX) * .9, pct);
-    mWheelBackRight.spin(fwd, (rightX - leftY - leftX) * .9, pct);
+    mWheelFrontLeft.spin(fwd, (rightX + leftY) * .9, pct);
+    mWheelFrontRight.spin(fwd, (rightX - leftY) * .9, pct);
+    mWheelBackLeft.spin(fwd, (rightX + leftY) * .9, pct);
+    mWheelBackRight.spin(fwd, (rightX - leftY) * .9, pct);
 
     // Intake
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
