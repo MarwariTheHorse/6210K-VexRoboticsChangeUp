@@ -11,6 +11,8 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
+#define DEBUG_AUTON false
+
 using namespace vex;
 
 // A global instance of competition
@@ -518,9 +520,11 @@ int main() {
   Competition.autonomous(autonomous);
   Competition.drivercontrol(usercontrol);
 
-  // Run the pre-autonomous function.
+  // Run the pre-autonomous function if we are debugging
   pre_auton();
-  //Competition.test_auton();
+  if(DEBUG_AUTON)
+    Competition.test_auton();
+
   task taskPrintCameraObjects(printInfo);
   task taskComputeMotorParameters(computeGlobals);
 
