@@ -11,7 +11,7 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
-#define DEBUG_AUTON false
+#define DEBUG_AUTON true
 
 using namespace vex;
 
@@ -187,7 +187,7 @@ void autonomous(void) {
   // Left 1
   if (mode == '<'){
 
-output(100, 400); //500 > 300 timems
+    output(100, 400); //500 > 300 timems
 
     mWheelFrontLeft.setVelocity(20, pct);
     mWheelFrontRight.setVelocity(-40, pct);
