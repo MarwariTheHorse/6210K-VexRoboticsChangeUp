@@ -7,13 +7,13 @@ void oneGoal(int dir, bool colorBool){
 
   // Deploy
   mOutputUpper.setVelocity(100, pct);
-  wait(200, msec);
+  wait(100, msec);
   mOutputUpper.setVelocity(0, pct);
 
   // Wait to fully deplay
   wait(750, msec);
 
-  // If strafing doesn't work we can try this code below
+  // Curve towards the goal
   mWheelFrontLeft.setVelocity(-40*(dir==RIGHT), pct);
   mWheelFrontRight.setVelocity(40*(dir==LEFT), pct);
   mWheelBackLeft.setVelocity(-40*(dir==LEFT), pct);
