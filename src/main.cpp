@@ -11,7 +11,7 @@
 #include "miscmethods.h"
 #include "auton-externs.h"
 
-#define DEBUG_AUTON true
+#define DEBUG_AUTON false
 
 using namespace vex;
 
