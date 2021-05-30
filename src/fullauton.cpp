@@ -20,10 +20,10 @@ void fullAuton(){
 
     //-----------------------------------------------------------------CODE COMMENTED OUT BELOW
   sInertial.setRotation(-57, deg);
-  mWheelFrontLeft.setStopping(coast);
-  mWheelFrontRight.setStopping(coast);
-  mWheelBackLeft.setStopping(coast);
-  mWheelBackRight.setStopping(coast);
+  // mWheelFrontLeft.setStopping(coast);
+  // mWheelFrontRight.setStopping(coast);
+  // mWheelBackLeft.setStopping(coast);
+  // mWheelBackRight.setStopping(coast);
 
   // PART 1 - Deploy Camera and Hood and flick ball into goal
   mOutputUpper.spin(fwd, 100, pct);
