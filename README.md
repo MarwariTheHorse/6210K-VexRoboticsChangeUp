@@ -3,6 +3,9 @@
 Vex Robotics team 6210K's code repository for the 2020-2021 season. This project is the driver code
 and autonomous code, all in one.
 
+The robot the code runs on is an x-drive robot with an intake and dispenser. It's loaded with
+several different sensors and a camera, used to navigate the field when running autonomously.
+
 Team members include:
 *Caleb Buening, Joey Curnutt, Caleb Baker, and that Hans kid.*
 
